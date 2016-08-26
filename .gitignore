@@ -1,0 +1,6 @@
+run/*
+.idea/*
+build/*
+graphics/*
+libs/*
+.gradle/*
