@@ -1,9 +1,11 @@
 package treechopper.core;
 
 import biomesoplenty.api.block.BOPBlocks;
+import biomesoplenty.api.enums.BOPWoods;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockNewLog;
 import net.minecraft.block.BlockOldLog;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -113,16 +115,11 @@ public class TreeHandler {
         if (position.getY() < event.getPos().getY())
             return false;
 
-        if (logType == Blocks.LOG) {
-            return (event.getWorld().getBlockState(position).getValue(BlockOldLog.VARIANT) == event.getWorld().getBlockState(event.getPos()).getValue(BlockOldLog.VARIANT));
-        } else if (logType == Blocks.LOG2) {
-            return (event.getWorld().getBlockState(position).getValue(BlockNewLog.VARIANT) == event.getWorld().getBlockState(event.getPos()).getValue(BlockNewLog.VARIANT));
-        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) { // BOP
+        if (event.getWorld().getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == event.getWorld().getBlockState(event.getPos()).getValue(logType.getBlockState().getProperty("variant")))
             return true;
-        } else {
-            System.out.println("[Tree Capitator - ERROR]Unknown variant of log.. (" + event.getWorld().getBlockState(position) + ")");
-            return true;
-        }
+        else
+            return false;
+
     }
 
     public int treeDestroy(BlockEvent.BreakEvent event) {
