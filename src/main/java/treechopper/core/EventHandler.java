@@ -5,9 +5,12 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+
+import static treechopper.core.ConfigHandler.loadConfig;
 
 /**
  * Created by Duchy on 8/11/2016.
@@ -28,7 +31,7 @@ public class EventHandler {
                 logCount = treeHandler.treeDestroy(event);
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logCount); // Axe damage increase with size of tree
 
-                if (TreeChopper.plantSapling)
+                if (ConfigHandler.plantSapling)
                     treeHandler.plantSapling(event.getWorld(), event.getPos());
             }
         }
@@ -39,11 +42,11 @@ public class EventHandler {
         float logCount = 0f;
         int axeDurability = 0;
 
-        if (TreeChopper.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
+        if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
             if (event.getEntityPlayer().getHeldItemMainhand() != null) { // Player holds something in his main hand
 
-                if (TreeChopper.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
+                if (ConfigHandler.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
                     staticHandler.setEveryOk(true);
 
                     if (event.getSide().isClient()) {
@@ -60,7 +63,7 @@ public class EventHandler {
                     logCount = treeHandler.treeAnalyze(event, event.getPos());
                     axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
-                    if (logCount > axeDurability && !TreeChopper.ignoreDurability && !StaticHandler.shiftPress) {
+                    if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !StaticHandler.shiftPress) {
                         staticHandler.setEveryOk(false);
                         if (event.getSide().isClient()) {
                             String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeCap" + ChatFormatting.WHITE + "] Not enough durability, DEACTIVATING..!";
@@ -69,7 +72,7 @@ public class EventHandler {
                     }
 
                     if (!StaticHandler.shiftPress && staticHandler.isEveryOk())
-                        event.getWorld().getBlockState(event.getPos()).getBlock().setHardness((2.0f * ((logCount - 1) / 3f) + 2) / (float) TreeChopper.breakSpeed); // Hardness increase witch size of tree
+                        event.getWorld().getBlockState(event.getPos()).getBlock().setHardness((2.0f * ((logCount - 1) / 3f) + 2) / (float) ConfigHandler.breakSpeed); // Hardness increase witch size of tree
                     else
                         event.getWorld().getBlockState(event.getPos()).getBlock().setHardness(2.0f); // Reset hardness
                 } else {
@@ -89,14 +92,20 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onServerConnect(PlayerEvent.PlayerLoggedInEvent event) {
-        TreeChopper.network.sendToAll(new ServerMessage(TreeChopper.ignoreDurability, TreeChopper.plantSapling, TreeChopper.decayLeaves, TreeChopper.breakSpeed));
+        TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.ignoreDurability, ConfigHandler.plantSapling, ConfigHandler.decayLeaves, ConfigHandler.breakSpeed));
     }
 
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-        TreeChopper.breakSpeed = TreeChopper.breakSpeedVar;
-        TreeChopper.plantSapling = TreeChopper.plantSaplingVar;
-        TreeChopper.decayLeaves = TreeChopper.decayLeavesVar;
-        TreeChopper.ignoreDurability = TreeChopper.ignoreDurabilityVar;
+        ConfigHandler.breakSpeed = ConfigHandler.breakSpeedVar;
+        ConfigHandler.plantSapling = ConfigHandler.plantSaplingVar;
+        ConfigHandler.decayLeaves = ConfigHandler.decayLeavesVar;
+        ConfigHandler.ignoreDurability = ConfigHandler.ignoreDurabilityVar;
+    }
+
+    @SubscribeEvent
+    public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) { // This doesnt work in ConfigHandler, WTF
+        if (event.getModID().equalsIgnoreCase(TreeChopper.MODID))
+            loadConfig();
     }
 }

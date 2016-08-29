@@ -1,11 +1,12 @@
 package treechopper.core;
 
 import biomesoplenty.api.block.BOPBlocks;
+import biomesoplenty.api.enums.BOPTrees;
 import biomesoplenty.api.enums.BOPWoods;
+import biomesoplenty.common.block.BlockBOPSapling;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockNewLog;
-import net.minecraft.block.BlockOldLog;
-import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,6 +23,7 @@ import java.util.Set;
  */
 public class TreeHandler {
     private Set<BlockPos> tree;
+    private String leafVariant;
 
     public float treeAnalyze(PlayerInteractEvent event, BlockPos position) {
         Block logType = event.getWorld().getBlockState(event.getPos()).getBlock();
@@ -34,7 +36,7 @@ public class TreeHandler {
         tree.add(position);
 
         do {
-            for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 1; i++) {
+            for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 2; i++) {
                 if (world.getBlockState(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())).getBlock() == logType &&
                         logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
@@ -115,11 +117,10 @@ public class TreeHandler {
         if (position.getY() < event.getPos().getY())
             return false;
 
-        if (event.getWorld().getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == event.getWorld().getBlockState(event.getPos()).getValue(logType.getBlockState().getProperty("variant")))
-            return true;
-        else
-            return false;
+        if (event.getWorld().getBlockState(position).getPropertyNames().toString().contains("variant"))
+            return ((event.getWorld().getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == event.getWorld().getBlockState(event.getPos()).getValue(logType.getBlockState().getProperty("variant"))));
 
+        return true; // Ignoring log variant - doesnt have one..
     }
 
     public int treeDestroy(BlockEvent.BreakEvent event) {
@@ -135,13 +136,20 @@ public class TreeHandler {
     }
 
     public boolean plantSapling(World world, BlockPos position) {
+        Block logType = world.getBlockState(position).getBlock(), sapling;
+        String logVariant;
+        if (world.getBlockState(position).getPropertyNames().toString().contains("variant"))
+            logVariant = world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")).toString().toUpperCase();
+        else
+            return false;
 
-    /*private void placeSapling(World world, BlockPos blockPos, String logVariant) {
-        Block test = Blocks.SAPLING;
-        IBlockState testState = test.getDefaultState();
-
-        world.setBlockState(blockPos, testState.withProperty(BlockSapling.TYPE, dataInsert.getVanilla_variants().get(logVariant)));
-    }*/
+        if (logType == Blocks.LOG || logType == Blocks.LOG2) {
+            sapling = Blocks.SAPLING;
+            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(logVariant)));
+        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) {
+            //world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(" ")));
+            System.out.println(logVariant);
+        }
 
         return false;
     }

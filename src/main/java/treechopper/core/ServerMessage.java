@@ -41,10 +41,10 @@ public class ServerMessage implements IMessage {
     public static class Handler implements IMessageHandler<ServerMessage, IMessage> {
         @Override
         public IMessage onMessage(ServerMessage message, MessageContext ctx) {
-            TreeChopper.breakSpeed = message.breakSpeed;
-            TreeChopper.ignoreDurability = message.ignoreDurability;
-            TreeChopper.decayLeaves = message.decayLeaves;
-            TreeChopper.plantSapling = message.plantSapling;
+            ConfigHandler.breakSpeed = message.breakSpeed;
+            ConfigHandler.ignoreDurability = message.ignoreDurability;
+            ConfigHandler.decayLeaves = message.decayLeaves;
+            ConfigHandler.plantSapling = message.plantSapling;
 
             return null;
         }
