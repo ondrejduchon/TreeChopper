@@ -2,7 +2,6 @@ package treechopper.core;
 
 import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.enums.BOPTrees;
-import biomesoplenty.api.enums.BOPWoods;
 import biomesoplenty.common.block.BlockBOPSapling;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
@@ -23,11 +22,12 @@ import java.util.Set;
  */
 public class TreeHandler {
     private Set<BlockPos> tree;
+    private static Set<BlockPos> leaves = new HashSet<BlockPos>();
+    private static Set<BlockPos> leavesTmp = new HashSet<BlockPos>();
     private String leafVariant;
 
     public float treeAnalyze(PlayerInteractEvent event, BlockPos position) {
         Block logType = event.getWorld().getBlockState(event.getPos()).getBlock();
-        World world = event.getWorld();
         Queue<BlockPos> logsToCheck = new LinkedList<BlockPos>();
         tree = new HashSet<BlockPos>();
         BlockPos curBlock = position;
@@ -37,63 +37,53 @@ public class TreeHandler {
 
         do {
             for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 2; i++) {
-                if (world.getBlockState(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
                 }
 
-                if (world.getBlockState(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)).getBlock() == logType &&
-                        logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
                 }
             }
 
-            if (world.getBlockState(new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ())).getBlock() == logType &&
-                    logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ())), event, tree)) {
+            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ())), event, tree)) {
                 logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ()));
                 tree.add(new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ()));
             }
 
-            if (world.getBlockState(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())).getBlock() == logType &&
-                    logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), event, tree)) {
+            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), event, tree)) {
                 logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
                 tree.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
             }
@@ -111,6 +101,14 @@ public class TreeHandler {
     }
 
     private boolean logAnalyze(Block logType, BlockPos position, PlayerInteractEvent event, Set<BlockPos> visitedLogs) {
+        if (event.getWorld().getBlockState(position).getBlock() != logType) {
+            if (event.getWorld().getBlockState(position).getBlock().isLeaves(event.getWorld().getBlockState(position), event.getWorld(), position)) {
+                leaves.add(position);
+                lookAround(position, event.getWorld());
+            }
+            return false;
+        }
+
         if (visitedLogs.contains(position))
             return false;
 
@@ -123,6 +121,34 @@ public class TreeHandler {
         return true; // Ignoring log variant - doesnt have one..
     }
 
+    private void lookAround(BlockPos position, World world) {
+
+        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())), world, position))
+            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ()));
+
+        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())), world, position))
+            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ()));
+
+        if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX(), position.getY(), position.getZ() + 1));
+
+        if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX(), position.getY(), position.getZ() - 1));
+
+        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1));
+
+        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1));
+
+        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1));
+
+        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)), world, position))
+            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1));
+
+    }
+
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
 
@@ -132,24 +158,44 @@ public class TreeHandler {
                 event.getWorld().destroyBlock(blockPos, true);
         }
 
+        for (BlockPos blockPos : leavesTmp)
+            leaves.add(blockPos);
+
+        leavesTmp.clear();
+
+        for (BlockPos blockPos : leaves)
+            lookAround(blockPos, event.getWorld());
+
+        for (BlockPos blockPos : leavesTmp)
+            leaves.add(blockPos);
+
+        for (BlockPos blockPos : leaves) {
+            if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
+                leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
+            else
+                leafVariant = null;
+            event.getWorld().destroyBlock(blockPos, true);
+        }
+
+        if (leaves.size() == 0) // Tree without leaves
+            leafVariant = null;
+
+        leavesTmp.clear();
+        leaves.clear();
         return logCount;
     }
 
     public boolean plantSapling(World world, BlockPos position) {
         Block logType = world.getBlockState(position).getBlock(), sapling;
-        String logVariant;
-        if (world.getBlockState(position).getPropertyNames().toString().contains("variant"))
-            logVariant = world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")).toString().toUpperCase();
-        else
+
+        if (leafVariant == null)
             return false;
 
         if (logType == Blocks.LOG || logType == Blocks.LOG2) {
             sapling = Blocks.SAPLING;
-            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(logVariant)));
-        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) {
-            //world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(" ")));
-            System.out.println(logVariant);
-        }
+            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
+        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) // Biomes O Plenty
+            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(leafVariant)));
 
         return false;
     }
