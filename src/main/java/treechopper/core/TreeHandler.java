@@ -1,8 +1,6 @@
 package treechopper.core;
 
 import biomesoplenty.api.block.BOPBlocks;
-import biomesoplenty.api.enums.BOPTrees;
-import biomesoplenty.common.block.BlockBOPSapling;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
@@ -36,7 +34,7 @@ public class TreeHandler {
         tree.add(position);
 
         do {
-            for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 2; i++) {
+            for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 3; i++) {
                 if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), event, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
@@ -78,10 +76,11 @@ public class TreeHandler {
                 }
             }
 
-            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ())), event, tree)) {
-                logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ()));
-                tree.add(new BlockPos(curBlock.getX(), curBlock.getY() + 1, curBlock.getZ()));
-            }
+            for (int i = curBlock.getY() + 1; i < curBlock.getY() + 4; i++)
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), event, tree)) {
+                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
+                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
+                }
 
             if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), event, tree)) {
                 logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
@@ -104,7 +103,8 @@ public class TreeHandler {
         if (event.getWorld().getBlockState(position).getBlock() != logType) {
             if (event.getWorld().getBlockState(position).getBlock().isLeaves(event.getWorld().getBlockState(position), event.getWorld(), position)) {
                 leaves.add(position);
-                lookAround(position, event.getWorld());
+                if (ConfigHandler.decayLeaves)
+                    lookAround(position, event.getWorld());
             }
             return false;
         }
@@ -174,7 +174,9 @@ public class TreeHandler {
                 leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
             else
                 leafVariant = null;
-            event.getWorld().destroyBlock(blockPos, true);
+
+            if (ConfigHandler.decayLeaves)
+                event.getWorld().destroyBlock(blockPos, true);
         }
 
         if (leaves.size() == 0) // Tree without leaves
@@ -191,11 +193,16 @@ public class TreeHandler {
         if (leafVariant == null)
             return false;
 
+        if (!world.getBlockState(new BlockPos(position.getX(), position.getY() - 1, position.getZ() - 2)).isFullBlock())
+            return false;
+
         if (logType == Blocks.LOG || logType == Blocks.LOG2) {
             sapling = Blocks.SAPLING;
             world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
         } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) // Biomes O Plenty
-            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(leafVariant)));
+        {
+            //world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(leafVariant)));
+        }
 
         return false;
     }

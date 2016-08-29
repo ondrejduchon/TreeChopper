@@ -46,10 +46,10 @@ public class ConfigHandler {
             plantSapling = config.get("Settings", "Plant sapling automatically", false).getBoolean();
             plantSaplingVar = plantSapling;
 
-            //decayLeaves = config.get("Settings", "Decay leaves", false).getBoolean();
-            //decayLeavesVar = decayLeaves;
+            decayLeaves = config.get("Settings", "Decay leaves", true).getBoolean();
+            decayLeavesVar = decayLeaves;
 
-            breakSpeed = config.get("Settings", "Break speed [DEFAULT: 1.0]", 1.0).getDouble();
+            breakSpeed = config.get("Settings", "Break speed [DEFAULT: 1]", 1.0).getDouble();
             breakSpeedVar = breakSpeed;
 
             property = config.get("Data", "Log Types", new String[]{"tile.log", "tile.log_0", "tile.log_1", "tile.log_2", "tile.log_3", "tile.log_4", "tile.pamCinnamon", "tile.pamPaperbark", "tile.pamMaple"}, "Put new log between < and >");
