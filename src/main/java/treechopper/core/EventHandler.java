@@ -66,7 +66,7 @@ public class EventHandler {
                     if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !StaticHandler.shiftPress) {
                         staticHandler.setEveryOk(false);
                         if (event.getSide().isClient()) {
-                            String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeCap" + ChatFormatting.WHITE + "] Not enough durability, DEACTIVATING..!";
+                            String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
                             event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
                         }
                     }

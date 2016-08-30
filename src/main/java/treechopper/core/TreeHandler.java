@@ -170,16 +170,17 @@ public class TreeHandler {
             leaves.add(blockPos);
 
         for (BlockPos blockPos : leaves) {
-            if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
-                leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
-            else
-                leafVariant = null;
+            if (leafVariant == null)
+                if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
+                    leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
+                else
+                    leafVariant = null;
 
             if (ConfigHandler.decayLeaves)
                 event.getWorld().destroyBlock(blockPos, true);
         }
 
-        if (leaves.size() == 0) // Tree without leaves
+        if (leaves.size() == 0 || logCount < 2) // Tree without leaves
             leafVariant = null;
 
         leavesTmp.clear();
@@ -189,21 +190,59 @@ public class TreeHandler {
 
     public boolean plantSapling(World world, BlockPos position) {
         Block logType = world.getBlockState(position).getBlock(), sapling;
+        BlockPos position1 = new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1), position2 = new BlockPos(position.getX(), position.getY(), position.getZ() + 1);
+        int positionsClear = 0;
 
         if (leafVariant == null)
             return false;
 
-        if (!world.getBlockState(new BlockPos(position.getX(), position.getY() - 1, position.getZ() - 2)).isFullBlock())
+        if (world.getBlockState(new BlockPos(position1.getX(), position1.getY() - 1, position1.getZ())).isFullBlock() && !world.getBlockState(position1).isFullBlock())
+            positionsClear++;
+
+        if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock())
+            positionsClear += 2;
+
+        if (positionsClear == 0)
             return false;
 
         if (logType == Blocks.LOG || logType == Blocks.LOG2) {
-            sapling = Blocks.SAPLING;
-            world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), sapling.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
-        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) // Biomes O Plenty
-        {
-            //world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 2), BlockBOPSapling.paging.getVariantState(BOPTrees.valueOf(leafVariant)));
+            try {
+                switch (positionsClear) {
+                    case 1:
+                        world.setBlockState(position1, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
+                        break;
+                    case 2:
+                        world.setBlockState(position2, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
+                        break;
+                    case 3:
+                        world.setBlockState(position1, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
+                        world.setBlockState(position2, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Probably missmatching tree.. " + e);
+            }
+        } else if (logType == BOPBlocks.log_0 || logType == BOPBlocks.log_1 || logType == BOPBlocks.log_2 || logType == BOPBlocks.log_3 || logType == BOPBlocks.log_4) { // Biomes O Plenty
+            if (TreeChopper.BoPPresent)
+                try {
+                    switch (positionsClear) {
+                        case 1:
+                            BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
+                            break;
+                        case 2:
+                            BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                            break;
+                        case 3:
+                            BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
+                            BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                            break;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Probably missmatching tree.. " + e);
+                }
         }
 
+        leafVariant = null;
         return false;
     }
 }
