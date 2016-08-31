@@ -25,8 +25,8 @@ public class TreeHandler {
     private String leafVariant;
     private int leafCount;
 
-    public float treeAnalyze(PlayerInteractEvent event, BlockPos position) {
-        Block logType = event.getWorld().getBlockState(event.getPos()).getBlock();
+    public float treeAnalyze(World world, BlockPos position) {
+        Block logType = world.getBlockState(position).getBlock();
         Queue<BlockPos> logsToCheck = new LinkedList<BlockPos>();
         tree = new HashSet<BlockPos>();
         BlockPos curBlock = position;
@@ -39,54 +39,54 @@ public class TreeHandler {
 
         do {
             for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 3; i++) {
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
                 }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
                     tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
                 }
             }
 
             for (int i = curBlock.getY() + 1; i < curBlock.getY() + 4; i++)
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), event, tree)) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
                 }
 
-            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), event, tree)) {
+            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), position, world, tree)) {
                 logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
                 tree.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
             }
@@ -103,9 +103,9 @@ public class TreeHandler {
         return tree.size();
     }
 
-    private boolean logAnalyze(Block logType, BlockPos position, PlayerInteractEvent event, Set<BlockPos> visitedLogs) {
-        if (event.getWorld().getBlockState(position).getBlock() != logType) {
-            if (event.getWorld().getBlockState(position).getBlock().isLeaves(event.getWorld().getBlockState(position), event.getWorld(), position))
+    private boolean logAnalyze(Block logType, BlockPos position, BlockPos originPos, World world, Set<BlockPos> visitedLogs) {
+        if (world.getBlockState(position).getBlock() != logType) {
+            if (world.getBlockState(position).getBlock().isLeaves(world.getBlockState(position), world, position))
                 leaves.add(position);
             return false;
         }
@@ -113,11 +113,11 @@ public class TreeHandler {
         if (visitedLogs.contains(position))
             return false;
 
-        if (position.getY() < event.getPos().getY())
+        if (position.getY() < originPos.getY())
             return false;
 
-        if (event.getWorld().getBlockState(position).getPropertyNames().toString().contains("variant"))
-            return ((event.getWorld().getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == event.getWorld().getBlockState(event.getPos()).getValue(logType.getBlockState().getProperty("variant"))));
+        if (world.getBlockState(position).getPropertyNames().toString().contains("variant"))
+            return ((world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == world.getBlockState(originPos).getValue(logType.getBlockState().getProperty("variant"))));
 
         return true; // Ignoring log variant - doesnt have one..
     }

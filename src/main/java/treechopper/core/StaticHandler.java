@@ -7,6 +7,7 @@ package treechopper.core;
 public class StaticHandler {
     private boolean everyOk = false;
     public static boolean shiftPress;
+    public static boolean serverSide;
 
     public boolean isEveryOk() {
         return everyOk;

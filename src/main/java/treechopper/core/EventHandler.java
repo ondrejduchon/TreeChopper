@@ -1,11 +1,14 @@
 package treechopper.core;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import com.sun.corba.se.spi.activation.ServerNotActive;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -22,14 +25,39 @@ public class EventHandler {
 
     @SubscribeEvent
     public void choppedTree(BlockEvent.BreakEvent event) {
-        int logCount;
+        int logDestroyCount;
+
+        if (StaticHandler.serverSide) {
+            float logCount = 0f;
+            int axeDurability = 0;
+
+            if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
+
+                if (event.getPlayer().getHeldItemMainhand() != null) { // Player holds something in his main hand
+
+                    if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
+                        staticHandler.setEveryOk(true);
+
+                        logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                        axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+
+                        if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !StaticHandler.shiftPress)
+                            staticHandler.setEveryOk(false);
+
+                    } else
+                        staticHandler.setEveryOk(false);
+                } else
+                    staticHandler.setEveryOk(false);
+            } else
+                staticHandler.setEveryOk(false);
+        }
 
         if (staticHandler.isEveryOk()) {
 
             if (!StaticHandler.shiftPress) {
 
-                logCount = treeHandler.treeDestroy(event);
-                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logCount); // Axe damage increase with size of tree
+                logDestroyCount = treeHandler.treeDestroy(event);
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
                 if (ConfigHandler.plantSapling)
                     treeHandler.plantSapling(event.getWorld(), event.getPos());
@@ -60,7 +88,7 @@ public class EventHandler {
                         }
                     }
 
-                    logCount = treeHandler.treeAnalyze(event, event.getPos());
+                    logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
                     if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !StaticHandler.shiftPress) {
@@ -85,9 +113,8 @@ public class EventHandler {
                 event.getWorld().getBlockState(event.getPos()).getBlock().setHardness(2.0f);
             }
 
-        } else {
+        } else
             staticHandler.setEveryOk(false);
-        }
     }
 
     @SubscribeEvent
@@ -96,11 +123,19 @@ public class EventHandler {
     }
 
     @SubscribeEvent
+    public void onClientConnect(FMLNetworkEvent.ServerConnectionFromClientEvent event) {
+        if (!event.isLocal())
+            StaticHandler.serverSide = true;
+    }
+
+    @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         ConfigHandler.breakSpeed = ConfigHandler.breakSpeedVar;
         ConfigHandler.plantSapling = ConfigHandler.plantSaplingVar;
         ConfigHandler.decayLeaves = ConfigHandler.decayLeavesVar;
         ConfigHandler.ignoreDurability = ConfigHandler.ignoreDurabilityVar;
+
+        StaticHandler.serverSide = false;
     }
 
     @SubscribeEvent
