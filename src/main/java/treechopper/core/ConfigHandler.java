@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by Duchy on 8/28/2016.
  */
+
 public class ConfigHandler {
     public static Configuration config;
 

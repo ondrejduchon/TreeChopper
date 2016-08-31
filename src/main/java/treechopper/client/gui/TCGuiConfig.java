@@ -9,6 +9,7 @@ import treechopper.core.TreeChopper;
 /**
  * Created by Duchy on 8/25/2016.
  */
+
 public class TCGuiConfig extends GuiConfig {
 
     public TCGuiConfig(GuiScreen guiScreen) {

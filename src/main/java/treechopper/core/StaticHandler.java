@@ -3,6 +3,7 @@ package treechopper.core;
 /**
  * Created by Duchy on 8/23/2016.
  */
+
 public class StaticHandler {
     private boolean everyOk = false;
     public static boolean shiftPress;

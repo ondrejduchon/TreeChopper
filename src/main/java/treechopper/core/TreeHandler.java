@@ -1,6 +1,5 @@
 package treechopper.core;
 
-import biomesoplenty.api.block.BOPBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
@@ -18,11 +17,13 @@ import java.util.Set;
 /**
  * Created by Duchy on 8/22/2016.
  */
+
 public class TreeHandler {
     private Set<BlockPos> tree;
     private static Set<BlockPos> leaves = new HashSet<BlockPos>();
     private static Set<BlockPos> leavesTmp = new HashSet<BlockPos>();
     private String leafVariant;
+    private int leafCount;
 
     public float treeAnalyze(PlayerInteractEvent event, BlockPos position) {
         Block logType = event.getWorld().getBlockState(event.getPos()).getBlock();
@@ -191,6 +192,7 @@ public class TreeHandler {
         if (leaves.size() == 0 || logCount < 2) // Tree without leaves
             leafVariant = null;
 
+        leafCount = leaves.size();
         leavesTmp.clear();
         leaves.clear();
         return logCount;
@@ -207,7 +209,7 @@ public class TreeHandler {
         if (world.getBlockState(new BlockPos(position1.getX(), position1.getY() - 1, position1.getZ())).isFullBlock() && !world.getBlockState(position1).isFullBlock())
             positionsClear++;
 
-        if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock())
+        if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock() && leafCount > 3)
             positionsClear += 2;
 
         if (positionsClear == 0)

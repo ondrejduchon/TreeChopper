@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 /**
  * Created by Duchy on 8/23/2016.
  */
+
 public class ClientMessage implements IMessage {
     private int isPressed = 0;
 

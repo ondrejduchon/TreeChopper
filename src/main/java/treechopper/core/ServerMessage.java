@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 /**
  * Created by Duchy on 8/25/2016.
  */
+
 public class ServerMessage implements IMessage {
     private boolean ignoreDurability, plantSapling, decayLeaves;
     private double breakSpeed;
