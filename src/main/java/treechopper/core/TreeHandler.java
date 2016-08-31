@@ -31,6 +31,9 @@ public class TreeHandler {
         BlockPos curBlock = position;
         boolean isAnyNeighbour;
 
+        leavesTmp.clear();
+        leaves.clear();
+
         tree.add(position);
 
         do {
@@ -101,11 +104,8 @@ public class TreeHandler {
 
     private boolean logAnalyze(Block logType, BlockPos position, PlayerInteractEvent event, Set<BlockPos> visitedLogs) {
         if (event.getWorld().getBlockState(position).getBlock() != logType) {
-            if (event.getWorld().getBlockState(position).getBlock().isLeaves(event.getWorld().getBlockState(position), event.getWorld(), position)) {
+            if (event.getWorld().getBlockState(position).getBlock().isLeaves(event.getWorld().getBlockState(position), event.getWorld(), position))
                 leaves.add(position);
-                if (ConfigHandler.decayLeaves)
-                    lookAround(position, event.getWorld());
-            }
             return false;
         }
 
@@ -121,31 +121,39 @@ public class TreeHandler {
         return true; // Ignoring log variant - doesnt have one..
     }
 
-    private void lookAround(BlockPos position, World world) {
+    private void lookAround(BlockPos position, World world, Set<BlockPos> newLeaves) {
 
         if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())), world, position))
-            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ()));
+            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ())))
+                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ()));
 
         if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())), world, position))
-            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ()));
+            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ())))
+                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ()));
 
         if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX(), position.getY(), position.getZ() + 1));
+            if (!leaves.contains(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)))
+                newLeaves.add(new BlockPos(position.getX(), position.getY(), position.getZ() + 1));
 
         if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX(), position.getY(), position.getZ() - 1));
+            if (!leaves.contains(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)))
+                newLeaves.add(new BlockPos(position.getX(), position.getY(), position.getZ() - 1));
 
         if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1));
+            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)))
+                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1));
 
         if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1));
+            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)))
+                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1));
 
         if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1));
+            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)))
+                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1));
 
         if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)), world, position))
-            leavesTmp.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1));
+            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)))
+                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1));
 
     }
 
@@ -158,17 +166,17 @@ public class TreeHandler {
                 event.getWorld().destroyBlock(blockPos, true);
         }
 
-        for (BlockPos blockPos : leavesTmp)
-            leaves.add(blockPos);
+        if (ConfigHandler.decayLeaves) {
+            for (BlockPos blockPos : leaves) {
+                lookAround(blockPos, event.getWorld(), leavesTmp);
+            }
 
-        leavesTmp.clear();
-
-        for (BlockPos blockPos : leaves)
-            lookAround(blockPos, event.getWorld());
-
-        for (BlockPos blockPos : leavesTmp)
-            leaves.add(blockPos);
-
+            for (BlockPos blockPos : leavesTmp) {
+                lookAround(blockPos, event.getWorld(), leaves);
+                leaves.add(blockPos);
+            }
+        }
+        
         for (BlockPos blockPos : leaves) {
             if (leafVariant == null)
                 if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
