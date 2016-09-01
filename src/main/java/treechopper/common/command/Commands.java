@@ -1,12 +1,18 @@
 package treechopper.common.command;
 
 import com.google.common.collect.Lists;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.server.CommandBroadcast;
+import net.minecraft.command.server.CommandMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.server.console.ConsoleFormatter;
 import treechopper.client.gui.TCGuiConfig;
 import treechopper.core.ConfigHandler;
 
@@ -49,6 +55,7 @@ public class Commands extends CommandBase {
             }
 
             ConfigHandler.setIgnoreDurability(parseBoolean(args[1]));
+            sender.addChatMessage(new TextComponentTranslation("Ignore axe durability set to " + ConfigHandler.ignoreDurability));
 
         } else if (args[0].equals("plantSap")) {
             if (args.length != 2) {
@@ -56,6 +63,7 @@ public class Commands extends CommandBase {
             }
 
             ConfigHandler.setPlantSapling(parseBoolean(args[1]));
+            sender.addChatMessage(new TextComponentTranslation("Plant sapling automatically set to " + ConfigHandler.plantSapling));
 
         } else if (args[0].equals("decayLeaves")) {
             if (args.length != 2) {
@@ -63,6 +71,7 @@ public class Commands extends CommandBase {
             }
 
             ConfigHandler.setDecayLeaves(parseBoolean(args[1]));
+            sender.addChatMessage(new TextComponentTranslation("Decay leaves set to " + ConfigHandler.decayLeaves));
 
         } else if (args[0].equals("breakSpeed")) {
             if (args.length != 2) {
@@ -70,6 +79,7 @@ public class Commands extends CommandBase {
             }
 
             ConfigHandler.setBreakSpeed(parseDouble(args[1], 0, 100));
+            sender.addChatMessage(new TextComponentTranslation("Break speed [DEFAULT: 1] set to " + ConfigHandler.breakSpeed));
         }
     }
 

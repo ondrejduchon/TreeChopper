@@ -3,6 +3,7 @@ package treechopper.core;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import treechopper.common.command.Commands;
+import treechopper.proxy.CommonProxy;
 
 /**
  * Created by Duchy on 8/11/2016.
@@ -22,6 +24,12 @@ public class TreeChopper {
     public static SimpleNetworkWrapper network;
     public static final String MODID = "treechopper";
     public static boolean BoPPresent = false;
+
+    @Mod.Instance(MODID)
+    public static TreeChopper instance;
+
+    @SidedProxy(clientSide = "treechopper.proxy.ClientProxy", serverSide = "treechopper.proxy.ServerProxy")
+    public static CommonProxy proxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -36,6 +44,7 @@ public class TreeChopper {
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(proxy);
     }
 
     @Mod.EventHandler

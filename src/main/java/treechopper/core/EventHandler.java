@@ -11,6 +11,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import treechopper.proxy.ClientProxy;
 
 import static treechopper.core.ConfigHandler.loadConfig;
 
@@ -20,6 +21,7 @@ import static treechopper.core.ConfigHandler.loadConfig;
 
 public class EventHandler {
     private TreeHandler treeHandler = new TreeHandler();
+    //private ClientProxy clientProxy = new ClientProxy();
 
     @SubscribeEvent
     public void choppedTree(BlockEvent.BreakEvent event) {
@@ -108,25 +110,24 @@ public class EventHandler {
                         }
                     }
 
-                    if (!StaticHandler.shiftPress && StaticHandler.control)
-                        event.getWorld().getBlockState(event.getPos()).getBlock().setHardness((2.0f * ((logCount - 1) / 3f) + 2) / (float) ConfigHandler.breakSpeed); // Hardness increase witch size of tree
-                    else
-                        event.getWorld().getBlockState(event.getPos()).getBlock().setHardness(2.0f); // Reset hardness
+                    if (!StaticHandler.shiftPress && StaticHandler.control) {
+                        ClientProxy.logCount = (int) logCount;
+                    } else {
+                        ClientProxy.logCount = 0;
+                    }
                 } else {
                     StaticHandler.control = false;
-                    event.getWorld().getBlockState(event.getPos()).getBlock().setHardness(2.0f);
+                    ClientProxy.logCount = 0;
                 }
             } else {
                 StaticHandler.control = false;
-                event.getWorld().getBlockState(event.getPos()).getBlock().setHardness(2.0f);
+                ClientProxy.logCount = 0;
             }
         } else
             StaticHandler.control = false;
 
         if (StaticHandler.serverSide)
             StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
-
-        // TODO Change setting hardness for blocks globally :(
     }
 
     @SubscribeEvent
@@ -155,4 +156,6 @@ public class EventHandler {
         if (event.getModID().equalsIgnoreCase(TreeChopper.MODID))
             loadConfig();
     }
+
+    // TODO On server/open to lan disconnect by server
 }

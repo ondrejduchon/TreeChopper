@@ -159,11 +159,14 @@ public class TreeHandler {
 
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
+        boolean destruction;
 
         for (BlockPos blockPos : tree) {
 
             if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ()) {
-                event.getWorld().destroyBlock(blockPos, true);
+                destruction = event.getWorld().destroyBlock(blockPos, true);
+                if (!destruction)
+                    System.out.println("Problem with block.. " + blockPos);
                 event.getWorld().setBlockToAir(blockPos);
             }
         }
@@ -187,7 +190,9 @@ public class TreeHandler {
                     leafVariant = null;
 
             if (ConfigHandler.decayLeaves) {
-                event.getWorld().destroyBlock(blockPos, true);
+                destruction = event.getWorld().destroyBlock(blockPos, true);
+                if (!destruction)
+                    System.out.println("Problem with block.. " + blockPos);
                 event.getWorld().setBlockToAir(blockPos);
             }
         }
