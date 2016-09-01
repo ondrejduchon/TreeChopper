@@ -6,7 +6,6 @@ import net.minecraft.block.BlockSapling;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.HashSet;
