@@ -1,15 +1,12 @@
 package treechopper.core;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import treechopper.proxy.ClientProxy;
 
@@ -21,7 +18,6 @@ import static treechopper.core.ConfigHandler.loadConfig;
 
 public class EventHandler {
     private TreeHandler treeHandler = new TreeHandler();
-    //private ClientProxy clientProxy = new ClientProxy();
 
     @SubscribeEvent
     public void choppedTree(BlockEvent.BreakEvent event) {
@@ -131,11 +127,6 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void onServerConnect(PlayerEvent.PlayerLoggedInEvent event) {
-        TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.ignoreDurability, ConfigHandler.plantSapling, ConfigHandler.decayLeaves, ConfigHandler.breakSpeed));
-    }
-
-    @SubscribeEvent
     public void onClientConnect(FMLNetworkEvent.ServerConnectionFromClientEvent event) {
         if (!event.isLocal())
             StaticHandler.serverSide = true;
@@ -144,9 +135,6 @@ public class EventHandler {
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         ConfigHandler.breakSpeed = ConfigHandler.breakSpeedVar;
-        ConfigHandler.plantSapling = ConfigHandler.plantSaplingVar;
-        ConfigHandler.decayLeaves = ConfigHandler.decayLeavesVar;
-        ConfigHandler.ignoreDurability = ConfigHandler.ignoreDurabilityVar;
 
         StaticHandler.serverSide = false;
     }
@@ -156,6 +144,4 @@ public class EventHandler {
         if (event.getModID().equalsIgnoreCase(TreeChopper.MODID))
             loadConfig();
     }
-
-    // TODO On server/open to lan disconnect by server
 }

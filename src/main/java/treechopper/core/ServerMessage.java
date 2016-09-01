@@ -10,32 +10,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 
 public class ServerMessage implements IMessage {
-    private boolean ignoreDurability, plantSapling, decayLeaves;
-    private double breakSpeed;
+    private int breakSpeed;
 
     public ServerMessage() {
     }
 
-    public ServerMessage(boolean ignoreDurability, boolean plantSapling, boolean decayLeaves, double breakSpeed) {
-        this.ignoreDurability = ignoreDurability;
-        this.plantSapling = plantSapling;
-        this.decayLeaves = decayLeaves;
+    public ServerMessage(int breakSpeed) {
         this.breakSpeed = breakSpeed;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        ignoreDurability = buf.readBoolean();
-        plantSapling = buf.readBoolean();
-        decayLeaves = buf.readBoolean();
-        breakSpeed = buf.readDouble();
+        try {
+            breakSpeed = buf.readInt();
+        } catch (IndexOutOfBoundsException e1) {
+            System.out.println("There is a problem by FMLIndexedMessageCodec - significantly difference between client and server forge version..");
+        } catch (Exception e2) {
+            System.out.println("Other problem.." + e2);
+        }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeBoolean(ignoreDurability);
-        buf.writeBoolean(plantSapling);
-        buf.writeBoolean(decayLeaves);
         buf.writeDouble(breakSpeed);
     }
 
@@ -43,9 +39,6 @@ public class ServerMessage implements IMessage {
         @Override
         public IMessage onMessage(ServerMessage message, MessageContext ctx) {
             ConfigHandler.breakSpeed = message.breakSpeed;
-            ConfigHandler.ignoreDurability = message.ignoreDurability;
-            ConfigHandler.decayLeaves = message.decayLeaves;
-            ConfigHandler.plantSapling = message.plantSapling;
 
             return null;
         }

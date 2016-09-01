@@ -1,7 +1,5 @@
 package treechopper.core;
 
-import com.mojang.realmsclient.dto.PlayerInfo;
-
 import java.util.HashMap;
 import java.util.Map;
 
