@@ -1,6 +1,8 @@
 package treechopper.core;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -21,7 +23,6 @@ public class EventHandler {
 
     @SubscribeEvent
     public void choppedTree(BlockEvent.BreakEvent event) {
-        //treeHandler = new TreeHandler();
         int logDestroyCount;
 
         if (StaticHandler.serverSide) {
@@ -48,7 +49,9 @@ public class EventHandler {
                 if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
                     logDestroyCount = treeHandler.treeDestroy(event);
-                    event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
+
+                    if (!event.getPlayer().isCreative())
+                        event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
                     if (ConfigHandler.plantSapling)
                         treeHandler.plantSapling(event.getWorld(), event.getPos());
@@ -60,7 +63,9 @@ public class EventHandler {
                 if (!StaticHandler.shiftPress) {
 
                     logDestroyCount = treeHandler.treeDestroy(event);
-                    event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
+
+                    if (!event.getPlayer().isCreative())
+                        event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
                     if (ConfigHandler.plantSapling)
                         treeHandler.plantSapling(event.getWorld(), event.getPos());
@@ -71,7 +76,6 @@ public class EventHandler {
 
     @SubscribeEvent
     public void interactWithTree(PlayerInteractEvent event) {
-        //treeHandler = new TreeHandler();
         float logCount = 0f;
         int axeDurability = 0;
 
@@ -121,6 +125,8 @@ public class EventHandler {
 
         if (StaticHandler.serverSide)
             StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
+
+        // TODO Change setting hardness for blocks globally :(
     }
 
     @SubscribeEvent

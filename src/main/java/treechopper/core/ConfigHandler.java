@@ -37,6 +37,22 @@ public class ConfigHandler {
         }
     }
 
+    public static void setIgnoreDurability(boolean ignoreDurability) {
+        ConfigHandler.ignoreDurability = ignoreDurability;
+    }
+
+    public static void setPlantSapling(boolean plantSapling) {
+        ConfigHandler.plantSapling = plantSapling;
+    }
+
+    public static void setDecayLeaves(boolean decayLeaves) {
+        ConfigHandler.decayLeaves = decayLeaves;
+    }
+
+    public static void setBreakSpeed(double breakSpeed) {
+        ConfigHandler.breakSpeed = breakSpeed;
+    }
+
     public static void loadConfig() {
         Property property;
 

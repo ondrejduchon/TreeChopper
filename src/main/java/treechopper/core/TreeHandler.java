@@ -162,8 +162,10 @@ public class TreeHandler {
 
         for (BlockPos blockPos : tree) {
 
-            if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ())
+            if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ()) {
                 event.getWorld().destroyBlock(blockPos, true);
+                event.getWorld().setBlockToAir(blockPos);
+            }
         }
 
         if (ConfigHandler.decayLeaves) {
@@ -184,8 +186,10 @@ public class TreeHandler {
                 else
                     leafVariant = null;
 
-            if (ConfigHandler.decayLeaves)
+            if (ConfigHandler.decayLeaves) {
                 event.getWorld().destroyBlock(blockPos, true);
+                event.getWorld().setBlockToAir(blockPos);
+            }
         }
 
         if (leaves.size() == 0 || logCount < 2) // Tree without leaves
