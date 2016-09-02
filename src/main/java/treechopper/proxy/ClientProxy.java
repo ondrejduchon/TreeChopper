@@ -11,15 +11,21 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void breakSpeedPlayer(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+        if (logCount > 1) {
 
-        System.out.println((event.getOriginalSpeed() / (logCount / 2) * ((float) ConfigHandler.breakSpeed / 1.20f)));
-        //System.out.println(event.getOriginalSpeed());
+            if (event.getOriginalSpeed() <= 4.0f)
+                event.setNewSpeed((5.7f * event.getOriginalSpeed() / ((((float) logCount) + 5f) / 1.0f)) * ((float) (ConfigHandler.breakSpeed / 10)));
 
-        if (logCount > 1)
-            event.setNewSpeed((event.getOriginalSpeed() / (logCount / 2) * ((float) ConfigHandler.breakSpeed / 1.20f)));
-        else
+            else if (event.getOriginalSpeed() <= 8.0f)
+                event.setNewSpeed((10.3f * event.getOriginalSpeed() / ((((float) logCount) + 10f) / 1.1f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+            else if (event.getOriginalSpeed() <= 12.0f)
+                event.setNewSpeed((16.5f * event.getOriginalSpeed() / ((((float) logCount) + 20f) / 1.3f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+            else
+                event.setNewSpeed((26f * event.getOriginalSpeed() / ((((float) logCount) + 35f) / 1.6f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+        } else
             event.setNewSpeed(event.getOriginalSpeed());
-
-        // TODO balance
     }
 }

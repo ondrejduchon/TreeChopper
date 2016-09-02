@@ -32,7 +32,7 @@ public class ServerMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeDouble(breakSpeed);
+        buf.writeInt(breakSpeed);
     }
 
     public static class Handler implements IMessageHandler<ServerMessage, IMessage> {

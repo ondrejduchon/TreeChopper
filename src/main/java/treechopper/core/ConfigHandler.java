@@ -29,6 +29,10 @@ public class ConfigHandler {
             config = new Configuration(configFile);
             loadConfig();
         }
+
+        if (config.hasKey("Settings", "Break speed [DEFAULT: 1]"))
+            config.renameProperty("Settings", "Break speed [DEFAULT: 1]", "Obsolete option, no effect");
+
     }
 
     public static void setIgnoreDurability(boolean ignoreDurability) {
@@ -57,7 +61,7 @@ public class ConfigHandler {
 
             decayLeaves = config.get("Settings", "Decay leaves", true).getBoolean();
 
-            breakSpeed = config.get("Settings", "Break speed [DEFAULT: 1]", 1).getInt();
+            breakSpeed = config.get("Settings", "Break speed [DEFAULT: 10]", 10).getInt();
             breakSpeedVar = breakSpeed;
 
             property = config.get("Data", "Log Types", new String[]{"tile.log", "tile.log_0", "tile.log_1", "tile.log_2", "tile.log_3", "tile.log_4", "tile.pamCinnamon", "tile.pamPaperbark", "tile.pamMaple"}, "Put new log between < and >");
@@ -78,7 +82,7 @@ public class ConfigHandler {
         config.get("Settings", "Decay leaves", true).set(decayLeaves);
         config.get("Settings", "Ignore axe durability", false).set(ignoreDurability);
         config.get("Settings", "Plant sapling automatically", false).set(plantSapling);
-        config.get("Settings", "Break speed [DEFAULT: 1]", 1).set(breakSpeed);
+        config.get("Settings", "Break speed [DEFAULT: 10]", 10).set(breakSpeed);
 
         config.save();
     }

@@ -74,8 +74,8 @@ public class Commands extends CommandBase {
                 throw new WrongUsageException("/treechop breakspeed [value]");
             }
 
-            ConfigHandler.setBreakSpeed(parseInt(args[1], 0, 1000));
-            sender.addChatMessage(new TextComponentTranslation("Break speed [DEFAULT: 1] set to " + ConfigHandler.breakSpeed + " be careful!"));
+            ConfigHandler.setBreakSpeed(parseInt(args[1], 1, 1000));
+            sender.addChatMessage(new TextComponentTranslation("Break speed [DEFAULT: 10] set to " + ConfigHandler.breakSpeed + " be careful!"));
 
             TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed));
         } else
