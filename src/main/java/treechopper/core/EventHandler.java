@@ -3,7 +3,6 @@ package treechopper.core;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -120,8 +119,10 @@ public class EventHandler {
                 StaticHandler.control = false;
                 ClientProxy.logCount = 0;
             }
-        } else
+        } else {
             StaticHandler.control = false;
+            ClientProxy.logCount = 0;
+        }
 
         if (StaticHandler.serverSide)
             StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());

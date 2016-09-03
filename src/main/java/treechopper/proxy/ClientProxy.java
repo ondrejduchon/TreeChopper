@@ -11,6 +11,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void breakSpeedPlayer(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+
         if (logCount > 1) {
 
             if (event.getOriginalSpeed() <= 4.0f)
