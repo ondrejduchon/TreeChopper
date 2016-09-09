@@ -21,27 +21,22 @@ import java.util.List;
 
 public class Commands extends CommandBase {
 
-    @Override
     public String getCommandName() {
         return "treechop";
     }
 
-    @Override
     public String getCommandUsage(ICommandSender sender) {
         return "/treechop <ignoreDur|plantSap|decayLeaves|breakSpeed> value";
     }
 
-    @Override
     public int getRequiredPermissionLevel() {
-        return 2;
+        return 0;
     }
 
-    @Override
     public List getCommandAliases() {
         return Lists.newArrayList("tch");
     }
 
-    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 1)
             throw new WrongUsageException("/treechop <ignoredur|plantsap|decayleaves|breakspeed> [value]");
@@ -91,7 +86,6 @@ public class Commands extends CommandBase {
         ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed);
     }
 
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "decayleaves", "breakspeed");
