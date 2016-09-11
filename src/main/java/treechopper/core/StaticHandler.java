@@ -13,6 +13,7 @@ public class StaticHandler {
     public static boolean serverSide = false;
     public static boolean control = false;
     public static Map<Integer, Boolean> playerHoldShift = new HashMap<Integer, Boolean>();
+    public static boolean printName = false;
 
     public boolean isEveryOk() {
         return everyOk;

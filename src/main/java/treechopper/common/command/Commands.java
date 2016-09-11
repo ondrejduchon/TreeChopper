@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import treechopper.core.ConfigHandler;
 import treechopper.core.ServerMessage;
+import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
 
 import java.util.List;
@@ -108,7 +109,10 @@ public class Commands extends CommandBase {
         }
 
         if (args[0].equals("printname")) {
-            // TODO Printing item name
+            if (args.length != 2)
+                throw new WrongUsageException("/treechop printname [value]");
+
+            printName(parseBoolean(args[1]), sender);
         }
 
         ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed);
@@ -132,6 +136,15 @@ public class Commands extends CommandBase {
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.GREEN + "ON"));
         else
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.RED + "OFF"));
+    }
+
+    private void printName(boolean print, ICommandSender sender) {
+        if (print)
+            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Printing UnlocalizedNames has been switched " + TextFormatting.GREEN + "ON"));
+        else
+            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
+
+        StaticHandler.printName = print;
     }
 
     @Override

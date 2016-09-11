@@ -3,6 +3,7 @@ package treechopper.core;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -74,6 +75,13 @@ public class EventHandler {
 
     @SubscribeEvent
     public void interactWithTree(PlayerInteractEvent event) {
+
+        if (StaticHandler.printName && event.getSide().isClient()) {
+            event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + ChatFormatting.GOLD + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
+            if (event.getEntityPlayer().getHeldItemMainhand() != null)
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + ChatFormatting.GOLD + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+        }
+
         float logCount = 0f;
         int axeDurability = 0;
 
