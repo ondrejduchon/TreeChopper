@@ -29,7 +29,7 @@ public class Commands extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/treechop <info|printname|ignoreDur|plantSap|decayLeaves|breakSpeed> value";
+        return "/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Commands extends CommandBase {
 
         if (sender.canCommandSenderUseCommand(2, this.getCommandName())) {
             if (args.length < 1)
-                throw new WrongUsageException("/treechop <info|printname|ignoredur|plantsap|decayleaves|breakspeed> [value]");
+                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]");
 
             else if (args[0].equals("ignoredur")) {
                 if (args.length != 2)
@@ -93,11 +93,21 @@ public class Commands extends CommandBase {
 
             } else if (args[0].equals("printname")) {
 
+            /*} else if (args[0].equals("plantsaptree")) {
+                if (args.length != 2)
+                    throw new WrongUsageException("/treechop plantsaptree [value]");
+
+                ConfigHandler.setPlantSaplingTree(parseBoolean(args[1]));
+                if (ConfigHandler.plantSaplingTree)
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.GREEN + "ON"));
+                else
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.RED + "OFF"));*/
+
             } else
-                throw new WrongUsageException("/treechop <info|printname|ignoredur|plantsap|decayleaves|breakspeed> [value]");
+                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]");
         } else {
             if (args.length < 1)
-                throw new WrongUsageException("/treechop <info|printname>");
+                throw new WrongUsageException("/treechop <info, printname> [value]");
 
             else if (args[0].equals("info") || args[0].equals("?")) {
                 printSettings(sender);
@@ -105,7 +115,7 @@ public class Commands extends CommandBase {
             } else if (args[0].equals("printname")) {
 
             } else
-                throw new WrongUsageException("/treechop <info|printname>");
+                throw new WrongUsageException("/treechop <info, printname> [value]");
         }
 
         if (args[0].equals("printname")) {
@@ -131,6 +141,11 @@ public class Commands extends CommandBase {
             sender.addChatMessage(new TextComponentTranslation("Automatic sapling plant: " + TextFormatting.GREEN + "ON"));
         else
             sender.addChatMessage(new TextComponentTranslation("Automatic sapling plant: " + TextFormatting.RED + "OFF"));
+
+        /*if (ConfigHandler.plantSaplingTree)
+            sender.addChatMessage(new TextComponentTranslation("Planting on tree position: " + TextFormatting.GREEN + "ON"));
+        else
+            sender.addChatMessage(new TextComponentTranslation("Planting on tree position: " + TextFormatting.RED + "OFF"));*/
 
         if (ConfigHandler.ignoreDurability)
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.GREEN + "ON"));
