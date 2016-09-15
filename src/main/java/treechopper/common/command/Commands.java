@@ -59,6 +59,8 @@ public class Commands extends CommandBase {
                 else
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Ignore axe durability has been switched " + TextFormatting.RED + "OFF"));
 
+                TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
+
             } else if (args[0].equals("plantsap")) {
                 if (args.length != 2)
                     throw new WrongUsageException("/treechop plantsap [0,1]");
@@ -86,7 +88,7 @@ public class Commands extends CommandBase {
                 ConfigHandler.setBreakSpeed(parseInt(args[1], 1, 1000));
                 sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Break speed has been set to " + ConfigHandler.breakSpeed + ", [DEFAULT: 10]"));
 
-                TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed));
+                TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
 
             } else if (args[0].equals("info") || args[0].equals("?")) {
                 printSettings(sender);

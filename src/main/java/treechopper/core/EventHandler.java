@@ -24,6 +24,8 @@ public class EventHandler {
     @SubscribeEvent
     public void choppedTree(BlockEvent.BreakEvent event) {
         int logDestroyCount;
+        float logCount = 0f;
+        int axeDurability = 0;
 
         if (StaticHandler.serverSide) {
 
@@ -34,8 +36,8 @@ public class EventHandler {
                     if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
                         StaticHandler.control = true;
 
-                        if (StaticHandler.control)
-                            treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                        logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                        axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                     } else
                         StaticHandler.control = false;
@@ -44,10 +46,12 @@ public class EventHandler {
             } else
                 StaticHandler.control = false;
 
-            if (StaticHandler.control) {
+            if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
-                if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
+                if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
+                    StaticHandler.control = false;
 
+                if (StaticHandler.control) {
                     logDestroyCount = treeHandler.treeDestroy(event);
 
                     if (!event.getPlayer().isCreative())
@@ -60,9 +64,9 @@ public class EventHandler {
                         }
                         treeHandler.plantSapling(event.getWorld(), event.getPos());
                     }
-
                 }
             }
+
         } else {
             if (StaticHandler.control) {
 
@@ -86,18 +90,16 @@ public class EventHandler {
 
     @SubscribeEvent
     public void interactWithTree(PlayerInteractEvent event) {
-
-        if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId())) {
-            event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + ChatFormatting.GOLD + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
-            if (event.getEntityPlayer().getHeldItemMainhand() != null)
-                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + ChatFormatting.GOLD + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
-            else
-                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + ChatFormatting.GOLD + "NONE"));
-        }
-
-
         float logCount = 0f;
         int axeDurability = 0;
+
+        if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId()) && event.getSide().isServer()) { // No text formation because of forge diferences may cause error
+            event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
+            if (event.getEntityPlayer().getHeldItemMainhand() != null)
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+            else
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + "NONE"));
+        }
 
         if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
@@ -152,7 +154,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onServerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
-        TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed));
+        TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
     }
 
     @SubscribeEvent
