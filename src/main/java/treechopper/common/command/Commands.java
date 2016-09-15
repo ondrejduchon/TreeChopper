@@ -45,7 +45,7 @@ public class Commands extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
-        if (sender.canCommandSenderUseCommand(2, this.getCommandName())) {
+        if ((server.isSinglePlayer()) && server.getServerOwner().equals(sender.getName()) || sender.canCommandSenderUseCommand(2, this.getCommandName())) {
             if (args.length < 1)
                 throw new WrongUsageException("Type \"/treechop help\" for help");
 
