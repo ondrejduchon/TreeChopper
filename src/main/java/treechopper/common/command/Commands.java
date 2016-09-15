@@ -29,7 +29,7 @@ public class Commands extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]";
+        return "Type \"/treechop help\" for help";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Commands extends CommandBase {
 
         if (sender.canCommandSenderUseCommand(2, this.getCommandName())) {
             if (args.length < 1)
-                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]");
+                throw new WrongUsageException("Type \"/treechop help\" for help");
 
             else if (args[0].equals("ignoredur")) {
                 if (args.length != 2)
@@ -55,9 +55,9 @@ public class Commands extends CommandBase {
 
                 ConfigHandler.setIgnoreDurability(parseBoolean(args[1]));
                 if (ConfigHandler.ignoreDurability)
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Ignore axe durability has been switched " + TextFormatting.GREEN + "ON"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Ignore axe durability has been switched " + TextFormatting.GREEN + "ON"));
                 else
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Ignore axe durability has been switched " + TextFormatting.RED + "OFF"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Ignore axe durability has been switched " + TextFormatting.RED + "OFF"));
 
             } else if (args[0].equals("plantsap")) {
                 if (args.length != 2)
@@ -65,9 +65,9 @@ public class Commands extends CommandBase {
 
                 ConfigHandler.setPlantSapling(parseBoolean(args[1]));
                 if (ConfigHandler.plantSapling)
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Auto sapling has been switched " + TextFormatting.GREEN + "ON"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Auto sapling has been switched " + TextFormatting.GREEN + "ON"));
                 else
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Auto sapling has been switched " + TextFormatting.RED + "OFF"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Auto sapling has been switched " + TextFormatting.RED + "OFF"));
 
             } else if (args[0].equals("decayleaves")) {
                 if (args.length != 2)
@@ -75,16 +75,16 @@ public class Commands extends CommandBase {
 
                 ConfigHandler.setDecayLeaves(parseBoolean(args[1]));
                 if (ConfigHandler.decayLeaves)
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Decay leaves has been switched " + TextFormatting.GREEN + "ON"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Decay leaves has been switched " + TextFormatting.GREEN + "ON"));
                 else
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Decay leaves has been switched " + TextFormatting.RED + "OFF"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Decay leaves has been switched " + TextFormatting.RED + "OFF"));
 
             } else if (args[0].equals("breakspeed")) {
                 if (args.length != 2)
                     throw new WrongUsageException("/treechop breakspeed [value]");
 
                 ConfigHandler.setBreakSpeed(parseInt(args[1], 1, 1000));
-                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Break speed has been set to " + ConfigHandler.breakSpeed + ", [DEFAULT: 10]"));
+                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Break speed has been set to " + ConfigHandler.breakSpeed + ", [DEFAULT: 10]"));
 
                 TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed));
 
@@ -93,29 +93,35 @@ public class Commands extends CommandBase {
 
             } else if (args[0].equals("printname")) {
 
+            } else if (args[0].equals("help")) {
+                usage(sender, 2);
+
             } else if (args[0].equals("plantsaptree")) {
                 if (args.length != 2)
                     throw new WrongUsageException("/treechop plantsaptree [value]");
 
                 ConfigHandler.setPlantSaplingTree(parseBoolean(args[1]));
                 if (ConfigHandler.plantSaplingTree)
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.GREEN + "ON"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Planting on tree position has been switched " + TextFormatting.GREEN + "ON"));
                 else
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.RED + "OFF"));
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Planting on tree position has been switched " + TextFormatting.RED + "OFF"));
 
             } else
-                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]");
+                throw new WrongUsageException("Type \"/treechop help\" for help");
         } else {
             if (args.length < 1)
-                throw new WrongUsageException("/treechop <info, printname> [value]");
+                throw new WrongUsageException("Type \"/treechop help\" for help");
 
             else if (args[0].equals("info") || args[0].equals("?")) {
                 printSettings(sender);
 
             } else if (args[0].equals("printname")) {
 
+            } else if (args[0].equals("help")) {
+                usage(sender, 0);
+
             } else
-                throw new WrongUsageException("/treechop <info, printname> [value]");
+                throw new WrongUsageException("Type \"/treechop help\" for help");
         }
 
         if (args[0].equals("printname")) {
@@ -155,11 +161,45 @@ public class Commands extends CommandBase {
 
     private void printName(boolean print, ICommandSender sender) {
         if (print)
-            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Printing UnlocalizedNames has been switched " + TextFormatting.GREEN + "ON"));
+            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Printing UnlocalizedNames has been switched " + TextFormatting.GREEN + "ON"));
         else
-            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
+            sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
 
-        StaticHandler.printName = print;
+        if (print)
+            try {
+                StaticHandler.playerPrintUnName.add(sender.getCommandSenderEntity().getEntityId());
+            } catch (Exception e) {
+                sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
+            }
+        else
+            try {
+                StaticHandler.playerPrintUnName.remove(sender.getCommandSenderEntity().getEntityId());
+            } catch (Exception e) {
+                sender.addChatMessage(new TextComponentTranslation("Not in there"));
+            }
+
+        //StaticHandler.printName = print;
+    }
+
+    private void usage(ICommandSender sender, int permissins) {
+        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GOLD + "Format: /treechop <argument> [value]"));
+        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GRAY + "Arguments:"));
+
+        switch (permissins) {
+            case 0:
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "?" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Print info about server settings"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
+                break;
+            case 2:
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "?" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Print info about server settings"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "ignoredur" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Ignoring duration of axe."));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "plantsap" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Auto plant sapling, around his trunk."));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "plantsaptree" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Set plant position on tree position."));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "decayleaves" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Decay leaves with tree fall."));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "breakspeed" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Set speed of breaking tree. Default: 10"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
+                break;
+        }
     }
 
     @Override

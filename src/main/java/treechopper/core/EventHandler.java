@@ -2,6 +2,7 @@ package treechopper.core;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -86,11 +87,14 @@ public class EventHandler {
     @SubscribeEvent
     public void interactWithTree(PlayerInteractEvent event) {
 
-        if (StaticHandler.printName && event.getSide().isClient()) {
+        if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId())) {
             event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + ChatFormatting.GOLD + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
             if (event.getEntityPlayer().getHeldItemMainhand() != null)
                 event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + ChatFormatting.GOLD + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+            else
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + ChatFormatting.GOLD + "NONE"));
         }
+
 
         float logCount = 0f;
         int axeDurability = 0;
@@ -149,6 +153,11 @@ public class EventHandler {
     @SubscribeEvent
     public void onServerConnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent event) {
         TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed));
+    }
+
+    @SubscribeEvent
+    public void onServerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {
+        StaticHandler.playerPrintUnName.remove(event.player.getEntityId());
     }
 
     @SubscribeEvent
