@@ -137,7 +137,7 @@ public class Commands extends CommandBase {
     }
 
     private void printSettings(ICommandSender sender) {
-        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper" + TextFormatting.RESET + " settings: \n--------------------"));
+        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper\n" + TextFormatting.GRAY + "Settings:"));
         sender.addChatMessage(new TextComponentTranslation("Break speed: " + TextFormatting.GOLD + ConfigHandler.breakSpeed));
 
         if (ConfigHandler.decayLeaves)
@@ -180,7 +180,6 @@ public class Commands extends CommandBase {
                 sender.addChatMessage(new TextComponentTranslation("Not in there"));
             }
 
-        //StaticHandler.printName = print;
     }
 
     private void usage(ICommandSender sender, int permissins) {

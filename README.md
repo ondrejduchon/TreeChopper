@@ -4,6 +4,8 @@
 
 [Minecraft forum](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2731148-tree-chopper)
 
-[Curse.com](https://minecraft.curseforge.com/projects/tree-chopper)
+[Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
+
+[Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
 
 For Minecraft **1.10.2** version.
