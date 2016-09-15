@@ -29,7 +29,7 @@ public class Commands extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]";
+        return "/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Commands extends CommandBase {
 
         if (sender.canCommandSenderUseCommand(2, this.getCommandName())) {
             if (args.length < 1)
-                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]");
+                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]");
 
             else if (args[0].equals("ignoredur")) {
                 if (args.length != 2)
@@ -93,7 +93,7 @@ public class Commands extends CommandBase {
 
             } else if (args[0].equals("printname")) {
 
-            /*} else if (args[0].equals("plantsaptree")) {
+            } else if (args[0].equals("plantsaptree")) {
                 if (args.length != 2)
                     throw new WrongUsageException("/treechop plantsaptree [value]");
 
@@ -101,10 +101,10 @@ public class Commands extends CommandBase {
                 if (ConfigHandler.plantSaplingTree)
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.GREEN + "ON"));
                 else
-                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.RED + "OFF"));*/
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "]Planting on tree position has been switched " + TextFormatting.RED + "OFF"));
 
             } else
-                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, decayleaves, breakspeed> [value]");
+                throw new WrongUsageException("/treechop <info, printname, ignoredur, plantsap, plantsaptree, decayleaves, breakspeed> [value]");
         } else {
             if (args.length < 1)
                 throw new WrongUsageException("/treechop <info, printname> [value]");
@@ -125,7 +125,7 @@ public class Commands extends CommandBase {
             printName(parseBoolean(args[1]), sender);
         }
 
-        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed);
+        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree);
     }
 
     private void printSettings(ICommandSender sender) {
@@ -142,10 +142,10 @@ public class Commands extends CommandBase {
         else
             sender.addChatMessage(new TextComponentTranslation("Automatic sapling plant: " + TextFormatting.RED + "OFF"));
 
-        /*if (ConfigHandler.plantSaplingTree)
+        if (ConfigHandler.plantSaplingTree)
             sender.addChatMessage(new TextComponentTranslation("Planting on tree position: " + TextFormatting.GREEN + "ON"));
         else
-            sender.addChatMessage(new TextComponentTranslation("Planting on tree position: " + TextFormatting.RED + "OFF"));*/
+            sender.addChatMessage(new TextComponentTranslation("Planting on tree position: " + TextFormatting.RED + "OFF"));
 
         if (ConfigHandler.ignoreDurability)
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.GREEN + "ON"));
@@ -165,7 +165,7 @@ public class Commands extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "decayleaves", "breakspeed", "info", "printname");
+            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname");
 
         return null;
     }

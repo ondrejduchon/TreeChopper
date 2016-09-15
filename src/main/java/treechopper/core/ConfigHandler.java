@@ -17,7 +17,7 @@ public class ConfigHandler {
 
     public static boolean ignoreDurability = false;
     public static boolean plantSapling = false;
-    //public static boolean plantSaplingTree = false;
+    public static boolean plantSaplingTree = false;
     public static boolean decayLeaves = false;
     public static int breakSpeed = 1;
     public static int breakSpeedVar;
@@ -44,9 +44,9 @@ public class ConfigHandler {
         ConfigHandler.plantSapling = plantSapling;
     }
 
-    /*public static void setPlantSaplingTree(boolean plantSaplingTree) {
+    public static void setPlantSaplingTree(boolean plantSaplingTree) {
         ConfigHandler.plantSaplingTree = plantSaplingTree;
-    }*/
+    }
 
     public static void setDecayLeaves(boolean decayLeaves) {
         ConfigHandler.decayLeaves = decayLeaves;
@@ -65,7 +65,7 @@ public class ConfigHandler {
 
             plantSapling = config.get("Settings", "Plant sapling automatically", false).getBoolean();
 
-            //plantSaplingTree = config.get("Settings", "Plant sapling on tree position", false).getBoolean();
+            plantSaplingTree = config.get("Settings", "Plant sapling on tree position", false).getBoolean();
 
             decayLeaves = config.get("Settings", "Decay leaves", true).getBoolean();
 
@@ -86,11 +86,11 @@ public class ConfigHandler {
         }
     }
 
-    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed) {
+    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed, boolean plantSaplingTree) {
         config.get("Settings", "Decay leaves", true).set(decayLeaves);
         config.get("Settings", "Ignore axe durability", false).set(ignoreDurability);
         config.get("Settings", "Plant sapling automatically", false).set(plantSapling);
-        //config.get("Settings", "Plant sapling on tree position", false).set(plantSaplingTree);
+        config.get("Settings", "Plant sapling on tree position", false).set(plantSaplingTree);
         config.get("Settings", "Break speed [DEFAULT: 10]", 10).set(breakSpeed);
 
         config.save();

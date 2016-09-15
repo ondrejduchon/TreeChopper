@@ -52,8 +52,14 @@ public class EventHandler {
                     if (!event.getPlayer().isCreative())
                         event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
-                    if (ConfigHandler.plantSapling)
+                    if (ConfigHandler.plantSapling) {
+                        if (ConfigHandler.plantSaplingTree) {
+                            event.getWorld().setBlockToAir(event.getPos());
+                            event.setCanceled(true);
+                        }
                         treeHandler.plantSapling(event.getWorld(), event.getPos());
+                    }
+
                 }
             }
         } else {
@@ -67,7 +73,11 @@ public class EventHandler {
                         event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
                     if (ConfigHandler.plantSapling)
-                        treeHandler.plantSapling(event.getWorld(), event.getPos());
+                        if (ConfigHandler.plantSaplingTree) {
+                            event.getWorld().setBlockToAir(event.getPos());
+                            event.setCanceled(true);
+                        }
+                    treeHandler.plantSapling(event.getWorld(), event.getPos());
                 }
             }
         }
