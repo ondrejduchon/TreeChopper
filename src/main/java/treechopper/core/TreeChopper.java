@@ -18,7 +18,7 @@ import treechopper.proxy.CommonProxy;
  * Created by Duchy on 8/11/2016.
  */
 
-@Mod(modid = TreeChopper.MODID, version = "1.0.4", guiFactory = "treechopper.client.gui.GuiFactory")
+@Mod(modid = TreeChopper.MODID, version = "1.0.4a", guiFactory = "treechopper.client.gui.GuiFactory")
 
 public class TreeChopper {
     public static SimpleNetworkWrapper network;
