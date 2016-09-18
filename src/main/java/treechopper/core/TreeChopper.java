@@ -18,7 +18,7 @@ import treechopper.proxy.CommonProxy;
  * Created by Duchy on 8/11/2016.
  */
 
-@Mod(modid = TreeChopper.MODID, version = "1.0.4a", guiFactory = "treechopper.client.gui.GuiFactory")
+@Mod(modid = TreeChopper.MODID, version = "1.1.0", guiFactory = "treechopper.client.gui.GuiFactory")
 
 public class TreeChopper {
     public static SimpleNetworkWrapper network;
@@ -40,7 +40,6 @@ public class TreeChopper {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
-        network.registerMessage(ClientMessage.Handler.class, ClientMessage.class, 0, Side.SERVER);
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());

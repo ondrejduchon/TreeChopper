@@ -167,19 +167,7 @@ public class Commands extends CommandBase {
         else
             sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
 
-        if (print)
-            try {
-                StaticHandler.playerPrintUnName.add(sender.getCommandSenderEntity().getEntityId());
-            } catch (Exception e) {
-                sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
-            }
-        else
-            try {
-                StaticHandler.playerPrintUnName.remove(sender.getCommandSenderEntity().getEntityId());
-            } catch (Exception e) {
-                sender.addChatMessage(new TextComponentTranslation("Not in there"));
-            }
-
+        StaticHandler.printNames = print;
     }
 
     private void usage(ICommandSender sender, int permissins) {

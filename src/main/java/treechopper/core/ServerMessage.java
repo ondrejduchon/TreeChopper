@@ -42,6 +42,7 @@ public class ServerMessage implements IMessage {
     public static class Handler implements IMessageHandler<ServerMessage, IMessage> {
         @Override
         public IMessage onMessage(ServerMessage message, MessageContext ctx) {
+
             ConfigHandler.breakSpeed = message.breakSpeed;
             ConfigHandler.ignoreDurability = message.ignoreDur;
 
