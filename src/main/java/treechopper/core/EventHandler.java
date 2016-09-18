@@ -1,16 +1,9 @@
 package treechopper.core;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import treechopper.proxy.ClientProxy;
 
 import static treechopper.core.ConfigHandler.loadConfig;
 
@@ -27,7 +20,6 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onServerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {
-        StaticHandler.playerPrintUnName.remove(event.player.getEntityId());
         StaticHandler.playerHoldShift.remove(event.player.getEntityId());
     }
 

@@ -1,12 +1,13 @@
 package treechopper.proxy;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import treechopper.core.*;
+import treechopper.core.ConfigHandler;
+import treechopper.core.StaticHandler;
+import treechopper.core.TreeHandler;
 
 /**
  * Created by Duchy on 9/1/2016.
@@ -41,6 +42,7 @@ public class ClientProxy extends CommonProxy {
     public void interactTree(PlayerInteractEvent event) {
         float logCount;
         int axeDurability;
+        StaticHandler.choppable = false;
 
         if (StaticHandler.printNames) { // No text formation because of forge diferences may cause error
             event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
@@ -58,14 +60,18 @@ public class ClientProxy extends CommonProxy {
                     axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
                     if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
-                        String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
-                        event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
+                        if (event.getSide().isClient()) {
+                            String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
+                            event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
+                        }
+                        ClientProxy.logCount = 0;
                         return;
                     }
 
-                    if (!event.getEntityPlayer().isSneaking())
+                    if (!event.getEntityPlayer().isSneaking()) {
                         ClientProxy.logCount = (int) logCount;
-                    else
+                        StaticHandler.choppable = true;
+                    } else
                         ClientProxy.logCount = 0;
                 } else
                     ClientProxy.logCount = 0;
@@ -79,7 +85,7 @@ public class ClientProxy extends CommonProxy {
     public void destroyTree(BlockEvent.BreakEvent event) {
         int logDestroyCount;
 
-        if (!event.getPlayer().isSneaking()) {
+        if (!event.getPlayer().isSneaking() && StaticHandler.choppable) {
 
             logDestroyCount = treeHandler.treeDestroy(event);
 
