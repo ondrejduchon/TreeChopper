@@ -1,7 +1,9 @@
 package treechopper.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Duchy on 8/23/2016.
@@ -9,6 +11,6 @@ import java.util.Map;
 
 public class StaticHandler {
     public static Map<Integer, Boolean> playerHoldShift = new HashMap<Integer, Boolean>();
-    public static boolean printNames = false;
+    public static Set<Integer> playerPrintUnName = new HashSet<Integer>();
     public static boolean choppable = false;
 }

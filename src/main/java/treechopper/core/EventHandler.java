@@ -21,6 +21,7 @@ public class EventHandler {
     @SubscribeEvent
     public void onServerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) {
         StaticHandler.playerHoldShift.remove(event.player.getEntityId());
+        StaticHandler.playerPrintUnName.remove(event.player.getEntityId());
     }
 
     @SubscribeEvent

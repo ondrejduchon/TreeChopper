@@ -1,5 +1,6 @@
 package treechopper.proxy;
 
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import treechopper.core.ConfigHandler;
@@ -16,6 +17,13 @@ public class ServerProxy extends CommonProxy {
     @Override
     public void interactTree(PlayerInteractEvent event) {
         StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
+
+        if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId()) && event.getSide().isServer()) { // No text formation because of forge diferences may cause error
+            event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
+            if (event.getEntityPlayer().getHeldItemMainhand() != null)
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+            event.getEntityPlayer().addChatMessage(new TextComponentTranslation("-"));
+        }
     }
 
     @Override

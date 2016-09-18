@@ -137,7 +137,9 @@ public class Commands extends CommandBase {
     }
 
     private void printSettings(ICommandSender sender) {
-        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper\n" + TextFormatting.GRAY + "Settings:"));
+        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper"));
+        sender.addChatMessage(new TextComponentTranslation(TextFormatting.GRAY + "Settings:"));
+
         sender.addChatMessage(new TextComponentTranslation("Break speed: " + TextFormatting.GOLD + ConfigHandler.breakSpeed));
 
         if (ConfigHandler.decayLeaves)
@@ -167,7 +169,19 @@ public class Commands extends CommandBase {
         else
             sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
 
-        StaticHandler.printNames = print;
+        if (print)
+            try {
+                StaticHandler.playerPrintUnName.add(sender.getCommandSenderEntity().getEntityId());
+            } catch (Exception e) {
+                sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
+                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Printing UnlocalizedNames has been switched " + TextFormatting.RED + "OFF"));
+            }
+        else
+            try {
+                StaticHandler.playerPrintUnName.remove(sender.getCommandSenderEntity().getEntityId());
+            } catch (Exception e) {
+                sender.addChatMessage(new TextComponentTranslation("No effect.."));
+            }
     }
 
     private void usage(ICommandSender sender, int permissins) {
@@ -194,7 +208,7 @@ public class Commands extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname");
+            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help");
 
         return null;
     }
