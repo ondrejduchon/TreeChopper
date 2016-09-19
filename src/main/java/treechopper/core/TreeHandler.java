@@ -280,6 +280,26 @@ public class TreeHandler {
                 planted = false;
             }
 
+        if (!planted && TreeChopper.ForestryPresent) {
+            try {
+                switch (positionsClear) {
+                    case 1:
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant);
+                        break;
+                    case 2:
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant);
+                        break;
+                    case 3:
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant);
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant);
+                        break;
+                }
+                planted = true;
+            } catch (Exception e) {
+                planted = false;
+            }
+        }
+
         if (!planted)
             System.out.println("Leaf variant not recognized..");
 
