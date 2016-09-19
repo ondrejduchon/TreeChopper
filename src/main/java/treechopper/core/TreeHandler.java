@@ -8,10 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Duchy on 8/22/2016.
@@ -160,6 +157,7 @@ public class TreeHandler {
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
         boolean destruction;
+        Map<String, Integer> leafVariantCount = new HashMap<String, Integer>();
 
         for (BlockPos blockPos : tree) {
 
@@ -171,29 +169,45 @@ public class TreeHandler {
             }
         }
 
-        if (ConfigHandler.decayLeaves) {
-            for (BlockPos blockPos : leaves) {
-                lookAround(blockPos, event.getWorld(), leavesTmp);
-            }
-
-            for (BlockPos blockPos : leavesTmp) {
-                lookAround(blockPos, event.getWorld(), leaves);
-                leaves.add(blockPos);
-            }
+        if (!ConfigHandler.decayLeaves) {
+            leafCount = leaves.size();
+            leavesTmp.clear();
+            leaves.clear();
+            return logCount;
         }
 
         for (BlockPos blockPos : leaves) {
-            if (leafVariant == null)
-                if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
-                    leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
-                else
-                    leafVariant = null;
+            lookAround(blockPos, event.getWorld(), leavesTmp);
+        }
 
-            if (ConfigHandler.decayLeaves) {
-                destruction = event.getWorld().destroyBlock(blockPos, true);
-                if (!destruction)
-                    System.out.println("Problem with block.. " + blockPos);
-                event.getWorld().setBlockToAir(blockPos);
+        for (BlockPos blockPos : leavesTmp) {
+            lookAround(blockPos, event.getWorld(), leaves);
+            leaves.add(blockPos);
+        }
+
+        for (BlockPos blockPos : leaves) {
+            if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
+                leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
+            else
+                leafVariant = "notKnown";
+
+            destruction = event.getWorld().destroyBlock(blockPos, true);
+            if (!destruction)
+                System.out.println("Problem with block.. " + blockPos);
+            event.getWorld().setBlockToAir(blockPos);
+
+            if (leafVariantCount.containsKey(leafVariant)) {
+                int tmpCount = leafVariantCount.get(leafVariant);
+                leafVariantCount.put(leafVariant, ++tmpCount);
+            } else
+                leafVariantCount.put(leafVariant, 1);
+        }
+
+        int maxValue = 0;
+        for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
+            if (entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+                leafVariant = entry.getKey();
             }
         }
 
@@ -203,6 +217,7 @@ public class TreeHandler {
         leafCount = leaves.size();
         leavesTmp.clear();
         leaves.clear();
+        leafVariantCount.clear();
         return logCount;
     }
 

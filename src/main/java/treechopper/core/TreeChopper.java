@@ -24,6 +24,7 @@ public class TreeChopper {
     public static SimpleNetworkWrapper network;
     public static final String MODID = "treechopper";
     public static boolean BoPPresent = false;
+    public static boolean ForestryPresent = false;
 
     @Mod.Instance(MODID)
     public static TreeChopper instance;
@@ -35,6 +36,7 @@ public class TreeChopper {
     public void preInit(FMLPreInitializationEvent event) {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         BoPPresent = Loader.isModLoaded("BiomesOPlenty");
+        ForestryPresent = Loader.isModLoaded("forestry");
     }
 
     @Mod.EventHandler
