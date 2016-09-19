@@ -220,7 +220,7 @@ public class TreeHandler {
         if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock() && leafCount > 3)
             positionsClear += 2;
 
-        if (ConfigHandler.plantSaplingTree && world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position).getBlock().isWood(world, position)) { // Plant sapling on tree position
+        if (ConfigHandler.plantSaplingTree && world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).getBlock().isWood(world, new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ()))) { // Plant sapling on tree position
             positionsClear = 1;
             position1 = new BlockPos(position.getX(), position.getY(), position.getZ());
         }

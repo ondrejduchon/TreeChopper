@@ -40,6 +40,20 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void interactTree(PlayerInteractEvent event) {
+
+        if (event.getSide().isServer()) {
+            StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
+
+            if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId()) && event.getSide().isServer()) { // No text formation because of forge diferences may cause error
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
+                if (event.getEntityPlayer().getHeldItemMainhand() != null)
+                    event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("-"));
+            }
+
+            return;
+        }
+
         float logCount;
         int axeDurability;
         StaticHandler.choppable = false;
@@ -76,27 +90,45 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void destroyTree(BlockEvent.BreakEvent event) {
+    public void destroyTree(BlockEvent.BreakEvent event) { // Open to LAN
         int logDestroyCount;
+        float logCount = 0f;
+        int axeDurability = 0;
 
-        if (!event.getPlayer().isSneaking() && StaticHandler.choppable) {
+        if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
+
+            if (event.getPlayer().getHeldItemMainhand() != null) { // Player holds something in his main hand
+
+                if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
+
+                    logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+
+                } else
+                    return;
+            } else
+                return;
+        } else
+            return;
+
+        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
+
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
+                return;
 
             logDestroyCount = treeHandler.treeDestroy(event);
 
-            if (!event.getPlayer().isCreative()) {
-                if (event.getPlayer().getHeldItemMainhand() != null)
-                    event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
-            }
+            if (!event.getPlayer().isCreative())
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
                 if (ConfigHandler.plantSaplingTree) {
+                    event.getWorld().destroyBlock(event.getPos(), true);
                     event.getWorld().setBlockToAir(event.getPos());
                     event.setCanceled(true);
                 }
                 treeHandler.plantSapling(event.getWorld(), event.getPos());
             }
         }
-
-        // TODO Open to LAN
     }
 }

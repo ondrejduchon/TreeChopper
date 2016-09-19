@@ -60,6 +60,7 @@ public class ServerProxy extends CommonProxy {
 
             if (ConfigHandler.plantSapling) {
                 if (ConfigHandler.plantSaplingTree) {
+                    event.getWorld().destroyBlock(event.getPos(), true);
                     event.getWorld().setBlockToAir(event.getPos());
                     event.setCanceled(true);
                 }
