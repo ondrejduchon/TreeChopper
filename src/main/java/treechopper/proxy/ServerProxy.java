@@ -64,7 +64,7 @@ public class ServerProxy extends CommonProxy {
                     event.getWorld().setBlockToAir(event.getPos());
                     event.setCanceled(true);
                 }
-                treeHandler.plantSapling(event.getWorld(), event.getPos());
+                treeHandler.plantSapling(event.getWorld(), event.getPos(), event);
             }
         }
     }

@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Optional;
  */
 
 @Optional.Interface(iface = "biomesoplenty.common.block", modid = "BiomesOPlenty")
-public class BOPAPIHandler {
+public class BOPHandler {
 
     public static void plantBOPSapling(World world, BlockPos position, String leafVariant) {
         BOPTrees type = BOPTrees.valueOf(leafVariant);

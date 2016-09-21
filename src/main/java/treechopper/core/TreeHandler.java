@@ -221,7 +221,7 @@ public class TreeHandler {
         return logCount;
     }
 
-    public boolean plantSapling(World world, BlockPos position) {
+    public boolean plantSapling(World world, BlockPos position, BlockEvent.BreakEvent event) {
         BlockPos position1 = new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1), position2 = new BlockPos(position.getX(), position.getY(), position.getZ() + 1);
         int positionsClear = 0;
         boolean planted;
@@ -265,14 +265,14 @@ public class TreeHandler {
             try {
                 switch (positionsClear) {
                     case 1:
-                        BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
                         break;
                     case 2:
-                        BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
                         break;
                     case 3:
-                        BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
-                        BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
                         break;
                 }
                 planted = true;
@@ -284,18 +284,19 @@ public class TreeHandler {
             try {
                 switch (positionsClear) {
                     case 1:
-                        ForestryHandler.plantForestrySapling(world, position1, leafVariant);
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
                         break;
                     case 2:
-                        ForestryHandler.plantForestrySapling(world, position2, leafVariant);
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
                         break;
                     case 3:
-                        ForestryHandler.plantForestrySapling(world, position1, leafVariant);
-                        ForestryHandler.plantForestrySapling(world, position2, leafVariant);
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
                         break;
                 }
                 planted = true;
             } catch (Exception e) {
+                System.out.println(e);
                 planted = false;
             }
         }
