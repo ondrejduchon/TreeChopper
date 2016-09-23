@@ -21,11 +21,13 @@ import treechopper.proxy.CommonProxy;
  * Created by Duchy on 8/11/2016.
  */
 
-@Mod(modid = TreeChopper.MODID, version = "1.1.0", guiFactory = "treechopper.client.gui.GuiFactory")
+@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, guiFactory = "treechopper.client.gui.GuiFactory")
 
 public class TreeChopper {
     public static SimpleNetworkWrapper network;
     public static final String MODID = "treechopper";
+    public static final String VERSION = "1.1.0";
+
     public static boolean BoPPresent = false;
     public static boolean ForestryPresent = false;
 

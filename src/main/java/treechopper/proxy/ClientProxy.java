@@ -48,7 +48,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void interactTree(PlayerInteractEvent event) {
-
         if (event.getSide().isServer()) {
             StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
 
