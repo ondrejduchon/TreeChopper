@@ -1,11 +1,15 @@
-package treechopper.core;
+package treechopper.common.handler;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import treechopper.common.config.ConfigHandler;
+import treechopper.common.network.ServerMessage;
+import treechopper.core.StaticHandler;
+import treechopper.core.TreeChopper;
 
-import static treechopper.core.ConfigHandler.loadConfig;
+import static treechopper.common.config.ConfigHandler.loadConfig;
 
 /**
  * Created by Duchy on 8/11/2016.

@@ -1,4 +1,4 @@
-package treechopper.core;
+package treechopper.common.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
@@ -7,6 +7,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
+import treechopper.common.config.ConfigHandler;
+import treechopper.core.BOPHandler;
+import treechopper.core.ForestryHandler;
+import treechopper.core.TreeChopper;
 
 import java.util.*;
 
@@ -296,7 +300,7 @@ public class TreeHandler {
                 }
                 planted = true;
             } catch (Exception e) {
-                System.out.println(e);
+                //System.out.println(e);
                 planted = false;
             }
         }

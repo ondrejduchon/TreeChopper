@@ -9,8 +9,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import treechopper.core.ConfigHandler;
-import treechopper.core.ServerMessage;
+import treechopper.common.config.ConfigHandler;
+import treechopper.common.network.ServerMessage;
 import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
 

@@ -3,9 +3,9 @@ package treechopper.proxy;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import treechopper.core.ConfigHandler;
+import treechopper.common.config.ConfigHandler;
+import treechopper.common.handler.TreeHandler;
 import treechopper.core.StaticHandler;
-import treechopper.core.TreeHandler;
 
 /**
  * Created by Duchy on 9/1/2016.

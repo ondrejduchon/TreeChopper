@@ -3,7 +3,7 @@ package treechopper.client.gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
-import treechopper.core.ConfigHandler;
+import treechopper.common.config.ConfigHandler;
 import treechopper.core.TreeChopper;
 
 /**
