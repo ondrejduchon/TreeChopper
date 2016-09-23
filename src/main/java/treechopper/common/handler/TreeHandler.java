@@ -8,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import treechopper.common.config.ConfigHandler;
-import treechopper.core.BOPHandler;
-import treechopper.core.ForestryHandler;
+import treechopper.common.handler.mods.BOPHandler;
+import treechopper.common.handler.mods.ForestryHandler;
 import treechopper.core.TreeChopper;
 
 import java.util.*;

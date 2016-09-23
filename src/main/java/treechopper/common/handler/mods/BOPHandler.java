@@ -1,4 +1,4 @@
-package treechopper.core;
+package treechopper.common.handler.mods;
 
 import biomesoplenty.api.enums.BOPTrees;
 import net.minecraft.util.math.BlockPos;

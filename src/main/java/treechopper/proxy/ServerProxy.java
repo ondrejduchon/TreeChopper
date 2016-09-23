@@ -5,6 +5,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.TreeHandler;
+import treechopper.common.handler.mods.TConstructHandler;
 import treechopper.core.StaticHandler;
 
 /**
@@ -50,7 +51,7 @@ public class ServerProxy extends CommonProxy {
 
         if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
-            if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
                 return;
 
             logDestroyCount = treeHandler.treeDestroy(event);

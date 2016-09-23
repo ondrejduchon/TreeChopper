@@ -1,4 +1,4 @@
-package treechopper.core;
+package treechopper.common.handler.mods;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,6 +13,6 @@ import net.minecraftforge.fml.common.Optional;
 public class ForestryHandler {
 
     public static void plantForestrySapling(World world, BlockPos position, String leafVariant, BlockEvent.BreakEvent event) {
-        // TODO
+        // TODO But who knows how :(
     }
 }

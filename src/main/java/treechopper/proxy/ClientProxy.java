@@ -7,6 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.TreeHandler;
+import treechopper.common.handler.mods.TConstructHandler;
 import treechopper.common.network.ClientMessage;
 import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
@@ -30,7 +31,7 @@ public class ClientProxy extends CommonProxy {
                 logCount = logCountTMP;
         }
 
-        System.out.println(logCount);
+        //System.out.println(logCount);
 
         if (logCount > 1) {
 
@@ -80,16 +81,19 @@ public class ClientProxy extends CommonProxy {
                 if (ConfigHandler.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+                    if (!TConstructHandler.tcAxes.contains(event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName())) { // For TConstruct axes..
 
-                    if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
-                        if (event.getSide().isClient()) {
-                            String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
-                            event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
+                        axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+
+                        if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
+                            if (event.getSide().isClient()) {
+                                String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
+                                event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
+                            }
+                            ClientProxy.logCount = 0;
+                            TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
+                            return;
                         }
-                        ClientProxy.logCount = 0;
-                        TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
-                        return;
                     }
 
                     if (!event.getEntityPlayer().isSneaking()) {
@@ -130,7 +134,7 @@ public class ClientProxy extends CommonProxy {
 
         if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
-            if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
                 return;
 
             logDestroyCount = treeHandler.treeDestroy(event);
