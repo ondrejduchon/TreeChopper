@@ -1,4 +1,4 @@
-package treechopper.core;
+package treechopper.common.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
@@ -7,11 +7,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
+import treechopper.common.config.ConfigHandler;
+import treechopper.common.handler.mods.BOPHandler;
+import treechopper.common.handler.mods.ForestryHandler;
+import treechopper.core.TreeChopper;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Duchy on 8/22/2016.
@@ -160,6 +161,7 @@ public class TreeHandler {
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
         boolean destruction;
+        Map<String, Integer> leafVariantCount = new HashMap<String, Integer>();
 
         for (BlockPos blockPos : tree) {
 
@@ -171,29 +173,67 @@ public class TreeHandler {
             }
         }
 
-        if (ConfigHandler.decayLeaves) {
+        if (!ConfigHandler.decayLeaves) {
+
             for (BlockPos blockPos : leaves) {
-                lookAround(blockPos, event.getWorld(), leavesTmp);
-            }
-
-            for (BlockPos blockPos : leavesTmp) {
-                lookAround(blockPos, event.getWorld(), leaves);
-                leaves.add(blockPos);
-            }
-        }
-
-        for (BlockPos blockPos : leaves) {
-            if (leafVariant == null)
                 if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
                     leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
                 else
-                    leafVariant = null;
+                    leafVariant = "notKnown";
 
-            if (ConfigHandler.decayLeaves) {
-                destruction = event.getWorld().destroyBlock(blockPos, true);
-                if (!destruction)
-                    System.out.println("Problem with block.. " + blockPos);
-                event.getWorld().setBlockToAir(blockPos);
+                if (leafVariantCount.containsKey(leafVariant)) {
+                    int tmpCount = leafVariantCount.get(leafVariant);
+                    leafVariantCount.put(leafVariant, ++tmpCount);
+                } else
+                    leafVariantCount.put(leafVariant, 1);
+            }
+
+            int maxValue = 0;
+            for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
+                if (entry.getValue() > maxValue) {
+                    maxValue = entry.getValue();
+                    leafVariant = entry.getKey();
+                }
+            }
+
+            leafCount = leaves.size();
+            leavesTmp.clear();
+            leaves.clear();
+            return logCount;
+        }
+
+        for (BlockPos blockPos : leaves) {
+            lookAround(blockPos, event.getWorld(), leavesTmp);
+        }
+
+        for (BlockPos blockPos : leavesTmp) {
+            lookAround(blockPos, event.getWorld(), leaves);
+            leaves.add(blockPos);
+        }
+
+        for (BlockPos blockPos : leaves) {
+            if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
+                leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
+            else
+                leafVariant = "notKnown";
+
+            destruction = event.getWorld().destroyBlock(blockPos, true);
+            if (!destruction)
+                System.out.println("Problem with block.. " + blockPos);
+            event.getWorld().setBlockToAir(blockPos);
+
+            if (leafVariantCount.containsKey(leafVariant)) {
+                int tmpCount = leafVariantCount.get(leafVariant);
+                leafVariantCount.put(leafVariant, ++tmpCount);
+            } else
+                leafVariantCount.put(leafVariant, 1);
+        }
+
+        int maxValue = 0;
+        for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
+            if (entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+                leafVariant = entry.getKey();
             }
         }
 
@@ -203,13 +243,14 @@ public class TreeHandler {
         leafCount = leaves.size();
         leavesTmp.clear();
         leaves.clear();
+        leafVariantCount.clear();
         return logCount;
     }
 
-    public boolean plantSapling(World world, BlockPos position) {
+    public boolean plantSapling(World world, BlockPos position, BlockEvent.BreakEvent event) {
         BlockPos position1 = new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1), position2 = new BlockPos(position.getX(), position.getY(), position.getZ() + 1);
         int positionsClear = 0;
-        boolean planted = false;
+        boolean planted;
 
         if (leafVariant == null)
             return false;
@@ -220,8 +261,7 @@ public class TreeHandler {
         if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock() && leafCount > 3)
             positionsClear += 2;
 
-        //System.out.println(ConfigHandler.plantSaplingTree);
-        if (ConfigHandler.plantSaplingTree && world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock()) { // Plant sapling on tree position
+        if (ConfigHandler.plantSaplingTree && world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).getBlock().isWood(world, new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ()))) { // Plant sapling on tree position
             positionsClear = 1;
             position1 = new BlockPos(position.getX(), position.getY(), position.getZ());
         }
@@ -251,20 +291,41 @@ public class TreeHandler {
             try {
                 switch (positionsClear) {
                     case 1:
-                        BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
                         break;
                     case 2:
-                        BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
                         break;
                     case 3:
-                        BOPAPIHandler.plantBOPSapling(world, position1, leafVariant);
-                        BOPAPIHandler.plantBOPSapling(world, position2, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
+                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
                         break;
                 }
                 planted = true;
             } catch (Exception e) {
                 planted = false;
             }
+
+        if (!planted && TreeChopper.ForestryPresent) {
+            try {
+                switch (positionsClear) {
+                    case 1:
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
+                        break;
+                    case 2:
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
+                        break;
+                    case 3:
+                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
+                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
+                        break;
+                }
+                planted = true;
+            } catch (Exception e) {
+                //System.out.println(e);
+                planted = false;
+            }
+        }
 
         if (!planted)
             System.out.println("Leaf variant not recognized..");

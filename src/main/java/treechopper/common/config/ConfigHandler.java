@@ -1,4 +1,4 @@
-package treechopper.core;
+package treechopper.common.config;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.config.Configuration;
@@ -72,10 +72,52 @@ public class ConfigHandler {
             breakSpeed = config.get("Settings", "Break speed [DEFAULT: 10]", 10).getInt();
             breakSpeedVar = breakSpeed;
 
-            property = config.get("Data", "Log Types", new String[]{"tile.log", "tile.log_0", "tile.log_1", "tile.log_2", "tile.log_3", "tile.log_4", "tile.pamCinnamon", "tile.pamPaperbark", "tile.pamMaple"}, "Put new log between < and >");
+            property = config.get("Data", "Log Types", new String[]{
+                    "tile.log"
+                    , "tile.log_0"
+                    , "tile.log_1"
+                    , "tile.log_2"
+                    , "tile.log_3"
+                    , "tile.log_4"
+                    , "tile.pamCinnamon"
+                    , "tile.pamPaperbark"
+                    , "tile.pamMaple"
+                    , "tile.for.pile_wood"
+                    , "tile.for.logs.vanilla.fireproof.1"
+                    , "tile.for.logs.vanilla.fireproof.0"
+                    , "tile.for.logs.fireproof.7"
+                    , "tile.for.logs.fireproof.6"
+                    , "tile.for.logs.fireproof.5"
+                    , "tile.for.logs.fireproof.4"
+                    , "tile.for.logs.fireproof.3"
+                    , "tile.for.logs.fireproof.2"
+                    , "tile.for.logs.fireproof.1"
+                    , "tile.for.logs.fireproof.0"
+                    , "tile.for.logs.7"
+                    , "tile.for.logs.6"
+                    , "tile.for.logs.5"
+                    , "tile.for.logs.4"
+                    , "tile.for.logs.3"
+                    , "tile.for.logs.2"
+                    , "tile.for.logs.1"
+                    , "tile.for.logs.0"
+                    , "ic2.rubber_wood"
+            }, "Put new log between < and >");
+
             logTypes = ImmutableList.copyOf(property.getStringList());
 
-            property = config.get("Data", "Axe Types", new String[]{"item.hatchetWood", "item.hatchetStone", "item.hatchetIron", "item.hatchetGold", "item.hatchetDiamond", "item.mud_axe", "item.psi:psimetalAxe"}, "Put new axe between < and >");
+            property = config.get("Data", "Axe Types", new String[]{
+                    "item.hatchetWood"
+                    , "item.hatchetStone"
+                    , "item.hatchetIron"
+                    , "item.hatchetGold"
+                    , "item.hatchetDiamond"
+                    , "item.mud_axe"
+                    , "item.psi:psimetalAxe"
+                    , "item.tconstruct.lumberaxe"
+                    , "item.tconstruct.mattock"
+            }, "Put new axe between < and >");
+
             axeTypes = ImmutableList.copyOf(property.getStringList());
 
         } catch (Exception e) {

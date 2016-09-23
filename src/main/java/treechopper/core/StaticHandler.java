@@ -10,18 +10,6 @@ import java.util.Set;
  */
 
 public class StaticHandler {
-    private boolean everyOk = false;
-    public static boolean shiftPress = false;
-    public static boolean serverSide = false;
-    public static boolean control = false;
     public static Map<Integer, Boolean> playerHoldShift = new HashMap<Integer, Boolean>();
     public static Set<Integer> playerPrintUnName = new HashSet<Integer>();
-
-    public boolean isEveryOk() {
-        return everyOk;
-    }
-
-    public void setEveryOk(boolean everyOk) {
-        this.everyOk = everyOk;
-    }
 }

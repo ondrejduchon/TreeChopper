@@ -1,9 +1,10 @@
-package treechopper.core;
+package treechopper.common.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import treechopper.common.config.ConfigHandler;
 
 /**
  * Created by Duchy on 8/25/2016.
@@ -42,6 +43,7 @@ public class ServerMessage implements IMessage {
     public static class Handler implements IMessageHandler<ServerMessage, IMessage> {
         @Override
         public IMessage onMessage(ServerMessage message, MessageContext ctx) {
+
             ConfigHandler.breakSpeed = message.breakSpeed;
             ConfigHandler.ignoreDurability = message.ignoreDur;
 
