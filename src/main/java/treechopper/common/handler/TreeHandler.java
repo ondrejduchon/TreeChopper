@@ -174,6 +174,28 @@ public class TreeHandler {
         }
 
         if (!ConfigHandler.decayLeaves) {
+
+            for (BlockPos blockPos : leaves) {
+                if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
+                    leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
+                else
+                    leafVariant = "notKnown";
+
+                if (leafVariantCount.containsKey(leafVariant)) {
+                    int tmpCount = leafVariantCount.get(leafVariant);
+                    leafVariantCount.put(leafVariant, ++tmpCount);
+                } else
+                    leafVariantCount.put(leafVariant, 1);
+            }
+
+            int maxValue = 0;
+            for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
+                if (entry.getValue() > maxValue) {
+                    maxValue = entry.getValue();
+                    leafVariant = entry.getKey();
+                }
+            }
+
             leafCount = leaves.size();
             leavesTmp.clear();
             leaves.clear();

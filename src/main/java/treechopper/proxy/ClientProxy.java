@@ -7,7 +7,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.TreeHandler;
+import treechopper.common.network.ClientMessage;
 import treechopper.core.StaticHandler;
+import treechopper.core.TreeChopper;
 
 /**
  * Created by Duchy on 9/1/2016.
@@ -19,6 +21,16 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void breakSpeedPlayer(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+        int logCountTMP = logCount;
+
+        if (event.getEntity().getServer() != null && event.getEntityPlayer().getName().equals(event.getEntity().getServer().getServerOwner())) { // Open to LAN problems..
+            if (!event.getEntityPlayer().isSwingInProgress)
+                logCount = StaticHandler.playersLogCount;
+            else
+                logCount = logCountTMP;
+        }
+
+        System.out.println(logCount);
 
         if (logCount > 1) {
 
@@ -76,6 +88,7 @@ public class ClientProxy extends CommonProxy {
                             event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
                         }
                         ClientProxy.logCount = 0;
+                        TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
                         return;
                     }
 
@@ -89,6 +102,8 @@ public class ClientProxy extends CommonProxy {
                 ClientProxy.logCount = 0;
         } else
             ClientProxy.logCount = 0;
+
+        TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
     }
 
     @Override
