@@ -8,9 +8,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.TreeHandler;
 import treechopper.common.handler.mods.TConstructHandler;
-import treechopper.common.network.ClientMessage;
 import treechopper.core.StaticHandler;
-import treechopper.core.TreeChopper;
 
 /**
  * Created by Duchy on 9/1/2016.
@@ -22,34 +20,26 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void breakSpeedPlayer(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
-        int logCountTMP = logCount;
 
-        if (event.getEntity().getServer() != null && event.getEntityPlayer().getName().equals(event.getEntity().getServer().getServerOwner())) { // Open to LAN problems..
-            if (!event.getEntityPlayer().isSwingInProgress)
-                logCount = StaticHandler.playersLogCount;
-            else
-                logCount = logCountTMP;
+        if (event.getEntity().getServer() != null && event.getEntityPlayer().getName().equals(event.getEntity().getServer().getServerOwner())) {  // Open to LAN problems..
+
+            if (logCount > 1) {
+
+                if (event.getOriginalSpeed() <= 4.0f)
+                    event.setNewSpeed((5.7f * event.getOriginalSpeed() / ((((float) logCount) + 5f) / 0.96f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+                else if (event.getOriginalSpeed() <= 8.0f)
+                    event.setNewSpeed((10.3f * event.getOriginalSpeed() / ((((float) logCount) + 10f) / 0.4f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+                else if (event.getOriginalSpeed() <= 12.0f)
+                    event.setNewSpeed((16.5f * event.getOriginalSpeed() / ((((float) logCount) + 20f) / 0.2f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+                else
+                    event.setNewSpeed((26f * event.getOriginalSpeed() / ((((float) logCount) + 35f) / 0.1f)) * ((float) (ConfigHandler.breakSpeed / 10)));
+
+            } else
+                event.setNewSpeed(event.getOriginalSpeed());
         }
-
-        //System.out.println(logCount);
-
-        if (logCount > 1) {
-
-            if (event.getOriginalSpeed() <= 4.0f)
-                event.setNewSpeed((5.7f * event.getOriginalSpeed() / ((((float) logCount) + 5f) / 0.96f)) * ((float) (ConfigHandler.breakSpeed / 10)));
-
-            else if (event.getOriginalSpeed() <= 8.0f)
-                event.setNewSpeed((10.3f * event.getOriginalSpeed() / ((((float) logCount) + 10f) / 0.4f)) * ((float) (ConfigHandler.breakSpeed / 10)));
-
-            else if (event.getOriginalSpeed() <= 12.0f)
-                event.setNewSpeed((16.5f * event.getOriginalSpeed() / ((((float) logCount) + 20f) / 0.2f)) * ((float) (ConfigHandler.breakSpeed / 10)));
-
-            else
-                event.setNewSpeed((26f * event.getOriginalSpeed() / ((((float) logCount) + 35f) / 0.1f)) * ((float) (ConfigHandler.breakSpeed / 10)));
-
-        } else
-            event.setNewSpeed(event.getOriginalSpeed());
-
         /*System.out.println("Original breakSpeed: " + event.getOriginalSpeed());
         System.out.println("New breakSpeed: " + event.getNewSpeed());
         System.out.println("LogCount: " + logCount);*/
@@ -91,13 +81,15 @@ public class ClientProxy extends CommonProxy {
                                 event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
                             }
                             ClientProxy.logCount = 0;
-                            TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
                             return;
                         }
                     }
 
                     if (!event.getEntityPlayer().isSneaking()) {
-                        ClientProxy.logCount = (int) logCount;
+                        if (!TConstructHandler.tcAxes.contains(event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()))
+                            ClientProxy.logCount = (int) logCount;
+                        else
+                            ClientProxy.logCount = 0;
                     } else
                         ClientProxy.logCount = 0;
                 } else
@@ -106,8 +98,6 @@ public class ClientProxy extends CommonProxy {
                 ClientProxy.logCount = 0;
         } else
             ClientProxy.logCount = 0;
-
-        TreeChopper.network.sendToServer(new ClientMessage(ClientProxy.logCount));
     }
 
     @Override
@@ -143,13 +133,17 @@ public class ClientProxy extends CommonProxy {
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
-                if (ConfigHandler.plantSaplingTree) {
+                if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
                     event.getWorld().destroyBlock(event.getPos(), true);
                     event.getWorld().setBlockToAir(event.getPos());
                     event.setCanceled(true);
                 }
                 treeHandler.plantSapling(event.getWorld(), event.getPos(), event);
             }
+        } else if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) {
+            event.setCanceled(true);
+            event.getWorld().destroyBlock(event.getPos(), true);
+            event.getWorld().setBlockToAir(event.getPos());
         }
     }
 }

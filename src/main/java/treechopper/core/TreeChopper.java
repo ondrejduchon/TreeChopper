@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import treechopper.common.command.Commands;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.EventHandler;
-import treechopper.common.network.ClientMessage;
 import treechopper.common.network.ServerMessage;
 import treechopper.proxy.CommonProxy;
 
@@ -47,7 +46,6 @@ public class TreeChopper {
     public void init(FMLInitializationEvent event) {
         network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
-        network.registerMessage(ClientMessage.Handler.class, ClientMessage.class, 0, Side.SERVER);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         MinecraftForge.EVENT_BUS.register(proxy);

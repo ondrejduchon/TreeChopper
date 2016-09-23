@@ -12,6 +12,4 @@ import java.util.Set;
 public class StaticHandler {
     public static Map<Integer, Boolean> playerHoldShift = new HashMap<Integer, Boolean>();
     public static Set<Integer> playerPrintUnName = new HashSet<Integer>();
-
-    public static int playersLogCount = 0;
 }
