@@ -5,7 +5,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import slimeknights.tconstruct.library.tinkering.TinkersItem;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.TreeHandler;
 import treechopper.common.handler.mods.TConstructHandler;
@@ -41,6 +40,7 @@ public class ClientProxy extends CommonProxy {
             } else
                 event.setNewSpeed(event.getOriginalSpeed());
         }
+
         /*System.out.println("Original breakSpeed: " + event.getOriginalSpeed());
         System.out.println("New breakSpeed: " + event.getNewSpeed());
         System.out.println("LogCount: " + logCount);*/
@@ -134,7 +134,7 @@ public class ClientProxy extends CommonProxy {
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
-                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 5); // Axe damage increase with size of tree
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 4); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
                 if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {

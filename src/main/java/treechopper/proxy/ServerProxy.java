@@ -60,7 +60,7 @@ public class ServerProxy extends CommonProxy {
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
-                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 5); // Axe damage increase with size of tree
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 4); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
                 if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
