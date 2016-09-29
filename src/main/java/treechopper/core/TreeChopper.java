@@ -46,7 +46,7 @@ public class TreeChopper {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
+        network = NetworkRegistry.INSTANCE.newSimpleChannel("treechopperCH");
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
