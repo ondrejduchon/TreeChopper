@@ -1,30 +1,27 @@
-// For those who want the bleeding edge
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-/*
-// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
-plugins {
-    id "net.minecraftforge.gradle.forge" version "2.0.2"
-}
-*/
-version = "1.10.2-1.1.0"
+
+version = "1.10.2-1.1.1"
 group = "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "TreeChopper"
 
+sourceCompatibility = targetCompatibility = "1.6" // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.6"
+}
+
 minecraft {
-    version = "1.10.2-12.18.1.2073"
+    version = "1.10.2-12.18.2.2098"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -57,6 +54,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
 }
 
 processResources
@@ -70,7 +68,7 @@ processResources
                 include 'mcmod.info'
 
                 // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
+                expand 'version':project.version, 'mcversion':project.minecraft.version
             }
 
             // copy everything else, thats not the mcmod.info

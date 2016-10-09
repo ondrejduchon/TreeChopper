@@ -108,6 +108,17 @@ public class Commands extends CommandBase {
                 else
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Planting on tree position has been switched " + TextFormatting.RED + "OFF"));
 
+            } else if (args[0].equals("reset")) {
+
+                ConfigHandler.setPlantSaplingTree(false);
+                ConfigHandler.setPlantSapling(false);
+                ConfigHandler.setBreakSpeed(10);
+                ConfigHandler.setDecayLeaves(true);
+                ConfigHandler.setIgnoreDurability(false);
+
+                TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
+
+                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Settings has been reset"));
             } else
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         } else {
@@ -180,7 +191,7 @@ public class Commands extends CommandBase {
             try {
                 StaticHandler.playerPrintUnName.remove(sender.getCommandSenderEntity().getEntityId());
             } catch (Exception e) {
-                sender.addChatMessage(new TextComponentTranslation("No effect.."));
+                sender.addChatMessage(new TextComponentTranslation("No effect.. (Not been switched on)"));
             }
     }
 
@@ -201,6 +212,7 @@ public class Commands extends CommandBase {
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "decayleaves" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Decay leaves with tree fall."));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "breakspeed" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Set speed of breaking tree. Default: 10"));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "reset" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Reset settings to default."));
                 break;
         }
     }
@@ -208,7 +220,7 @@ public class Commands extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help");
+            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset");
 
         return null;
     }

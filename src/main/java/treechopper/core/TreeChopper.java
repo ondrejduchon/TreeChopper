@@ -26,7 +26,7 @@ import treechopper.proxy.CommonProxy;
 public class TreeChopper {
     public static SimpleNetworkWrapper network;
     public static final String MODID = "treechopper";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
 
     public static boolean BoPPresent = false;
     public static boolean ForestryPresent = false;
@@ -40,7 +40,7 @@ public class TreeChopper {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        BoPPresent = Loader.isModLoaded("BiomesOPlenty");
+        BoPPresent = Loader.isModLoaded("BiomesOPlenty"); // Will be lowercased
         ForestryPresent = Loader.isModLoaded("forestry");
     }
 
