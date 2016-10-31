@@ -115,10 +115,20 @@ public class Commands extends CommandBase {
                 ConfigHandler.setBreakSpeed(10);
                 ConfigHandler.setDecayLeaves(true);
                 ConfigHandler.setIgnoreDurability(false);
+                ConfigHandler.setRoots(false);
 
                 TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
 
                 sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Settings has been reset"));
+            } else if (args[0].equals("roots")) {
+                if (args.length != 2)
+                    throw new WrongUsageException("/treechop roots [0,1]");
+
+                ConfigHandler.setRoots(parseBoolean(args[1]));
+                if (ConfigHandler.roots)
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.GREEN + "ON"));
+                else
+                    sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.RED + "OFF"));
             } else
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         } else {
@@ -144,7 +154,7 @@ public class Commands extends CommandBase {
             printName(parseBoolean(args[1]), sender);
         }
 
-        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree);
+        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots);
     }
 
     private void printSettings(ICommandSender sender) {
@@ -172,6 +182,11 @@ public class Commands extends CommandBase {
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.GREEN + "ON"));
         else
             sender.addChatMessage(new TextComponentTranslation("Ignore durability: " + TextFormatting.RED + "OFF"));
+
+        if (ConfigHandler.roots)
+            sender.addChatMessage(new TextComponentTranslation("Breaking roots: " + TextFormatting.GREEN + "ON"));
+        else
+            sender.addChatMessage(new TextComponentTranslation("Breaking roots: " + TextFormatting.RED + "OFF"));
     }
 
     private void printName(boolean print, ICommandSender sender) {
@@ -213,6 +228,7 @@ public class Commands extends CommandBase {
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "breakspeed" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Set speed of breaking tree. Default: 10"));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "reset" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Reset settings to default."));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "roots" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Break roots - dig 3 blocks under ground"));
                 break;
         }
     }
@@ -220,7 +236,7 @@ public class Commands extends CommandBase {
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset");
+            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset", "roots");
 
         return null;
     }

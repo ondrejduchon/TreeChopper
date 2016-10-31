@@ -22,6 +22,8 @@ public class ConfigHandler {
     public static int breakSpeed = 1;
     public static int breakSpeedVar;
 
+    public static boolean roots = false;
+
     public static List<String> logTypes = new ArrayList<String>();
     public static List<String> axeTypes = new ArrayList<String>();
 
@@ -56,6 +58,9 @@ public class ConfigHandler {
         ConfigHandler.breakSpeed = breakSpeed;
     }
 
+    public static void setRoots(boolean roots) {
+        ConfigHandler.roots = roots;
+    }
 
     public static void loadConfig() {
         Property property;
@@ -68,6 +73,8 @@ public class ConfigHandler {
             plantSaplingTree = config.get("Settings", "Plant sapling on tree position", false).getBoolean();
 
             decayLeaves = config.get("Settings", "Decay leaves", true).getBoolean();
+
+            roots = config.get("Settings", "Look for roots", false).getBoolean();
 
             breakSpeed = config.get("Settings", "Break speed [DEFAULT: 10]", 10).getInt();
             breakSpeedVar = breakSpeed;
@@ -116,6 +123,7 @@ public class ConfigHandler {
                     , "item.psi:psimetalAxe"
                     , "item.tconstruct.lumberaxe"
                     , "item.tconstruct.mattock"
+                    , "item.tconstruct.hatchet"
             }, "Put new axe between < and >");
 
             axeTypes = ImmutableList.copyOf(property.getStringList());
@@ -128,12 +136,13 @@ public class ConfigHandler {
         }
     }
 
-    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed, boolean plantSaplingTree) {
+    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed, boolean plantSaplingTree, boolean roots) {
         config.get("Settings", "Decay leaves", true).set(decayLeaves);
         config.get("Settings", "Ignore axe durability", false).set(ignoreDurability);
         config.get("Settings", "Plant sapling automatically", false).set(plantSapling);
         config.get("Settings", "Plant sapling on tree position", false).set(plantSaplingTree);
         config.get("Settings", "Break speed [DEFAULT: 10]", 10).set(breakSpeed);
+        config.get("Settings", "Look for roots", false).set(roots);
 
         config.save();
     }

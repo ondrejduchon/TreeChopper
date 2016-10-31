@@ -14,5 +14,6 @@ public class TConstructHandler {
     public static List<String> tcAxes = new ArrayList<String>() {{
         add("item.tconstruct.mattock");
         add("item.tconstruct.lumberaxe");
+        add("item.tconstruct.hatchet");
     }};
 }

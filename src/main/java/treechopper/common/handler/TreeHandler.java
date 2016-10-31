@@ -38,7 +38,7 @@ public class TreeHandler {
         tree.add(position);
 
         do {
-            for (int i = curBlock.getY() - 1; i <= curBlock.getY() + 3; i++) {
+            for (int i = curBlock.getY() - 3; i <= curBlock.getY() + 3; i++) {
                 if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
@@ -80,15 +80,18 @@ public class TreeHandler {
                 }
             }
 
-            for (int i = curBlock.getY() + 1; i < curBlock.getY() + 4; i++)
+            for (int i = curBlock.getY() + 1; i < curBlock.getY() + 4; i++) {
                 if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), position, world, tree)) {
                     logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
                     tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
                 }
+            }
 
-            if (logAnalyze(logType, (new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ())), position, world, tree)) {
-                logsToCheck.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
-                tree.add(new BlockPos(curBlock.getX(), curBlock.getY() - 1, curBlock.getZ()));
+            for (int i = curBlock.getY() - 3; i < curBlock.getY(); i++) {
+                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), position, world, tree)) {
+                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
+                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
+                }
             }
 
             if (!logsToCheck.isEmpty()) {
@@ -113,8 +116,13 @@ public class TreeHandler {
         if (visitedLogs.contains(position))
             return false;
 
-        if (position.getY() < originPos.getY())
-            return false;
+        if (ConfigHandler.roots) {
+            if (position.getY() < originPos.getY() - 3)
+                return false;
+        } else {
+            if (position.getY() < originPos.getY())
+                return false;
+        }
 
         if (world.getBlockState(position).getPropertyNames().toString().contains("variant"))
             return ((world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == world.getBlockState(originPos).getValue(logType.getBlockState().getProperty("variant"))));
