@@ -183,17 +183,26 @@ public class TreeHandler {
 
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
+        int soundMuter = 0;
         boolean destruction;
         Map<String, Integer> leafVariantCount = new HashMap<String, Integer>();
 
         for (BlockPos blockPos : tree) {
 
             if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ()) {
-                destruction = event.getWorld().destroyBlock(blockPos, true);
+
+                // DESTROY WOOD
+                if (soundMuter <= 2)
+                    destruction = event.getWorld().destroyBlock(blockPos, true);
+                else
+                    destruction = destroyBlockOverr(blockPos, true, event.getWorld());
                 if (!destruction)
                     System.out.println("Problem with block.. " + blockPos);
                 event.getWorld().setBlockToAir(blockPos);
+                //
             }
+
+            soundMuter++;
         }
 
         if (!ConfigHandler.decayLeaves) {
@@ -234,7 +243,7 @@ public class TreeHandler {
             leaves.add(blockPos);
         }
 
-        int soundMuter = 0;
+        soundMuter = 0;
         for (BlockPos blockPos : leaves) {
             if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
                 leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
