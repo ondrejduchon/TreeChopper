@@ -3,6 +3,7 @@ package treechopper.common.handler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -166,6 +167,20 @@ public class TreeHandler {
 
     }
 
+    public boolean destroyBlockOverr(BlockPos pos, boolean dropBlock, World world) {
+        IBlockState iblockstate = world.getBlockState(pos);
+        Block block = iblockstate.getBlock();
+
+        if (block.isAir(iblockstate, world, pos)) {
+            return false;
+        } else {
+            if (dropBlock)
+                block.dropBlockAsItem(world, pos, iblockstate, 0);
+
+            return world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+        }
+    }
+
     public int treeDestroy(BlockEvent.BreakEvent event) {
         int logCount = tree.size();
         boolean destruction;
@@ -219,22 +234,31 @@ public class TreeHandler {
             leaves.add(blockPos);
         }
 
+        int soundMuter = 0;
         for (BlockPos blockPos : leaves) {
             if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant"))
                 leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
             else
                 leafVariant = "notKnown";
 
-            destruction = event.getWorld().destroyBlock(blockPos, true);
+            // DESTROY LEAVES
+            if (soundMuter <= 2)
+                destruction = event.getWorld().destroyBlock(blockPos, true);
+            else
+                destruction = destroyBlockOverr(blockPos, true, event.getWorld());
+
             if (!destruction)
                 System.out.println("Problem with block.. " + blockPos);
             event.getWorld().setBlockToAir(blockPos);
+            //
 
             if (leafVariantCount.containsKey(leafVariant)) {
                 int tmpCount = leafVariantCount.get(leafVariant);
                 leafVariantCount.put(leafVariant, ++tmpCount);
             } else
                 leafVariantCount.put(leafVariant, 1);
+
+            soundMuter++;
         }
 
         int maxValue = 0;

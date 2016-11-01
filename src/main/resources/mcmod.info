@@ -1,7 +1,7 @@
 [{
   "modid": "treechopper",
   "name": "Tree Chopper",
-  "description": "Simple mod for chop down whole tree and much more.. \n\nRecommended forge version: 1.10.2 - 12.18.2.2098",
+  "description": "Simple mod for chop down whole tree and much more.. \n\nRecommended forge version: 1.10.2 - 12.18.2.2099",
   "version": "1.1",
   "mcversion": "${version}",
   "logoFile": "textures/logo.jpg",
