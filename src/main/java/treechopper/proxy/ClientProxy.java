@@ -54,7 +54,7 @@ public class ClientProxy extends CommonProxy {
             if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId()) && event.getSide().isServer()) { // No text formation because of forge diferences may cause error
                 event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Block: " + event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName()));
                 if (event.getEntityPlayer().getHeldItemMainhand() != null)
-                    event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + event.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+                    event.getEntityPlayer().addChatMessage(new TextComponentTranslation("Main hand item: " + event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()));
                 event.getEntityPlayer().addChatMessage(new TextComponentTranslation("-"));
             }
 
