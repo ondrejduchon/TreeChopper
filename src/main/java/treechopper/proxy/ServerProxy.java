@@ -37,7 +37,7 @@ public class ServerProxy extends CommonProxy {
 
             if (event.getPlayer().getHeldItemMainhand() != null) { // Player holds something in his main hand
 
-                if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) { // Player holds allowed axe
+                if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
@@ -51,26 +51,26 @@ public class ServerProxy extends CommonProxy {
 
         if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
-            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
                 return;
 
             logDestroyCount = treeHandler.treeDestroy(event);
 
-            if (!event.getPlayer().isCreative() && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
+            if (!event.getPlayer().isCreative() && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
-            if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()))
+            if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 4); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
-                if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
+                if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
                     event.getWorld().destroyBlock(event.getPos(), true);
                     event.getWorld().setBlockToAir(event.getPos());
                     event.setCanceled(true);
                 }
                 treeHandler.plantSapling(event.getWorld(), event.getPos(), event);
             }
-        } else if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getUnlocalizedName())) {
+        } else if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) {
             event.setCanceled(true);
             event.getWorld().destroyBlock(event.getPos(), true);
             event.getWorld().setBlockToAir(event.getPos());
