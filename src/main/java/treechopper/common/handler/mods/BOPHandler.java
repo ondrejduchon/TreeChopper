@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Optional;
  * Created by Duchy on 8/30/2016.
  */
 
-@Optional.Interface(iface = "biomesoplenty.common.block", modid = "BiomesOPlenty")
+@Optional.Interface(iface = "biomesoplenty.common.block", modid = "biomesoplenty")
 public class BOPHandler {
 
     public static void plantBOPSapling(World world, BlockPos position, String leafVariant) {

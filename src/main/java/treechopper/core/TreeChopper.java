@@ -40,7 +40,7 @@ public class TreeChopper {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        BoPPresent = Loader.isModLoaded("BiomesOPlenty"); // Will be lowercased
+        BoPPresent = Loader.isModLoaded("biomesoplenty");
         ForestryPresent = Loader.isModLoaded("forestry");
     }
 
