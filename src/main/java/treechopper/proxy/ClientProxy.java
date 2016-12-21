@@ -15,7 +15,7 @@ import treechopper.core.StaticHandler;
  */
 
 public class ClientProxy extends CommonProxy {
-    public static int logCount;
+    private static int logCount;
     private TreeHandler treeHandler = new TreeHandler();
 
     @Override
@@ -73,7 +73,8 @@ public class ClientProxy extends CommonProxy {
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     if (!TConstructHandler.tcAxes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // For TConstruct axes..
 
-                        axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+                        //axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+                        axeDurability = event.getEntityPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
                         if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
                             if (event.getSide().isClient()) {
@@ -103,8 +104,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void destroyTree(BlockEvent.BreakEvent event) { // Open to LAN
         int logDestroyCount;
-        float logCount = 0f;
-        int axeDurability = 0;
+        float logCount;
+        int axeDurability;
 
         if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
@@ -113,7 +114,8 @@ public class ClientProxy extends CommonProxy {
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    //axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else
                     return;

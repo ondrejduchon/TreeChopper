@@ -167,7 +167,7 @@ public class TreeHandler {
 
     }
 
-    public boolean destroyBlockOverr(BlockPos pos, boolean dropBlock, World world) {
+    private boolean destroyBlockOverr(BlockPos pos, boolean dropBlock, World world) {
         IBlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();
 

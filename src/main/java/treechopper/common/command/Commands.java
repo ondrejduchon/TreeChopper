@@ -1,6 +1,7 @@
 package treechopper.common.command;
 
 import com.google.common.collect.Lists;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -14,6 +15,7 @@ import treechopper.common.network.ServerMessage;
 import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -23,11 +25,13 @@ import java.util.List;
 public class Commands extends CommandBase {
 
     @Override
+    @ParametersAreNonnullByDefault
     public String getCommandName() {
         return "treechop";
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public String getCommandUsage(ICommandSender sender) {
         return "Type \"/treechop help\" for help";
     }
@@ -38,11 +42,13 @@ public class Commands extends CommandBase {
     }
 
     @Override
-    public List getCommandAliases() {
+    @MethodsReturnNonnullByDefault
+    public List<String> getCommandAliases() {
         return Lists.newArrayList("tch");
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
         if ((server.isSinglePlayer()) && server.getServerOwner().equals(sender.getName()) || sender.canCommandSenderUseCommand(2, this.getCommandName())) {
@@ -93,8 +99,6 @@ public class Commands extends CommandBase {
             } else if (args[0].equals("info") || args[0].equals("?")) {
                 printSettings(sender);
 
-            } else if (args[0].equals("printname")) {
-
             } else if (args[0].equals("help")) {
                 usage(sender, 2);
 
@@ -129,7 +133,7 @@ public class Commands extends CommandBase {
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.GREEN + "ON"));
                 else
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.RED + "OFF"));
-            } else
+            } else if (!args[0].equals("printname"))
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         } else {
             if (args.length < 1)
@@ -138,12 +142,10 @@ public class Commands extends CommandBase {
             else if (args[0].equals("info") || args[0].equals("?")) {
                 printSettings(sender);
 
-            } else if (args[0].equals("printname")) {
-
             } else if (args[0].equals("help")) {
                 usage(sender, 0);
 
-            } else
+            } else if (!args[0].equals("printname"))
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         }
 
@@ -234,6 +236,7 @@ public class Commands extends CommandBase {
     }
 
     @Override
+    @MethodsReturnNonnullByDefault
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset", "roots");

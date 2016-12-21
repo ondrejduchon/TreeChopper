@@ -30,8 +30,8 @@ public class ServerProxy extends CommonProxy {
     @Override
     public void destroyTree(BlockEvent.BreakEvent event) {
         int logDestroyCount;
-        float logCount = 0f;
-        int axeDurability = 0;
+        float logCount;
+        int axeDurability;
 
         if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
@@ -40,7 +40,8 @@ public class ServerProxy extends CommonProxy {
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    //axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else
                     return;

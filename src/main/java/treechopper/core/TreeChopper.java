@@ -35,7 +35,7 @@ public class TreeChopper {
     public static TreeChopper instance;
 
     @SidedProxy(clientSide = "treechopper.proxy.ClientProxy", serverSide = "treechopper.proxy.ServerProxy")
-    public static CommonProxy proxy;
+    private static CommonProxy proxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
