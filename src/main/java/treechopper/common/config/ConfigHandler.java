@@ -124,6 +124,16 @@ public class ConfigHandler {
                     , "item.tconstruct.lumberaxe"
                     , "item.tconstruct.mattock"
                     , "item.tconstruct.hatchet"
+                    , "item.brain_stone_axe"
+                    , "item.stable_pulsating_brain_stone_axe"
+                    , "item.adobe_axe"
+                    , "item.ObsidianAxe"
+                    , "item.LazuliAxe"
+                    , "item.OsmiumAxe"
+                    , "item.BronzeAxe"
+                    , "item.GlowstoneAxe"
+                    , "item.SteelAxe"
+                    , "item.LapisLazuliAxe"
             }, "Put new axe between < and >");
 
             axeTypes = ImmutableList.copyOf(property.getStringList());
