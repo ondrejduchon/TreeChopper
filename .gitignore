@@ -4,3 +4,4 @@ build/*
 graphics/*
 libs/*
 .gradle/*
+out/*

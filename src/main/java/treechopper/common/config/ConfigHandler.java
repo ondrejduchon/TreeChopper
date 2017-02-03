@@ -109,6 +109,8 @@ public class ConfigHandler {
                     , "tile.for.logs.1"
                     , "tile.for.logs.0"
                     , "ic2.rubber_wood"
+                    , "tile.terraqueous.trunk"
+                    , "tile.techreborn.rubberlog"
             }, "Put new log between < and >");
 
             logTypes = ImmutableList.copyOf(property.getStringList());
@@ -134,6 +136,11 @@ public class ConfigHandler {
                     , "item.GlowstoneAxe"
                     , "item.SteelAxe"
                     , "item.LapisLazuliAxe"
+                    , "item.peridotAxe"
+                    , "item.rubyAxe"
+                    , "item.sapphireAxe"
+                    , "item.bronzeAxe"
+                    , "item.mud_axe"
             }, "Put new axe between < and >");
 
             axeTypes = ImmutableList.copyOf(property.getStringList());
