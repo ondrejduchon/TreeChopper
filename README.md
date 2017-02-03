@@ -20,8 +20,6 @@ Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecra
 
 [Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
 
-For Minecraft **1.10.2** and **1.11** version.
+For Minecraft **1.10.2**.
 
-Recommended forge version **1.10.2 - 12.18.2.2099** for MC 1.10.2
-
-Recommended forge version: **1.11 - 13.19.1.2189** for MC 1.11
+Recommended forge version **1.10.2 - 12.18.3.2185** for MC 1.10.2
