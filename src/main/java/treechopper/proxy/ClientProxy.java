@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void interactTree(PlayerInteractEvent event) {
-        if (event.getSide().isServer()) {
+        if (event.getSide().isServer()) { // Open to LAN or SINGLEPLAYER
             StaticHandler.playerHoldShift.put(event.getEntityPlayer().getEntityId(), event.getEntityPlayer().isSneaking());
 
             if (StaticHandler.playerPrintUnName.contains(event.getEntityPlayer().getEntityId()) && event.getSide().isServer()) { // No text formation because of forge diferences may cause error
@@ -99,7 +99,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void destroyTree(BlockEvent.BreakEvent event) { // Open to LAN
+    public void destroyTree(BlockEvent.BreakEvent event) { // Open to LAN or SINGLEPLAYER
         int logDestroyCount, axeDurability;
         float logCount;
 

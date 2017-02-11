@@ -141,6 +141,7 @@ public class ConfigHandler {
                     , "item.sapphireAxe"
                     , "item.bronzeAxe"
                     , "item.mud_axe"
+                    , "ic2.chainsaw"
             }, "Put new axe between < and >");
 
             axeTypes = ImmutableList.copyOf(property.getStringList());
