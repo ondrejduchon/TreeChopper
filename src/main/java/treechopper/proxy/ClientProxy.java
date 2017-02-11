@@ -71,27 +71,21 @@ public class ClientProxy extends CommonProxy {
                 if (ConfigHandler.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    if (!TConstructHandler.tcAxes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // For TConstruct axes..
 
-                        //axeDurability = event.getEntityPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
-                        axeDurability = event.getEntityPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+                    axeDurability = event.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
-                        if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
-                            if (event.getSide().isClient()) {
-                                String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
-                                event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
-                            }
-                            ClientProxy.logCount = 0;
-                            return;
+                    if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
+                        if (event.getSide().isClient()) {
+                            String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
+                            event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
                         }
+                        ClientProxy.logCount = 0;
+                        return;
                     }
 
-                    if (!event.getEntityPlayer().isSneaking()) {
-                        if (!TConstructHandler.tcAxes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
-                            ClientProxy.logCount = (int) logCount;
-                        else
-                            ClientProxy.logCount = 0;
-                    } else
+                    if (!event.getEntityPlayer().isSneaking())
+                        ClientProxy.logCount = (int) logCount;
+                    else
                         ClientProxy.logCount = 0;
                 } else
                     ClientProxy.logCount = 0;
@@ -114,8 +108,7 @@ public class ClientProxy extends CommonProxy {
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
                     logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    //axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
-                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else
                     return;
@@ -126,7 +119,7 @@ public class ClientProxy extends CommonProxy {
 
         if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
 
-            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
                 return;
 
             logDestroyCount = treeHandler.treeDestroy(event);
@@ -135,7 +128,7 @@ public class ClientProxy extends CommonProxy {
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
-                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 4); // Axe damage increase with size of tree
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 5); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
                 if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
@@ -145,10 +138,9 @@ public class ClientProxy extends CommonProxy {
                 }
                 treeHandler.plantSapling(event.getWorld(), event.getPos(), event);
             }
-        } else if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) {
-            event.setCanceled(true);
-            event.getWorld().destroyBlock(event.getPos(), true);
-            event.getWorld().setBlockToAir(event.getPos());
+        } else {
+            if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + 4);
         }
     }
 }
