@@ -70,11 +70,14 @@ public class ClientProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    if (!event.getEntityPlayer().isSneaking())
+                        logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    else
+                        logCount = 1;
 
                     axeDurability = event.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
-                    if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !event.getEntityPlayer().isSneaking()) {
+                    if (logCount > axeDurability && !ConfigHandler.ignoreDurability) {
                         if (event.getSide().isClient()) {
                             String notEnoughDur = ChatFormatting.WHITE + "[" + ChatFormatting.GOLD + "TreeChop" + ChatFormatting.WHITE + "] Not enough durability..";
                             event.getEntityPlayer().addChatMessage(new TextComponentString(notEnoughDur));
@@ -97,9 +100,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void destroyTree(BlockEvent.BreakEvent event) { // Open to LAN
-        int logDestroyCount;
+        int logDestroyCount, axeDurability;
         float logCount;
-        int axeDurability;
 
         if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
@@ -107,7 +109,10 @@ public class ClientProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()))
+                        logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    else
+                        logCount = 1;
                     axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else
