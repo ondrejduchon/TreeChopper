@@ -38,7 +38,8 @@ public class ServerProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()))
+                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                            StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()))
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     else
                         logCount = 1;
@@ -51,7 +52,8 @@ public class ServerProxy extends CommonProxy {
         } else
             return;
 
-        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
+        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId())) {
 
             if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
                 return;

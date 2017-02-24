@@ -70,7 +70,8 @@ public class ClientProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getEntityPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    if (!event.getEntityPlayer().isSneaking())
+                    if (!event.getEntityPlayer().isSneaking() && !ConfigHandler.reverseShift ||
+                            event.getEntityPlayer().isSneaking() && ConfigHandler.reverseShift)
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     else
                         logCount = 1;
@@ -86,7 +87,8 @@ public class ClientProxy extends CommonProxy {
                         return;
                     }
 
-                    if (!event.getEntityPlayer().isSneaking())
+                    if (!event.getEntityPlayer().isSneaking() && !ConfigHandler.reverseShift ||
+                            event.getEntityPlayer().isSneaking() && ConfigHandler.reverseShift)
                         ClientProxy.logCount = (int) logCount;
                     else
                         ClientProxy.logCount = 0;
@@ -109,7 +111,8 @@ public class ClientProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()))
+                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                            StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()))
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     else
                         logCount = 1;
@@ -122,7 +125,8 @@ public class ClientProxy extends CommonProxy {
         } else
             return;
 
-        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
+        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId())) {
 
             if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
                 return;

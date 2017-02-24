@@ -5,28 +5,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import treechopper.common.config.ConfigHandler;
+import treechopper.core.StaticHandler;
 
 /**
- * Created by Duchy on 8/25/2016.
+ * Created by Duchy on 2/24/2017.
  */
+public class ClientMessage implements IMessage { // From client to server
+    private boolean reverseShift;
+    private int playerID;
 
-public class ServerMessage implements IMessage { // From server to client
-    private int breakSpeed;
-    private boolean ignoreDur;
-
-    public ServerMessage() {
+    public ClientMessage() {
     }
 
-    public ServerMessage(int breakSpeed, boolean ignoreDur) {
-        this.breakSpeed = breakSpeed;
-        this.ignoreDur = ignoreDur;
+    public ClientMessage(boolean reverseShift, int playerID) {
+        this.reverseShift = reverseShift;
+        this.playerID = playerID;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         try {
-            breakSpeed = buf.readInt();
-            ignoreDur = buf.readBoolean();
+            reverseShift = buf.readBoolean();
+            playerID = buf.readInt();
         } catch (IndexOutOfBoundsException e1) {
             System.out.println("There is a problem by FMLIndexedMessageCodec - significantly difference between client and server forge version..");
         } catch (Exception e2) {
@@ -36,16 +36,15 @@ public class ServerMessage implements IMessage { // From server to client
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(breakSpeed);
-        buf.writeBoolean(ignoreDur);
+        buf.writeBoolean(reverseShift);
+        buf.writeInt(playerID);
     }
 
-    public static class Handler implements IMessageHandler<ServerMessage, IMessage> {
+    public static class Handler implements IMessageHandler<ClientMessage, IMessage> {
         @Override
-        public IMessage onMessage(ServerMessage message, MessageContext ctx) {
+        public IMessage onMessage(ClientMessage message, MessageContext ctx) {
 
-            ConfigHandler.breakSpeed = message.breakSpeed;
-            ConfigHandler.ignoreDurability = message.ignoreDur;
+            StaticHandler.playerReverseShift.put(message.playerID, message.reverseShift);
 
             return null;
         }

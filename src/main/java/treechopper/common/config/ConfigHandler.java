@@ -19,6 +19,7 @@ public class ConfigHandler {
     public static boolean plantSapling = false;
     public static boolean plantSaplingTree = false;
     public static boolean decayLeaves = false;
+    public static boolean reverseShift = false;
     public static int breakSpeed = 1;
     public static int breakSpeedVar;
 
@@ -54,6 +55,10 @@ public class ConfigHandler {
         ConfigHandler.decayLeaves = decayLeaves;
     }
 
+    public static void setReverseShift(boolean reverseShift) {
+        ConfigHandler.reverseShift = reverseShift;
+    }
+
     public static void setBreakSpeed(int breakSpeed) {
         ConfigHandler.breakSpeed = breakSpeed;
     }
@@ -73,6 +78,8 @@ public class ConfigHandler {
             plantSaplingTree = config.get("Settings", "Plant sapling on tree position", false).getBoolean();
 
             decayLeaves = config.get("Settings", "Decay leaves", true).getBoolean();
+
+            reverseShift = config.get("Settings", "Reverse function", false).getBoolean();
 
             roots = config.get("Settings", "Look for roots", false).getBoolean();
 
@@ -154,11 +161,12 @@ public class ConfigHandler {
         }
     }
 
-    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed, boolean plantSaplingTree, boolean roots) {
+    public static void writeConfig(boolean decayLeaves, boolean plantSapling, boolean ignoreDurability, int breakSpeed, boolean plantSaplingTree, boolean roots, boolean reverseShift) {
         config.get("Settings", "Decay leaves", true).set(decayLeaves);
         config.get("Settings", "Ignore axe durability", false).set(ignoreDurability);
         config.get("Settings", "Plant sapling automatically", false).set(plantSapling);
         config.get("Settings", "Plant sapling on tree position", false).set(plantSaplingTree);
+        config.get("Settings", "Reverse function", false).set(reverseShift);
         config.get("Settings", "Break speed [DEFAULT: 10]", 10).set(breakSpeed);
         config.get("Settings", "Look for roots", false).set(roots);
 
