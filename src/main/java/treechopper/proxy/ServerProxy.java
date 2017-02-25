@@ -43,6 +43,7 @@ public class ServerProxy extends CommonProxy {
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     else
                         logCount = 1;
+
                     axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else

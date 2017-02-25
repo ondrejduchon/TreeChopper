@@ -165,7 +165,7 @@ public class Commands extends CommandBase {
 
             try {
                 StaticHandler.playerReverseShift.put(sender.getCommandSenderEntity().getEntityId(), reverseShift);
-                ConfigHandler.reverseShift = reverseShift;
+                //TODO Send client info about command
             } catch (Exception e) {
                 sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
             }

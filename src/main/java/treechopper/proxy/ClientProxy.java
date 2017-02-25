@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 
         if ((event.getEntity().getServer() == null) || (event.getEntity().getServer() != null && event.getEntityPlayer().getName().equals(event.getEntity().getServer().getServerOwner()))) {  // Open to LAN problems..
 
-            if (logCount > 1) {
+            if (logCount > 1) { // Breakspeed system
 
                 if (event.getOriginalSpeed() <= 4.0f)
                     event.setNewSpeed((5.7f * event.getOriginalSpeed() / ((((float) logCount) + 5f) / 0.96f)) * ((float) (ConfigHandler.breakSpeed / 10)));
@@ -73,8 +73,10 @@ public class ClientProxy extends CommonProxy {
                     if (!event.getEntityPlayer().isSneaking() && !ConfigHandler.reverseShift ||
                             event.getEntityPlayer().isSneaking() && ConfigHandler.reverseShift)
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    else
-                        logCount = 1;
+                    else {
+                        ClientProxy.logCount = 0;
+                        return;
+                    }
 
                     axeDurability = event.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - event.getEntityPlayer().getHeldItemMainhand().getItemDamage();
 
@@ -115,7 +117,8 @@ public class ClientProxy extends CommonProxy {
                             StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()))
                         logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
                     else
-                        logCount = 1;
+                        return;
+
                     axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else

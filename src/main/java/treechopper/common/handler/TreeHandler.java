@@ -192,14 +192,14 @@ public class TreeHandler {
             if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ()) {
 
                 // DESTROY WOOD
-                if (soundMuter <= 2)
-                    destruction = event.getWorld().destroyBlock(blockPos, true);
+                if (soundMuter <= 1)
+                    destruction = event.getWorld().destroyBlock(blockPos, true); // With a sound
                 else
-                    destruction = destroyBlockOverr(blockPos, true, event.getWorld());
+                    destruction = destroyBlockOverr(blockPos, true, event.getWorld()); // Without a sound
                 if (!destruction)
                     System.out.println("Problem with block.. " + blockPos);
                 event.getWorld().setBlockToAir(blockPos);
-                //
+                //**
             }
 
             soundMuter++;
@@ -251,15 +251,15 @@ public class TreeHandler {
                 leafVariant = "notKnown";
 
             // DESTROY LEAVES
-            if (soundMuter <= 2)
-                destruction = event.getWorld().destroyBlock(blockPos, true);
+            if (soundMuter <= 1)
+                destruction = event.getWorld().destroyBlock(blockPos, true); // With a sound
             else
-                destruction = destroyBlockOverr(blockPos, true, event.getWorld());
+                destruction = destroyBlockOverr(blockPos, true, event.getWorld()); // Without a sound
 
             if (!destruction)
                 System.out.println("Problem with block.. " + blockPos);
             event.getWorld().setBlockToAir(blockPos);
-            //
+            //**
 
             if (leafVariantCount.containsKey(leafVariant)) {
                 int tmpCount = leafVariantCount.get(leafVariant);

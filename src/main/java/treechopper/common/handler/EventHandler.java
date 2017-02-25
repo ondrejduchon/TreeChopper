@@ -40,6 +40,7 @@ public class EventHandler {
     public void onServerDisconnect(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent event) { // Clear server data
         StaticHandler.playerHoldShift.remove(event.player.getEntityId());
         StaticHandler.playerPrintUnName.remove(event.player.getEntityId());
+
         StaticHandler.playerReverseShift.remove(event.player.getEntityId());
     }
 
