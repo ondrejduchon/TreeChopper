@@ -16,6 +16,7 @@ import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.EventHandler;
 import treechopper.common.network.ClientMessage;
 import treechopper.common.network.ServerMessage;
+import treechopper.common.network.sendReverseToClient;
 import treechopper.proxy.CommonProxy;
 
 /**
@@ -50,6 +51,7 @@ public class TreeChopper {
         network = NetworkRegistry.INSTANCE.newSimpleChannel("treechopper");
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
         network.registerMessage(ClientMessage.Handler.class, ClientMessage.class, 0, Side.SERVER);
+        network.registerMessage(sendReverseToClient.Handler.class, sendReverseToClient.class, 2, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         MinecraftForge.EVENT_BUS.register(proxy);

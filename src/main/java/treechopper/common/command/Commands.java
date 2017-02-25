@@ -6,6 +6,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -13,6 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.network.ServerMessage;
 import treechopper.common.network.ClientMessage;
+import treechopper.common.network.sendReverseToClient;
 import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
 
@@ -165,13 +167,15 @@ public class Commands extends CommandBase {
 
             try {
                 StaticHandler.playerReverseShift.put(sender.getCommandSenderEntity().getEntityId(), reverseShift);
-                //TODO Send client info about command
+                ConfigHandler.setReverseShift(reverseShift);
+
+                TreeChopper.network.sendTo(new sendReverseToClient(reverseShift), (EntityPlayerMP) sender);
             } catch (Exception e) {
                 sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
             }
         }
 
-        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots, ConfigHandler.reverseShift); //TODO neni treba posilat reverse
+        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots, ConfigHandler.reverseShift);
     }
 
     private void printSettings(ICommandSender sender) {
@@ -205,10 +209,15 @@ public class Commands extends CommandBase {
         else
             sender.addChatMessage(new TextComponentTranslation("Breaking roots: " + TextFormatting.RED + "OFF"));
 
-        if (ConfigHandler.reverseShift)
-            sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.GREEN + "ON"));
-        else
-            sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.RED + "OFF"));
+        try {
+            if (StaticHandler.playerReverseShift.get(sender.getCommandSenderEntity().getEntityId()))
+                sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.GREEN + "ON"));
+            else
+                sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.RED + "OFF"));
+        } catch (Exception e) {
+            sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.RED + "-"));
+        }
+
     }
 
     private void printName(boolean print, ICommandSender sender) {
