@@ -1,21 +1,21 @@
 package treechopper.common.command;
 
 import com.google.common.collect.Lists;
-import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.network.ServerMessage;
+import treechopper.common.network.sendReverseToClient;
 import treechopper.core.StaticHandler;
 import treechopper.core.TreeChopper;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 /**
@@ -25,13 +25,11 @@ import java.util.List;
 public class Commands extends CommandBase {
 
     @Override
-    @ParametersAreNonnullByDefault
     public String getCommandName() {
         return "treechop";
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public String getCommandUsage(ICommandSender sender) {
         return "Type \"/treechop help\" for help";
     }
@@ -42,13 +40,11 @@ public class Commands extends CommandBase {
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
     public List<String> getCommandAliases() {
         return Lists.newArrayList("tch");
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
         if ((server.isSinglePlayer()) && server.getServerOwner().equals(sender.getName()) || sender.canCommandSenderUseCommand(2, this.getCommandName())) {
@@ -120,6 +116,7 @@ public class Commands extends CommandBase {
                 ConfigHandler.setDecayLeaves(true);
                 ConfigHandler.setIgnoreDurability(false);
                 ConfigHandler.setRoots(false);
+                ConfigHandler.setReverseShift(false);
 
                 TreeChopper.network.sendToAll(new ServerMessage(ConfigHandler.breakSpeed, ConfigHandler.ignoreDurability));
 
@@ -133,7 +130,7 @@ public class Commands extends CommandBase {
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.GREEN + "ON"));
                 else
                     sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Breaking roots has been switched " + TextFormatting.RED + "OFF"));
-            } else if (!args[0].equals("printname"))
+            } else if (!args[0].equals("printname") && !args[0].equals("reverse"))
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         } else {
             if (args.length < 1)
@@ -145,7 +142,7 @@ public class Commands extends CommandBase {
             } else if (args[0].equals("help")) {
                 usage(sender, 0);
 
-            } else if (!args[0].equals("printname"))
+            } else if (!args[0].equals("printname") && !args[0].equals("reverse"))
                 throw new WrongUsageException("Type \"/treechop help\" for help");
         }
 
@@ -154,9 +151,28 @@ public class Commands extends CommandBase {
                 throw new WrongUsageException("/treechop printname [value]");
 
             printName(parseBoolean(args[1]), sender);
+        } else if (args[0].equals("reverse")) {
+            if (args.length != 2)
+                throw new WrongUsageException("/treechop reverse [0,1]");
+
+            boolean reverseShift = parseBoolean(args[1]);
+
+            if (reverseShift)
+                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Reverse function has been switched " + TextFormatting.GREEN + "ON"));
+            else
+                sender.addChatMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Reverse function has been switched " + TextFormatting.RED + "OFF"));
+
+            try {
+                StaticHandler.playerReverseShift.put(sender.getCommandSenderEntity().getEntityId(), reverseShift);
+                ConfigHandler.setReverseShift(reverseShift);
+
+                TreeChopper.network.sendTo(new sendReverseToClient(reverseShift), (EntityPlayerMP) sender);
+            } catch (Exception e) {
+                sender.addChatMessage(new TextComponentTranslation("You are not a player.."));
+            }
         }
 
-        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots);
+        ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots, ConfigHandler.reverseShift);
     }
 
     private void printSettings(ICommandSender sender) {
@@ -189,6 +205,16 @@ public class Commands extends CommandBase {
             sender.addChatMessage(new TextComponentTranslation("Breaking roots: " + TextFormatting.GREEN + "ON"));
         else
             sender.addChatMessage(new TextComponentTranslation("Breaking roots: " + TextFormatting.RED + "OFF"));
+
+        try {
+            if (StaticHandler.playerReverseShift.get(sender.getCommandSenderEntity().getEntityId()))
+                sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.GREEN + "ON"));
+            else
+                sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.RED + "OFF"));
+        } catch (Exception e) {
+            sender.addChatMessage(new TextComponentTranslation("Reverse func: " + TextFormatting.RED + "-"));
+        }
+
     }
 
     private void printName(boolean print, ICommandSender sender) {
@@ -220,6 +246,8 @@ public class Commands extends CommandBase {
             case 0:
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "?" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Print info about server settings"));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "reverse" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Reverse shift function"));
+
                 break;
             case 2:
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "?" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Print info about server settings"));
@@ -231,15 +259,16 @@ public class Commands extends CommandBase {
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "printname" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Logging UnlocalizedName of target block and main hand item, on mouse click"));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "reset" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Reset settings to default."));
                 sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "roots" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Break roots - dig 3 blocks under ground"));
+                sender.addChatMessage(new TextComponentTranslation(TextFormatting.AQUA + "reverse" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Reverse shift function"));
+
                 break;
         }
     }
 
     @Override
-    @MethodsReturnNonnullByDefault
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset", "roots");
+            return getListOfStringsMatchingLastWord(args, "ignoredur", "plantsap", "plantsaptree", "decayleaves", "breakspeed", "info", "printname", "help", "reset", "roots", "reverse");
 
         return null;
     }

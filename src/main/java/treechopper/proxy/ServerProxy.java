@@ -29,9 +29,8 @@ public class ServerProxy extends CommonProxy {
 
     @Override
     public void destroyTree(BlockEvent.BreakEvent event) {
-        int logDestroyCount;
+        int logDestroyCount, axeDurability;
         float logCount;
-        int axeDurability;
 
         if (ConfigHandler.logTypes.contains(event.getWorld().getBlockState(event.getPos()).getBlock().getUnlocalizedName())) { // It is allowed log
 
@@ -39,9 +38,13 @@ public class ServerProxy extends CommonProxy {
 
                 if (ConfigHandler.axeTypes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) { // Player holds allowed axe
 
-                    logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
-                    //axeDurability = event.getPlayer().getHeldItemMainhand().getItem().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
-                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() + 1 - event.getPlayer().getHeldItemMainhand().getItemDamage();
+                    if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                            StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()))
+                        logCount = treeHandler.treeAnalyze(event.getWorld(), event.getPos());
+                    else
+                        logCount = 1;
+
+                    axeDurability = event.getPlayer().getHeldItemMainhand().getMaxDamage() - event.getPlayer().getHeldItemMainhand().getItemDamage();
 
                 } else
                     return;
@@ -50,9 +53,10 @@ public class ServerProxy extends CommonProxy {
         } else
             return;
 
-        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId())) {
+        if (!StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && !StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId()) ||
+                StaticHandler.playerHoldShift.get(event.getPlayer().getEntityId()) && StaticHandler.playerReverseShift.get(event.getPlayer().getEntityId())) {
 
-            if (logCount > axeDurability && !ConfigHandler.ignoreDurability && !TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
+            if (logCount > axeDurability && !ConfigHandler.ignoreDurability)
                 return;
 
             logDestroyCount = treeHandler.treeDestroy(event);
@@ -61,7 +65,7 @@ public class ServerProxy extends CommonProxy {
                 event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount); // Axe damage increase with size of tree
 
             if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
-                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 4); // Axe damage increase with size of tree
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + logDestroyCount * 5); // Axe damage increase with size of tree
 
             if (ConfigHandler.plantSapling) {
                 if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()) || ConfigHandler.plantSaplingTree) {
@@ -71,10 +75,9 @@ public class ServerProxy extends CommonProxy {
                 }
                 treeHandler.plantSapling(event.getWorld(), event.getPos(), event);
             }
-        } else if (TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName())) {
-            event.setCanceled(true);
-            event.getWorld().destroyBlock(event.getPos(), true);
-            event.getWorld().setBlockToAir(event.getPos());
+        } else {
+            if (!event.getPlayer().isCreative() && TConstructHandler.tcAxes.contains(event.getPlayer().getHeldItemMainhand().getItem().getUnlocalizedName()))
+                event.getPlayer().getHeldItemMainhand().setItemDamage(event.getPlayer().getHeldItemMainhand().getItemDamage() + 4);
         }
     }
 }

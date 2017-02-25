@@ -14,14 +14,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import treechopper.common.command.Commands;
 import treechopper.common.config.ConfigHandler;
 import treechopper.common.handler.EventHandler;
+import treechopper.common.network.ClientMessage;
 import treechopper.common.network.ServerMessage;
+import treechopper.common.network.sendReverseToClient;
 import treechopper.proxy.CommonProxy;
 
 /**
  * Created by Duchy on 8/11/2016.
  */
 
-@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, dependencies = "required-after:forge@[13.19.0.2130,)", guiFactory = "treechopper.client.gui.GuiFactory")
+@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, dependencies = "required-after:Forge@[12.18.1.2017,)", guiFactory = "treechopper.client.gui.GuiFactory")
 
 public class TreeChopper {
     public static SimpleNetworkWrapper network;
@@ -46,8 +48,10 @@ public class TreeChopper {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel("treechopperCH");
+        network = NetworkRegistry.INSTANCE.newSimpleChannel("treechopper");
         network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
+        network.registerMessage(ClientMessage.Handler.class, ClientMessage.class, 0, Side.SERVER);
+        network.registerMessage(sendReverseToClient.Handler.class, sendReverseToClient.class, 2, Side.CLIENT);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         MinecraftForge.EVENT_BUS.register(proxy);

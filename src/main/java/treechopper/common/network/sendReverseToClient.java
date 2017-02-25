@@ -7,26 +7,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import treechopper.common.config.ConfigHandler;
 
 /**
- * Created by Duchy on 8/25/2016.
+ * Created by Duchy on 2/25/2017.
  */
+public class sendReverseToClient implements IMessage {
+    private boolean reverseShift;
 
-public class ServerMessage implements IMessage { // From server to client
-    private int breakSpeed;
-    private boolean ignoreDur;
-
-    public ServerMessage() {
+    public sendReverseToClient() {
     }
 
-    public ServerMessage(int breakSpeed, boolean ignoreDur) {
-        this.breakSpeed = breakSpeed;
-        this.ignoreDur = ignoreDur;
+    public sendReverseToClient(boolean reverseShift) {
+        this.reverseShift = reverseShift;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         try {
-            breakSpeed = buf.readInt();
-            ignoreDur = buf.readBoolean();
+            reverseShift = buf.readBoolean();
         } catch (IndexOutOfBoundsException e1) {
             System.out.println("There is a problem by FMLIndexedMessageCodec - significantly difference between client and server forge version..");
         } catch (Exception e2) {
@@ -36,16 +32,16 @@ public class ServerMessage implements IMessage { // From server to client
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(breakSpeed);
-        buf.writeBoolean(ignoreDur);
+        buf.writeBoolean(reverseShift);
     }
 
-    public static class Handler implements IMessageHandler<ServerMessage, IMessage> {
+    public static class Handler implements IMessageHandler<sendReverseToClient, IMessage> {
         @Override
-        public IMessage onMessage(ServerMessage message, MessageContext ctx) {
+        public IMessage onMessage(sendReverseToClient message, MessageContext ctx) {
 
-            ConfigHandler.breakSpeed = message.breakSpeed;
-            ConfigHandler.ignoreDurability = message.ignoreDur;
+            ConfigHandler.setReverseShift(message.reverseShift);
+
+            ConfigHandler.writeConfig(ConfigHandler.decayLeaves, ConfigHandler.plantSapling, ConfigHandler.ignoreDurability, ConfigHandler.breakSpeed, ConfigHandler.plantSaplingTree, ConfigHandler.roots, ConfigHandler.reverseShift);
 
             return null;
         }
