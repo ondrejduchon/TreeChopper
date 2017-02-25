@@ -23,7 +23,7 @@ import treechopper.proxy.CommonProxy;
  * Created by Duchy on 8/11/2016.
  */
 
-@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, dependencies = "required-after:Forge@[12.18.1.2017,)", guiFactory = "treechopper.client.gui.GuiFactory")
+@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, dependencies = "required-after:forge@[13.20.0.2200,)", guiFactory = "treechopper.client.gui.GuiFactory")
 
 public class TreeChopper {
     public static SimpleNetworkWrapper network;

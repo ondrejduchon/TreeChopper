@@ -6,6 +6,7 @@
 *   Supports mods (e.g. Biomes O' Plenty, Forestry, Tinkers Construct).
 *   Can be deactivated by holding SHIFT.
 *   Config with settings and list of allowed axes and types of wood.
+*   Option to reverse function (chopping with SHIFT)
 
 <h3>Usage</h3>
 Type in-game command "/tch help" or "/treechop help" for more info
@@ -20,6 +21,6 @@ Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecra
 
 [Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
 
-For Minecraft **1.10.2**.
+For Minecraft **1.11.2**.
 
-Recommended forge version: **1.10.2 - 12.18.3.2185**
+Recommended forge version: **1.11.2 - 13.20.0.2228**

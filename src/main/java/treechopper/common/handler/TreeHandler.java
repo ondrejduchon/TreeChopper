@@ -125,7 +125,7 @@ public class TreeHandler {
                 return false;
         }
 
-        if (world.getBlockState(position).getPropertyNames().toString().contains("variant") && logType.getBlockState().getProperty("variant") != null)
+        if (world.getBlockState(position).getPropertyKeys().toString().contains("variant") && logType.getBlockState().getProperty("variant") != null)
             return ((world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == world.getBlockState(originPos).getValue(logType.getBlockState().getProperty("variant"))));
 
         return true; // Ignoring log variant - doesnt have one..
@@ -208,7 +208,7 @@ public class TreeHandler {
         if (!ConfigHandler.decayLeaves) {
 
             for (BlockPos blockPos : leaves) {
-                if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
+                if (event.getWorld().getBlockState(blockPos).getPropertyKeys().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
                     leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
                 else
                     leafVariant = "notKnown";
@@ -245,7 +245,7 @@ public class TreeHandler {
 
         soundMuter = 0;
         for (BlockPos blockPos : leaves) {
-            if (event.getWorld().getBlockState(blockPos).getPropertyNames().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
+            if (event.getWorld().getBlockState(blockPos).getPropertyKeys().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
                 leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
             else
                 leafVariant = "notKnown";
