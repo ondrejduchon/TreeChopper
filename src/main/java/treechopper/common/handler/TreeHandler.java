@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.tree.Tree;
 
 import java.util.*;
@@ -14,7 +15,7 @@ public class TreeHandler {
 
         Queue<BlockPos> queuedBlocks = new LinkedList<>();
         Set<BlockPos> checkedBlocks = new HashSet<>();
-        BlockPos currentPos, tmpPos;
+        BlockPos currentPos;
         Block logBlock = world.getBlockState(blockPos).getBlock();
         tree = new Tree();
 
@@ -25,40 +26,67 @@ public class TreeHandler {
             currentPos = queuedBlocks.remove();
             checkedBlocks.add(currentPos);
 
-            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY(), currentPos.getZ());
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
-
-            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + 1, currentPos.getZ());
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
-
-            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY(), currentPos.getZ() + 1);
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
-
-            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY(), currentPos.getZ());
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
-
-            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() - 1, currentPos.getZ());
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
-
-            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY(), currentPos.getZ() - 1);
-            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-                queuedBlocks.add(tmpPos);
-            }
+            queuedBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
         }
 
         m_Trees.put(entityPlayer.getPersistentID(), tree);
 
         return tree.GetLogCount();
+    }
+
+    private Queue<BlockPos> LookAroundBlock(Block logBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
+
+        Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        BlockPos tmpPos;
+
+        for (int i = -1; i <= 1; i++) {
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+        }
+
+        return queuedBlocks;
     }
 
     private boolean CheckBlock(World world, BlockPos blockPos, Set<BlockPos> checkedBlocks, Block originBlock) {
@@ -68,7 +96,13 @@ public class TreeHandler {
         }
 
         if (world.getBlockState(blockPos).getBlock() != originBlock) {
-            return false;
+            if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
+                tree.InsertLeaf(blockPos);
+
+                return true;
+            } else {
+                return false;
+            }
         }
 
         tree.InsertWood(blockPos);
