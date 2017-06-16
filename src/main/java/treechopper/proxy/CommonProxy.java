@@ -12,6 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+class PlayerInteract {
+
+    public PlayerInteract(BlockPos blockPos, float logCount) {
+        m_BlockPos = blockPos;
+        m_LogCount = logCount;
+    }
+
+    public BlockPos m_BlockPos;
+    public float m_LogCount;
+};
+
 public class CommonProxy {
 
     @SubscribeEvent
@@ -25,7 +36,7 @@ public class CommonProxy {
             if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos())) {
                 logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
-                m_PlayerSpeed.put(interactEvent.getEntityPlayer().getPersistentID(), (float) logCount);
+                m_PlayerSpeed.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
             } else {
                 m_PlayerSpeed.remove(interactEvent.getEntityPlayer().getPersistentID());
             }
@@ -33,24 +44,36 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void BreakingBlock(PlayerEvent.BreakSpeed event) {
+    public void BreakingBlock(PlayerEvent.BreakSpeed breakSpeed) {
 
-        if (event.getEntityPlayer().getServer() == null) { // Server - Singleplayer/LAN
+        if (breakSpeed.getEntityPlayer().getServer() == null) { // Server - Singleplayer/LAN
 
-            //TODO Jestli hrac nici jiny blok, nez pocitam s blokem v map, odstrani se z mapy
+            if (m_PlayerSpeed.containsKey(breakSpeed.getEntityPlayer().getPersistentID())) {
 
-            if (m_PlayerSpeed.containsKey(event.getEntityPlayer().getPersistentID())) {
-                event.setNewSpeed(event.getOriginalSpeed() / (m_PlayerSpeed.get(event.getEntityPlayer().getPersistentID()) / 2.0f));
+                BlockPos blockPos = m_PlayerSpeed.get(breakSpeed.getEntityPlayer().getPersistentID()).m_BlockPos;
+
+                if (blockPos.equals(breakSpeed.getPos())) {
+                    breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed() / (m_PlayerSpeed.get(breakSpeed.getEntityPlayer().getPersistentID()).m_LogCount / 2.0f));
+                } else {
+                    breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed());
+                }
             }
-            System.out.println(event.getNewSpeed());
-        }
 
+            System.out.println(breakSpeed.getNewSpeed());
+        }
     }
 
     @SubscribeEvent
     public void DestroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
 
-        treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
+        if (m_PlayerSpeed.containsKey(breakEvent.getPlayer().getPersistentID())) {
+
+            BlockPos blockPos = m_PlayerSpeed.get(breakEvent.getPlayer().getPersistentID()).m_BlockPos;
+
+            if (blockPos.equals(breakEvent.getPos())) {
+                treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
+            }
+        }
     }
 
     protected boolean CheckWoodenBlock(World world, BlockPos blockPos) {
@@ -62,6 +85,6 @@ public class CommonProxy {
         return true;
     }
 
-    protected static Map<UUID, Float> m_PlayerSpeed = new HashMap<>();
+    protected static Map<UUID, PlayerInteract> m_PlayerSpeed = new HashMap<>();
     private TreeHandler treeHandler;
 }

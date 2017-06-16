@@ -86,7 +86,7 @@ public class TreeHandler {
 
             for (BlockPos blockPos : tmpTree.GetM_Wood()) {
 
-                if (soundReduced <= 2) {
+                if (soundReduced <= 1) {
                     world.destroyBlock(blockPos, true);
                 } else {
                     world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
