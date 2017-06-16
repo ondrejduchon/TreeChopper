@@ -8,8 +8,8 @@ import java.util.Set;
 public class Tree {
 
     public Tree() {
-        m_Wood = new HashSet<BlockPos>();
-        m_Leaves = new HashSet<BlockPos>();
+        m_Wood = new HashSet<>();
+        m_Leaves = new HashSet<>();
     }
 
     public void InsertWood(BlockPos blockPos) {
@@ -18,6 +18,18 @@ public class Tree {
 
     public void InsertLeaf(BlockPos blockPos) {
         m_Leaves.add(blockPos);
+    }
+
+    public int GetLogCount() {
+        return m_Wood.size();
+    }
+
+    public int GetLeavesCount() {
+        return m_Leaves.size();
+    }
+
+    public Set<BlockPos> GetM_Wood() {
+        return m_Wood;
     }
 
     private Set<BlockPos> m_Wood;

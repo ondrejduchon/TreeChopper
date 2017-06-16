@@ -10,14 +10,10 @@ import java.util.*;
 
 public class TreeHandler {
 
-    public static final int AREA_LOOK = 3;
+    public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
-    private Tree tree;
-
-    public void AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
-
-        Queue<BlockPos> queuedBlocks = new LinkedList<BlockPos>();
-        Set<BlockPos> checkedBlocks = new HashSet<BlockPos>();
+        Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        Set<BlockPos> checkedBlocks = new HashSet<>();
         BlockPos currentPos, tmpPos;
         Block logBlock = world.getBlockState(blockPos).getBlock();
         tree = new Tree();
@@ -60,7 +56,9 @@ public class TreeHandler {
             }
         }
 
-        m_Trees.put(entityPlayer.getUniqueID(), tree);
+        m_Trees.put(entityPlayer.getPersistentID(), tree);
+
+        return tree.GetLogCount();
     }
 
     private boolean CheckBlock(World world, BlockPos blockPos, Set<BlockPos> checkedBlocks, Block originBlock) {
@@ -80,7 +78,27 @@ public class TreeHandler {
 
     public void DestroyTree(World world, EntityPlayer entityPlayer) {
 
+        int soundReduced = 0;
+
+        if (m_Trees.containsKey(entityPlayer.getPersistentID())) {
+
+            Tree tmpTree = m_Trees.get(entityPlayer.getPersistentID());
+
+            for (BlockPos blockPos : tmpTree.GetM_Wood()) {
+
+                if (soundReduced <= 2) {
+                    world.destroyBlock(blockPos, true);
+                } else {
+                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                }
+
+                world.setBlockToAir(blockPos);
+
+                soundReduced++;
+            }
+        }
     }
 
-    private static Map<UUID, Tree> m_Trees;
+    private static Map<UUID, Tree> m_Trees = new HashMap<>();
+    private Tree tree;
 }
