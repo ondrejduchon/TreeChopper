@@ -34,8 +34,23 @@ public class CommonProxy {
 
             treeHandler = new TreeHandler();
             int logCount;
+            boolean shifting = true;
 
-            if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer())) {
+            if (interactEvent.getEntityPlayer().isSneaking() && !ConfigurationHandler.reverseShift) {
+                shifting = false;
+            }
+
+            if (!interactEvent.getEntityPlayer().isSneaking() && ConfigurationHandler.reverseShift) {
+                shifting = false;
+            }
+
+            if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer()) && shifting) {
+
+                if (m_PlayerData.containsKey(interactEvent.getEntityPlayer().getPersistentID()) &&
+                        m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_BlockPos.equals(interactEvent.getPos())) {
+                    return;
+                }
+
                 logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
                 m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));

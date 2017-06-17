@@ -12,7 +12,9 @@ import java.util.List;
 
 public class ConfigurationHandler {
     public static Configuration config;
+
     public static boolean decayLeaves;
+    public static boolean reverseShift;
 
     public static List<String> axeTypes = new ArrayList<>();
 
@@ -26,6 +28,7 @@ public class ConfigurationHandler {
     private static void loadConfiguration() {
         try {
             decayLeaves = config.getBoolean("Decay leaves", "Settings", true, "Cut down whole tree - wooden blocks and leaves");
+            reverseShift = config.getBoolean("Reverse shift", "Settings", false, "Reverse shift function - Mod works with shift pressing");
 
             axeTypes = ImmutableList.copyOf(config.getStringList("Allowed axes", "Data", new String[]{
                     "item.hatchetWood",
