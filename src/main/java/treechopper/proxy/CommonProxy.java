@@ -53,6 +53,13 @@ public class CommonProxy {
 
                 logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
+                int axeDurability = interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+
+                if (axeDurability < logCount) {
+                    m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
+                    return;
+                }
+
                 m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
             } else {
                 m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
@@ -89,6 +96,13 @@ public class CommonProxy {
 
             if (blockPos.equals(breakEvent.getPos())) {
                 treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
+
+                if (!breakEvent.getPlayer().isCreative()) {
+
+                    int axeDurability = breakEvent.getPlayer().getHeldItemMainhand().getItemDamage() + (int) (m_PlayerData.get(breakEvent.getPlayer().getPersistentID()).m_LogCount * 1.5);
+
+                    breakEvent.getPlayer().getHeldItemMainhand().setItemDamage(axeDurability);
+                }
             }
         }
     }
