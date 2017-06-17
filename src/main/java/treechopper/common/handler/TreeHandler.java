@@ -29,6 +29,14 @@ public class TreeHandler {
             queuedBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
         }
 
+        Set<BlockPos> tmpLeaves = new HashSet<>();
+        tmpLeaves.addAll(tree.GetM_Leaves());
+
+        for (BlockPos blockPos1 : tmpLeaves) {
+            checkedBlocks.add(blockPos1);
+            LookAroundBlock(null, blockPos1, world, checkedBlocks);
+        }
+
         m_Trees.put(entityPlayer.getPersistentID(), tree);
 
         return tree.GetLogCount();
@@ -99,7 +107,7 @@ public class TreeHandler {
             if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
                 tree.InsertLeaf(blockPos);
 
-                return true;
+                return false;
             } else {
                 return false;
             }
@@ -129,6 +137,24 @@ public class TreeHandler {
                 world.setBlockToAir(blockPos);
 
                 soundReduced++;
+            }
+
+            soundReduced = 0;
+
+            if (ConfigurationHandler.decayLeaves) {
+
+                for (BlockPos blockPos : tmpTree.GetM_Leaves()) {
+
+                    if (soundReduced <= 1) {
+                        world.destroyBlock(blockPos, true);
+                    } else {
+                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                    }
+
+                    world.setBlockToAir(blockPos);
+
+                    soundReduced++;
+                }
             }
         }
     }

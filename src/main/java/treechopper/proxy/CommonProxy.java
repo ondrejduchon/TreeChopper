@@ -1,11 +1,13 @@
 package treechopper.proxy;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.handler.TreeHandler;
 
 import java.util.HashMap;
@@ -19,7 +21,7 @@ class PlayerInteract {
         m_LogCount = logCount;
     }
 
-    public BlockPos m_BlockPos;
+    public BlockPos m_BlockPos; // Interact block position
     public float m_LogCount;
 };
 
@@ -33,12 +35,12 @@ public class CommonProxy {
             treeHandler = new TreeHandler();
             int logCount;
 
-            if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos())) {
+            if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer())) {
                 logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
-                m_PlayerSpeed.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
+                m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
             } else {
-                m_PlayerSpeed.remove(interactEvent.getEntityPlayer().getPersistentID());
+                m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
             }
         }
     }
@@ -48,12 +50,12 @@ public class CommonProxy {
 
         if (breakSpeed.getEntityPlayer().getServer() == null) { // Server - Singleplayer/LAN
 
-            if (m_PlayerSpeed.containsKey(breakSpeed.getEntityPlayer().getPersistentID())) {
+            if (m_PlayerData.containsKey(breakSpeed.getEntityPlayer().getPersistentID())) {
 
-                BlockPos blockPos = m_PlayerSpeed.get(breakSpeed.getEntityPlayer().getPersistentID()).m_BlockPos;
+                BlockPos blockPos = m_PlayerData.get(breakSpeed.getEntityPlayer().getPersistentID()).m_BlockPos;
 
                 if (blockPos.equals(breakSpeed.getPos())) {
-                    breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed() / (m_PlayerSpeed.get(breakSpeed.getEntityPlayer().getPersistentID()).m_LogCount / 2.0f));
+                    breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed() / (m_PlayerData.get(breakSpeed.getEntityPlayer().getPersistentID()).m_LogCount / 2.0f));
                 } else {
                     breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed());
                 }
@@ -66,9 +68,9 @@ public class CommonProxy {
     @SubscribeEvent
     public void DestroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
 
-        if (m_PlayerSpeed.containsKey(breakEvent.getPlayer().getPersistentID())) {
+        if (m_PlayerData.containsKey(breakEvent.getPlayer().getPersistentID())) {
 
-            BlockPos blockPos = m_PlayerSpeed.get(breakEvent.getPlayer().getPersistentID()).m_BlockPos;
+            BlockPos blockPos = m_PlayerData.get(breakEvent.getPlayer().getPersistentID()).m_BlockPos;
 
             if (blockPos.equals(breakEvent.getPos())) {
                 treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
@@ -82,9 +84,24 @@ public class CommonProxy {
             return false;
         }
 
+        // TODO Whitelist / Blacklist
+
         return true;
     }
 
-    protected static Map<UUID, PlayerInteract> m_PlayerSpeed = new HashMap<>();
+    protected boolean CheckItemInHand(EntityPlayer entityPlayer) {
+
+        if (entityPlayer.getHeldItemMainhand().isEmpty()) {
+            return false;
+        }
+
+        if (!ConfigurationHandler.axeTypes.contains(entityPlayer.getHeldItemMainhand().getItem().getUnlocalizedName())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
     private TreeHandler treeHandler;
 }

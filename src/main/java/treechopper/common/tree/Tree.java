@@ -32,6 +32,10 @@ public class Tree {
         return m_Wood;
     }
 
+    public Set<BlockPos> GetM_Leaves() {
+        return m_Leaves;
+    }
+
     private Set<BlockPos> m_Wood;
     private Set<BlockPos> m_Leaves;
 }
