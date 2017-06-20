@@ -1,6 +1,7 @@
 package treechopper.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemAxe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -85,7 +86,7 @@ public class CommonProxy {
                 }
             }
 
-            System.out.println(breakSpeed.getNewSpeed());
+            //System.out.println(breakSpeed.getNewSpeed());
         }
     }
 
@@ -111,11 +112,13 @@ public class CommonProxy {
 
     protected boolean CheckWoodenBlock(World world, BlockPos blockPos) {
 
+        if (ConfigurationHandler.blockWhiteList.contains(world.getBlockState(blockPos).getBlock().getUnlocalizedName())) {
+            return true;
+        }
+
         if (!world.getBlockState(blockPos).getBlock().isWood(world, blockPos)) {
             return false;
         }
-
-        // TODO Whitelist / Blacklist
 
         return true;
     }
@@ -126,11 +129,21 @@ public class CommonProxy {
             return false;
         }
 
-        if (!ConfigurationHandler.axeTypes.contains(entityPlayer.getHeldItemMainhand().getItem().getUnlocalizedName())) {
-            return false;
+        if (ConfigurationHandler.axeTypes.contains(entityPlayer.getHeldItemMainhand().getItem().getUnlocalizedName())) {
+            return true;
         }
 
-        return true;
+        boolean test;
+
+        try {
+            ItemAxe tmp = (ItemAxe) entityPlayer.getHeldItemMainhand().getItem();
+            test = true;
+        } catch (Exception e) {
+            System.out.println("It is not an axe");
+            test = false;
+        }
+
+        return test;
     }
 
     protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
