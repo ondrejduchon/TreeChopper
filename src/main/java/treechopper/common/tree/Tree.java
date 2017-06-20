@@ -36,6 +36,15 @@ public class Tree {
         return m_Leaves;
     }
 
+    public BlockPos getM_Position() {
+        return m_Position;
+    }
+
+    public void setM_Position(BlockPos m_Position) {
+        this.m_Position = m_Position;
+    }
+
     private Set<BlockPos> m_Wood;
     private Set<BlockPos> m_Leaves;
+    private BlockPos m_Position;
 }

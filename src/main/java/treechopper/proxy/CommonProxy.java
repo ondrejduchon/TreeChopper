@@ -60,7 +60,9 @@ public class CommonProxy {
                     return;
                 }
 
-                m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
+                if (logCount > 1) {
+                    m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
+                }
             } else {
                 m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
             }

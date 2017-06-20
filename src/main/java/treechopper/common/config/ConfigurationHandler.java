@@ -15,6 +15,7 @@ public class ConfigurationHandler {
 
     public static boolean decayLeaves;
     public static boolean reverseShift;
+    public static boolean plantSapling;
 
     public static List<String> axeTypes = new ArrayList<>();
 
@@ -29,6 +30,7 @@ public class ConfigurationHandler {
         try {
             decayLeaves = config.getBoolean("Decay leaves", "Settings", true, "Cut down whole tree - wooden blocks and leaves");
             reverseShift = config.getBoolean("Reverse shift", "Settings", false, "Reverse shift function - Mod works with shift pressing");
+            plantSapling = config.getBoolean("Plant sapling", "Settings", false, "Automatic sapling plant on tree chop");
 
             axeTypes = ImmutableList.copyOf(config.getStringList("Allowed axes", "Data", new String[]{
                     "item.hatchetWood",
