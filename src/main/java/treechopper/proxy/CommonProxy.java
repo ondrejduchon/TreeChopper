@@ -147,5 +147,5 @@ public class CommonProxy {
     }
 
     protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
-    private TreeHandler treeHandler;
+    protected TreeHandler treeHandler;
 }

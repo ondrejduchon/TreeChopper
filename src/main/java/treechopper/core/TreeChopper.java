@@ -14,7 +14,7 @@ import java.io.File;
 
 import static treechopper.core.TreeChopper.*;
 
-@Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES, guiFactory = GUI_FACTORY)
+@Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES, guiFactory = GUI_FACTORY, acceptableRemoteVersions = "*")
 
 public class TreeChopper {
 
