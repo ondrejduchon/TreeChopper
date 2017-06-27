@@ -27,7 +27,7 @@ public class TreeChopper {
     public static final String MOD_NAME = "Tree Chopper";
     public static final String MOD_VERSION = "1.2.0";
     public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
-    public static final String MOD_DEPENDENCIES = "required-after:forge@[13.20.0.2279,)";
+    public static final String MOD_DEPENDENCIES = "required-after:forge@[14.21.0.2333,)";
     public static SimpleNetworkWrapper m_Network;
 
 //    @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
