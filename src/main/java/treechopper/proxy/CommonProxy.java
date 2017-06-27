@@ -31,7 +31,7 @@ public class CommonProxy {
     @SubscribeEvent
     public void InteractWithTree(PlayerInteractEvent interactEvent) {
 
-        if (interactEvent.getSide().isServer()) { // Server - Singleplayer/LAN
+        if (interactEvent.getSide().isServer()) {
 
             treeHandler = new TreeHandler();
             int logCount;
@@ -86,7 +86,6 @@ public class CommonProxy {
                 }
             }
 
-            //System.out.println(breakSpeed.getNewSpeed());
         }
     }
 

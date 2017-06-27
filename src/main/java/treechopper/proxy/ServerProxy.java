@@ -18,6 +18,5 @@ public class ServerProxy extends CommonProxy {
                 breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed());
             }
         }
-
     }
 }
