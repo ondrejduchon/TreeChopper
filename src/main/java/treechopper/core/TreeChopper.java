@@ -30,8 +30,8 @@ public class TreeChopper {
     public static final String MOD_DEPENDENCIES = "required-after:forge@[13.20.0.2279,)";
     public static SimpleNetworkWrapper m_Network;
 
-    @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
-    private static CommonProxy commonProxy;
+//    @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
+//    private static CommonProxy commonProxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -43,7 +43,7 @@ public class TreeChopper {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(commonProxy);
+//        MinecraftForge.EVENT_BUS.register(commonProxy);
         MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
         MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
