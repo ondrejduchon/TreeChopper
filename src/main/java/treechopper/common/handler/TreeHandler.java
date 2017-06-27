@@ -1,377 +1,203 @@
 package treechopper.common.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.block.BlockSapling;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.BlockEvent;
-import treechopper.common.config.ConfigHandler;
-import treechopper.common.handler.mods.BOPHandler;
-import treechopper.common.handler.mods.ForestryHandler;
-import treechopper.core.TreeChopper;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import treechopper.common.config.ConfigurationHandler;
+import treechopper.common.tree.Tree;
 
 import java.util.*;
 
-/**
- * Created by Duchy on 8/22/2016.
- */
-
 public class TreeHandler {
-    private Set<BlockPos> tree;
-    private static Set<BlockPos> leaves = new HashSet<BlockPos>();
-    private static Set<BlockPos> leavesTmp = new HashSet<BlockPos>();
-    private String leafVariant;
-    private int leafCount;
 
-    public float treeAnalyze(World world, BlockPos position) {
-        Block logType = world.getBlockState(position).getBlock();
-        Queue<BlockPos> logsToCheck = new LinkedList<BlockPos>();
-        tree = new HashSet<BlockPos>();
-        BlockPos curBlock = position;
-        boolean isAnyNeighbour;
+    public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
-        leavesTmp.clear();
-        leaves.clear();
+        Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        Set<BlockPos> checkedBlocks = new HashSet<>();
+        BlockPos currentPos;
+        Block logBlock = world.getBlockState(blockPos).getBlock();
+        tree = new Tree();
 
-        tree.add(position);
+        queuedBlocks.add(blockPos);
 
-        do {
-            for (int i = curBlock.getY() - 3; i <= curBlock.getY() + 3; i++) {
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ())), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
-                    tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ()));
-                }
+        while (!queuedBlocks.isEmpty()) {
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ())), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
-                    tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ()));
-                }
+            currentPos = queuedBlocks.remove();
+            checkedBlocks.add(currentPos);
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
-                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() + 1));
-                }
+            queuedBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
+        }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
-                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ() - 1));
-                }
+        Set<BlockPos> tmpLeaves = new HashSet<>();
+        tmpLeaves.addAll(tree.GetM_Leaves());
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
-                    tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() + 1));
-                }
+        for (BlockPos blockPos1 : tmpLeaves) {
+            checkedBlocks.add(blockPos1);
+            LookAroundBlock(null, blockPos1, world, checkedBlocks);
+        }
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
-                    tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() - 1));
-                }
+        tree.setM_Position(blockPos);
+        m_Trees.put(entityPlayer.getPersistentID(), tree);
 
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
-                    tree.add(new BlockPos(curBlock.getX() + 1, i, curBlock.getZ() - 1));
-                }
-
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1)), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
-                    tree.add(new BlockPos(curBlock.getX() - 1, i, curBlock.getZ() + 1));
-                }
-            }
-
-            for (int i = curBlock.getY() + 1; i < curBlock.getY() + 4; i++) {
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
-                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
-                }
-            }
-
-            for (int i = curBlock.getY() - 3; i < curBlock.getY(); i++) {
-                if (logAnalyze(logType, (new BlockPos(curBlock.getX(), i, curBlock.getZ())), position, world, tree)) {
-                    logsToCheck.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
-                    tree.add(new BlockPos(curBlock.getX(), i, curBlock.getZ()));
-                }
-            }
-
-            if (!logsToCheck.isEmpty()) {
-                curBlock = logsToCheck.remove();
-                tree.add(curBlock);
-                isAnyNeighbour = true;
-            } else
-                isAnyNeighbour = false;
-
-        } while (isAnyNeighbour);
-
-        return tree.size();
+        return tree.GetLogCount();
     }
 
-    private boolean logAnalyze(Block logType, BlockPos position, BlockPos originPos, World world, Set<BlockPos> visitedLogs) {
-        if (world.getBlockState(position).getBlock() != logType) {
-            if (world.getBlockState(position).getBlock().isLeaves(world.getBlockState(position), world, position))
-                leaves.add(position);
+    private Queue<BlockPos> LookAroundBlock(Block logBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
+
+        Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        BlockPos tmpPos;
+
+        for (int i = -1; i <= 1; i++) {
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() + 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() - 1);
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+
+            tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ());
+            if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
+                queuedBlocks.add(tmpPos);
+            }
+        }
+
+        return queuedBlocks;
+    }
+
+    private boolean CheckBlock(World world, BlockPos blockPos, Set<BlockPos> checkedBlocks, Block originBlock) {
+
+        if (checkedBlocks.contains(blockPos)) {
             return false;
         }
 
-        if (visitedLogs.contains(position))
-            return false;
+        if (world.getBlockState(blockPos).getBlock() != originBlock) {
 
-        if (ConfigHandler.roots) {
-            if (position.getY() < originPos.getY() - 3)
+            if (ConfigurationHandler.plantSapling && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos) && tree.GetM_Leaves().isEmpty()) {
+                tree.InsertLeaf(blockPos);
+            }
+
+            if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
+                tree.InsertLeaf(blockPos);
+
                 return false;
-        } else {
-            if (position.getY() < originPos.getY())
+            } else {
                 return false;
+            }
         }
 
-        if (world.getBlockState(position).getPropertyKeys().toString().contains("variant") && logType.getBlockState().getProperty("variant") != null)
-            return ((world.getBlockState(position).getValue(logType.getBlockState().getProperty("variant")) == world.getBlockState(originPos).getValue(logType.getBlockState().getProperty("variant"))));
+        tree.InsertWood(blockPos);
 
-        return true; // Ignoring log variant - doesnt have one..
+        return true;
     }
 
-    private void lookAround(BlockPos position, World world, Set<BlockPos> newLeaves) {
+    public void DestroyTree(World world, EntityPlayer entityPlayer) {
 
-        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ())), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ())))
-                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ()));
+        int soundReduced = 0;
 
-        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ())), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ())))
-                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ()));
+        if (m_Trees.containsKey(entityPlayer.getPersistentID())) {
 
-        if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX(), position.getY(), position.getZ() + 1)))
-                newLeaves.add(new BlockPos(position.getX(), position.getY(), position.getZ() + 1));
+            Tree tmpTree = m_Trees.get(entityPlayer.getPersistentID());
 
-        if (world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX(), position.getY(), position.getZ() - 1)))
-                newLeaves.add(new BlockPos(position.getX(), position.getY(), position.getZ() - 1));
+            for (BlockPos blockPos : tmpTree.GetM_Wood()) {
 
-        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1)))
-                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() + 1));
+                if (soundReduced <= 1) {
+                    world.destroyBlock(blockPos, true);
+                } else {
+                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                }
 
-        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1)))
-                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1));
+                world.setBlockToAir(blockPos);
 
-        if (world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1)))
-                newLeaves.add(new BlockPos(position.getX() + 1, position.getY(), position.getZ() - 1));
-
-        if (world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)).getBlock().isLeaves(world.getBlockState(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)), world, position))
-            if (!leaves.contains(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1)))
-                newLeaves.add(new BlockPos(position.getX() - 1, position.getY(), position.getZ() + 1));
-
-    }
-
-    private boolean destroyBlockOverr(BlockPos pos, boolean dropBlock, World world) {
-        IBlockState iblockstate = world.getBlockState(pos);
-        Block block = iblockstate.getBlock();
-
-        if (block.isAir(iblockstate, world, pos)) {
-            return false;
-        } else {
-            if (dropBlock)
-                block.dropBlockAsItem(world, pos, iblockstate, 0);
-
-            return world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
-        }
-    }
-
-    public int treeDestroy(BlockEvent.BreakEvent event) {
-        int logCount = tree.size();
-        int soundMuter = 0;
-        boolean destruction;
-        Map<String, Integer> leafVariantCount = new HashMap<String, Integer>();
-
-        for (BlockPos blockPos : tree) {
-
-            if (blockPos.getX() != event.getPos().getX() || blockPos.getY() != event.getPos().getY() || blockPos.getZ() != event.getPos().getZ()) {
-
-                // DESTROY WOOD
-                if (soundMuter <= 1)
-                    destruction = event.getWorld().destroyBlock(blockPos, true); // With a sound
-                else
-                    destruction = destroyBlockOverr(blockPos, true, event.getWorld()); // Without a sound
-                if (!destruction)
-                    System.out.println("Problem with block.. " + blockPos);
-                event.getWorld().setBlockToAir(blockPos);
-                //**
+                soundReduced++;
             }
 
-            soundMuter++;
-        }
-
-        if (!ConfigHandler.decayLeaves) {
-
-            for (BlockPos blockPos : leaves) {
-                if (event.getWorld().getBlockState(blockPos).getPropertyKeys().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
-                    leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
-                else
-                    leafVariant = "notKnown";
-
-                if (leafVariantCount.containsKey(leafVariant)) {
-                    int tmpCount = leafVariantCount.get(leafVariant);
-                    leafVariantCount.put(leafVariant, ++tmpCount);
-                } else
-                    leafVariantCount.put(leafVariant, 1);
+            if (ConfigurationHandler.plantSapling && !tmpTree.GetM_Leaves().isEmpty()) {
+                PlantSapling(world, tmpTree.GetM_Leaves().iterator().next(), tmpTree.getM_Position());
             }
 
-            int maxValue = 0;
-            for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
-                if (entry.getValue() > maxValue) {
-                    maxValue = entry.getValue();
-                    leafVariant = entry.getKey();
+            soundReduced = 0;
+
+            if (ConfigurationHandler.decayLeaves) {
+
+                for (BlockPos blockPos : tmpTree.GetM_Leaves()) {
+
+                    if (soundReduced <= 1) {
+                        world.destroyBlock(blockPos, true);
+                    } else {
+                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                    }
+
+                    world.setBlockToAir(blockPos);
+
+                    soundReduced++;
                 }
             }
-
-            leafCount = leaves.size();
-            leavesTmp.clear();
-            leaves.clear();
-            return logCount;
         }
-
-        for (BlockPos blockPos : leaves) {
-            lookAround(blockPos, event.getWorld(), leavesTmp);
-        }
-
-        for (BlockPos blockPos : leavesTmp) {
-            lookAround(blockPos, event.getWorld(), leaves);
-            leaves.add(blockPos);
-        }
-
-        soundMuter = 0;
-        for (BlockPos blockPos : leaves) {
-            if (event.getWorld().getBlockState(blockPos).getPropertyKeys().toString().contains("variant") && event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant") != null)
-                leafVariant = event.getWorld().getBlockState(blockPos).getValue(event.getWorld().getBlockState(blockPos).getBlock().getBlockState().getProperty("variant")).toString().toUpperCase();
-            else
-                leafVariant = "notKnown";
-
-            // DESTROY LEAVES
-            if (soundMuter <= 1)
-                destruction = event.getWorld().destroyBlock(blockPos, true); // With a sound
-            else
-                destruction = destroyBlockOverr(blockPos, true, event.getWorld()); // Without a sound
-
-            if (!destruction)
-                System.out.println("Problem with block.. " + blockPos);
-            event.getWorld().setBlockToAir(blockPos);
-            //**
-
-            if (leafVariantCount.containsKey(leafVariant)) {
-                int tmpCount = leafVariantCount.get(leafVariant);
-                leafVariantCount.put(leafVariant, ++tmpCount);
-            } else
-                leafVariantCount.put(leafVariant, 1);
-
-            soundMuter++;
-        }
-
-        int maxValue = 0;
-        for (Map.Entry<String, Integer> entry : leafVariantCount.entrySet()) {
-            if (entry.getValue() > maxValue) {
-                maxValue = entry.getValue();
-                leafVariant = entry.getKey();
-            }
-        }
-
-        if (leaves.size() == 0 || logCount < 2) // Tree without leaves
-            leafVariant = null;
-
-        leafCount = leaves.size();
-        leavesTmp.clear();
-        leaves.clear();
-        leafVariantCount.clear();
-        return logCount;
     }
 
-    public boolean plantSapling(World world, BlockPos position, BlockEvent.BreakEvent event) {
-        BlockPos position1 = new BlockPos(position.getX() - 1, position.getY(), position.getZ() - 1), position2 = new BlockPos(position.getX(), position.getY(), position.getZ() + 1);
-        int positionsClear = 0;
-        boolean planted;
+    private void PlantSapling(World world, BlockPos blockPos, BlockPos originPos) {
 
-        if (leafVariant == null)
-            return false;
+        Set<ItemStack> leafDrop = new HashSet<>();
+        BlockPos plantPos1 = new BlockPos(originPos.getX() - 1, originPos.getY(), originPos.getZ() - 1);
+        int counter = 0;
 
-        if (world.getBlockState(new BlockPos(position1.getX(), position1.getY() - 1, position1.getZ())).isFullBlock() && !world.getBlockState(position1).isFullBlock())
-            positionsClear++;
-
-        if (world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(position2).isFullBlock() && leafCount > 3)
-            positionsClear += 2;
-
-        if (ConfigHandler.plantSaplingTree && world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).isFullBlock() && !world.getBlockState(new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ())).getBlock().isWood(world, new BlockPos(position2.getX(), position2.getY() - 1, position2.getZ()))) { // Plant sapling on tree position
-            positionsClear = 1;
-            position1 = new BlockPos(position.getX(), position.getY(), position.getZ());
+        while (leafDrop.isEmpty() && counter <= 100) {
+            leafDrop.addAll(world.getBlockState(blockPos).getBlock().getDrops(world, blockPos, world.getBlockState(blockPos), 3));
+            counter++;
         }
 
-        if (positionsClear == 0)
-            return false;
-
-        try {
-            switch (positionsClear) {
-                case 1:
-                    world.setBlockState(position1, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
-                    break;
-                case 2:
-                    world.setBlockState(position2, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
-                    break;
-                case 3:
-                    world.setBlockState(position1, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
-                    world.setBlockState(position2, Blocks.SAPLING.getDefaultState().withProperty(BlockSapling.TYPE, BlockPlanks.EnumType.valueOf(leafVariant)));
-                    break;
-            }
-            planted = true;
-        } catch (Exception e) {
-            planted = false;
+        if (leafDrop.isEmpty()) {
+            return;
         }
 
-        if (!planted && TreeChopper.BoPPresent)
-            try {
-                switch (positionsClear) {
-                    case 1:
-                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
-                        break;
-                    case 2:
-                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
-                        break;
-                    case 3:
-                        BOPHandler.plantBOPSapling(world, position1, leafVariant);
-                        BOPHandler.plantBOPSapling(world, position2, leafVariant);
-                        break;
-                }
-                planted = true;
-            } catch (Exception e) {
-                planted = false;
-            }
+        FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((WorldServer) world);
+        fakePlayer.setHeldItem(EnumHand.MAIN_HAND, leafDrop.iterator().next());
 
-        if (!planted && TreeChopper.ForestryPresent) {
-            try {
-                switch (positionsClear) {
-                    case 1:
-                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
-                        break;
-                    case 2:
-                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
-                        break;
-                    case 3:
-                        ForestryHandler.plantForestrySapling(world, position1, leafVariant, event);
-                        ForestryHandler.plantForestrySapling(world, position2, leafVariant, event);
-                        break;
-                }
-                planted = true;
-            } catch (Exception e) {
-                //System.out.println(e);
-                planted = false;
-            }
+        for (ItemStack itemStack : leafDrop) {
+            itemStack.onItemUse(fakePlayer, world, plantPos1, EnumHand.MAIN_HAND, EnumFacing.NORTH, 0, 0, 0);
         }
-
-        if (!planted)
-            System.out.println("Leaf variant not recognized..");
-
-        leafVariant = null;
-        return false;
     }
+
+    private static Map<UUID, Tree> m_Trees = new HashMap<>();
+    private Tree tree;
 }

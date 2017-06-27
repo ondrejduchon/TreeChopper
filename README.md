@@ -15,12 +15,12 @@ Type in-game command "/tch help" or "/treechop help" for more info
 Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecraft/config/) between > and < . You can use in-game command "/tch printname 1" for start to print the names.
 
 <h3>References</h3>
-[Minecraft forum](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2731148-tree-chopper)
+[Minecraft forum](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2731148-tree-chopper-cut-down-the-whole-tree)
 
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
 
 [Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
 
-For Minecraft **1.11.2**.
+For Minecraft **1.12**.
 
-Recommended forge version: **1.11.2 - 13.20.0.2228**
+Recommended forge version: **1.12 - 14.21.0.2322**

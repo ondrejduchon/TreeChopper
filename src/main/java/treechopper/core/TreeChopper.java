@@ -1,7 +1,6 @@
 package treechopper.core;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,50 +10,42 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import treechopper.common.command.Commands;
-import treechopper.common.config.ConfigHandler;
+import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.handler.EventHandler;
-import treechopper.common.network.ClientMessage;
-import treechopper.common.network.ServerMessage;
-import treechopper.common.network.sendReverseToClient;
+import treechopper.common.network.ServerSettingsMessage;
 import treechopper.proxy.CommonProxy;
 
-/**
- * Created by Duchy on 8/11/2016.
- */
+import java.io.File;
 
-@Mod(modid = TreeChopper.MODID, version = TreeChopper.VERSION, dependencies = "required-after:forge@[13.20.0.2200,)", guiFactory = "treechopper.client.gui.GuiFactory")
+import static treechopper.core.TreeChopper.*;
+
+@Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_VERSION, dependencies = MOD_DEPENDENCIES, guiFactory = GUI_FACTORY, acceptableRemoteVersions = "*")
 
 public class TreeChopper {
-    public static SimpleNetworkWrapper network;
-    public static final String MODID = "treechopper";
-    public static final String VERSION = "1.1.2";
 
-    public static boolean BoPPresent = false;
-    public static boolean ForestryPresent = false;
+    public static final String MOD_ID = "treechopper";
+    public static final String MOD_NAME = "Tree Chopper";
+    public static final String MOD_VERSION = "1.2.0";
+    public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
+    public static final String MOD_DEPENDENCIES = "required-after:forge@[13.20.0.2279,)";
+    public static SimpleNetworkWrapper m_Network;
 
-    @Mod.Instance(MODID)
-    public static TreeChopper instance;
-
-    @SidedProxy(clientSide = "treechopper.proxy.ClientProxy", serverSide = "treechopper.proxy.ServerProxy")
-    private static CommonProxy proxy;
+//    @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
+//    private static CommonProxy commonProxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        ConfigHandler.init(event.getSuggestedConfigurationFile());
-        BoPPresent = Loader.isModLoaded("biomesoplenty");
-        ForestryPresent = Loader.isModLoaded("forestry");
+        ConfigurationHandler.init(new File(new File(event.getModConfigurationDirectory(), "treechopper"), "treechopper.cfg"));
+
+        m_Network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+        m_Network.registerMessage(ServerSettingsMessage.MsgHandler.class, ServerSettingsMessage.class, 0, Side.CLIENT);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel("treechopper");
-        network.registerMessage(ServerMessage.Handler.class, ServerMessage.class, 1, Side.CLIENT);
-        network.registerMessage(ClientMessage.Handler.class, ClientMessage.class, 0, Side.SERVER);
-        network.registerMessage(sendReverseToClient.Handler.class, sendReverseToClient.class, 2, Side.CLIENT);
-
+//        MinecraftForge.EVENT_BUS.register(commonProxy);
+        MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
         MinecraftForge.EVENT_BUS.register(new EventHandler());
-        MinecraftForge.EVENT_BUS.register(proxy);
     }
 
     @Mod.EventHandler
@@ -62,8 +53,6 @@ public class TreeChopper {
     }
 
     @Mod.EventHandler
-    public void gameStart(FMLServerStartingEvent event) {
-        event.registerServerCommand(new Commands());
+    public void serverStarting(FMLServerStartingEvent event) {
     }
-
 }
