@@ -6,18 +6,17 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import treechopper.common.config.ConfigurationHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class TCHCommand extends CommandBase {
 
     private static final String m_ErrorMessage = "Type \"/tch help\" for help";
-
-    // TODO permissions
-    // TODO TAB advice
 
     @Override
     public String getName() {
@@ -85,13 +84,24 @@ public class TCHCommand extends CommandBase {
         }
     }
 
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, "info", "plantSap", "decLeaves", "revShift", "help");
+        }
+
+        return null;
+    }
+
     private void GetUsage(ICommandSender sender) {
         sender.sendMessage(new TextComponentTranslation(TextFormatting.GOLD + "Format: /tch <argument> [value]"));
         sender.sendMessage(new TextComponentTranslation(TextFormatting.GRAY + "Arguments:"));
 
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "plantsap" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Auto plant sapling, around his trunk."));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "decayleaves" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Decay leaves with tree fall."));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "reverse" + TextFormatting.RESET + " [value] -" + TextFormatting.ITALIC + " Reverse shift function"));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "info" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + " Print info about server settings"));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "plantSap" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + " Auto plant sapling, around his trunk."));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "decLeaves" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + " Decay leaves with tree fall."));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "revShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + " Reverse shift function"));
     }
 
     private void GetInfo(ICommandSender sender) {

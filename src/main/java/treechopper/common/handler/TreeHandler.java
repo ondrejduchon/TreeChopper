@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -20,6 +21,7 @@ public class TreeHandler {
     public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
         Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        Set<BlockPos> tmpBlocks = new HashSet<>();
         Set<BlockPos> checkedBlocks = new HashSet<>();
         BlockPos currentPos;
         Block logBlock = world.getBlockState(blockPos).getBlock();
@@ -32,7 +34,10 @@ public class TreeHandler {
             currentPos = queuedBlocks.remove();
             checkedBlocks.add(currentPos);
 
-            queuedBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
+            tmpBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
+            queuedBlocks.addAll(tmpBlocks);
+            checkedBlocks.addAll(tmpBlocks);
+            tmpBlocks.clear();
         }
 
         Set<BlockPos> tmpLeaves = new HashSet<>();
@@ -182,7 +187,10 @@ public class TreeHandler {
         int counter = 0;
 
         while (leafDrop.isEmpty() && counter <= 100) {
-            leafDrop.addAll(world.getBlockState(blockPos).getBlock().getDrops(world, blockPos, world.getBlockState(blockPos), 3));
+            NonNullList<ItemStack> tmpList = NonNullList.create();
+            world.getBlockState(blockPos).getBlock().getDrops(tmpList, world, blockPos, world.getBlockState(blockPos), 3);
+            leafDrop.addAll(tmpList);
+
             counter++;
         }
 
