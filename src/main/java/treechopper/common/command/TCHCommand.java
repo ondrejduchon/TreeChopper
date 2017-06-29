@@ -100,6 +100,8 @@ public class TCHCommand extends CommandBase {
                 } else {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Reverse function has been switched " + TextFormatting.RED + "OFF"));
                 }
+
+                //TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
             } else {
                 throw new WrongUsageException(m_ErrorMessage);
             }

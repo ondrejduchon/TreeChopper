@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import treechopper.common.command.TCHCommand;
 import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.handler.EventHandler;
+import treechopper.common.network.ClientSettingsMessage;
 import treechopper.common.network.ServerSettingsMessage;
 import treechopper.proxy.CommonProxy;
 
@@ -40,6 +41,7 @@ public class TreeChopper {
 
         m_Network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
         m_Network.registerMessage(ServerSettingsMessage.MsgHandler.class, ServerSettingsMessage.class, 0, Side.CLIENT);
+        m_Network.registerMessage(ClientSettingsMessage.MsgHandler.class, ClientSettingsMessage.class, 1, Side.SERVER);
     }
 
     @Mod.EventHandler
