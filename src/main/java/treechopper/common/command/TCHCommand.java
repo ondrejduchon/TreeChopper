@@ -47,7 +47,11 @@ public class TCHCommand extends CommandBase {
                 throw new WrongUsageException("/tch printName 0/1");
             }
 
-            CommonProxy.m_PrintNames = parseBoolean(args[1]);
+            try {
+                CommonProxy.m_PlayerPrintNames.put(sender.getCommandSenderEntity().getPersistentID(), parseBoolean(args[1]));
+            } catch (Exception e) {
+                System.out.printf("Not a player");
+            }
             return;
         }
 

@@ -27,12 +27,11 @@ class PlayerInteract {
 };
 
 public class CommonProxy {
-    public static boolean m_PrintNames;
 
     @SubscribeEvent
     public void InteractWithTree(PlayerInteractEvent interactEvent) {
 
-        if (interactEvent.getSide().isClient() && m_PrintNames) {
+        if (interactEvent.getSide().isClient() && m_PlayerPrintNames.containsKey(interactEvent.getEntityPlayer().getPersistentID()) && m_PlayerPrintNames.get(interactEvent.getEntityPlayer().getPersistentID())) {
             interactEvent.getEntityPlayer().sendMessage(new TextComponentTranslation("Block: " + interactEvent.getWorld().getBlockState(interactEvent.getPos()).getBlock().getUnlocalizedName()));
             interactEvent.getEntityPlayer().sendMessage(new TextComponentTranslation("Main hand item: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
         }
@@ -144,5 +143,6 @@ public class CommonProxy {
     }
 
     protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
+    public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<>();
     protected TreeHandler treeHandler;
 }
