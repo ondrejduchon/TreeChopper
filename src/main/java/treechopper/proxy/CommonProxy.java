@@ -17,16 +17,20 @@ import java.util.UUID;
 
 class PlayerInteract {
 
+    public BlockPos m_BlockPos; // Interact block position
+    public float m_LogCount;
+
     public PlayerInteract(BlockPos blockPos, float logCount) {
         m_BlockPos = blockPos;
         m_LogCount = logCount;
     }
-
-    public BlockPos m_BlockPos; // Interact block position
-    public float m_LogCount;
 };
 
 public class CommonProxy {
+
+    public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<>();
+    protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
+    protected TreeHandler treeHandler;
 
     @SubscribeEvent
     public void InteractWithTree(PlayerInteractEvent interactEvent) {
@@ -141,8 +145,4 @@ public class CommonProxy {
 
         return test;
     }
-
-    protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
-    public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<>();
-    protected TreeHandler treeHandler;
 }

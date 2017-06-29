@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import treechopper.common.config.ConfigurationHandler;
+import treechopper.common.network.ClientSettingsMessage;
+import treechopper.core.TreeChopper;
 import treechopper.proxy.CommonProxy;
 
 import javax.annotation.Nullable;
@@ -70,7 +72,7 @@ public class TCHCommand extends CommandBase {
                     throw new WrongUsageException("/tch decLeaves 0/1");
                 }
 
-                ConfigurationHandler.decayLeaves = parseBoolean(args[1]);
+                ConfigurationHandler.setDecayLea(parseBoolean(args[1]));
                 if (ConfigurationHandler.decayLeaves) {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Decay leaves has been switched " + TextFormatting.GREEN + "ON"));
                 } else {
@@ -82,7 +84,7 @@ public class TCHCommand extends CommandBase {
                     throw new WrongUsageException("/tch plantSap 0/1");
                 }
 
-                ConfigurationHandler.plantSapling = parseBoolean(args[1]);
+                ConfigurationHandler.setPlantSap(parseBoolean(args[1]));
                 if (ConfigurationHandler.plantSapling) {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Auto planting has been switched " + TextFormatting.GREEN + "ON"));
                 } else {
@@ -94,14 +96,14 @@ public class TCHCommand extends CommandBase {
                     throw new WrongUsageException("/tch revShift 0/1");
                 }
 
-                ConfigurationHandler.reverseShift = parseBoolean(args[1]);
+                ConfigurationHandler.setReverseShi(parseBoolean(args[1]));
                 if (ConfigurationHandler.reverseShift) {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Reverse function has been switched " + TextFormatting.GREEN + "ON"));
                 } else {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] Reverse function has been switched " + TextFormatting.RED + "OFF"));
                 }
 
-                //TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
+                TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
             } else {
                 throw new WrongUsageException(m_ErrorMessage);
             }

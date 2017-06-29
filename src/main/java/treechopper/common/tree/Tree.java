@@ -7,6 +7,10 @@ import java.util.Set;
 
 public class Tree {
 
+    private Set<BlockPos> m_Wood;
+    private Set<BlockPos> m_Leaves;
+    private BlockPos m_Position;
+
     public Tree() {
         m_Wood = new HashSet<>();
         m_Leaves = new HashSet<>();
@@ -43,8 +47,4 @@ public class Tree {
     public void setM_Position(BlockPos m_Position) {
         this.m_Position = m_Position;
     }
-
-    private Set<BlockPos> m_Wood;
-    private Set<BlockPos> m_Leaves;
-    private BlockPos m_Position;
 }

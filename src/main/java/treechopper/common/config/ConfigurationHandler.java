@@ -181,6 +181,27 @@ public class ConfigurationHandler {
         }
     }
 
+    public static void setPlantSap(boolean plantSap) {
+        ConfigurationHandler.plantSapling = plantSap;
+        config.get("Settings", "Plant sapling", false, "Automatic sapling plant on tree chop").set(plantSap);
+
+        config.save();
+    }
+
+    public static void setReverseShi(boolean reverseShi) {
+        ConfigurationHandler.reverseShift = reverseShi;
+        config.get("Settings", "Reverse shift", false, "Reverse shift function - Mod works with shift pressing").set(reverseShi);
+
+        config.save();
+    }
+
+    public static void setDecayLea(boolean decayLea) {
+        ConfigurationHandler.decayLeaves = decayLea;
+        config.get("Settings", "Decay leaves", true, "Cut down whole tree - wooden blocks and leaves").set(decayLea);
+
+        config.save();
+    }
+
     @SubscribeEvent
     public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equalsIgnoreCase(TreeChopper.MOD_ID)) {

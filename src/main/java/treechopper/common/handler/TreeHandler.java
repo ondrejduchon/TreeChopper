@@ -18,6 +18,9 @@ import java.util.*;
 
 public class TreeHandler {
 
+    private static Map<UUID, Tree> m_Trees = new HashMap<>();
+    private Tree tree;
+
     public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
         Queue<BlockPos> queuedBlocks = new LinkedList<>();
@@ -205,7 +208,4 @@ public class TreeHandler {
             itemStack.onItemUse(fakePlayer, world, plantPos1, EnumHand.MAIN_HAND, EnumFacing.NORTH, 0, 0, 0);
         }
     }
-
-    private static Map<UUID, Tree> m_Trees = new HashMap<>();
-    private Tree tree;
 }
