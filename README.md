@@ -12,7 +12,7 @@
 Type in-game command "/tch help" for more info.
 
 <h4>Add new wood or axe</h4>
-Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecraft/config/treechopper/) between > and < . You can use in-game command "/tch printname 1" for start to print the names.
+Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecraft/config/treechopper/) between > and < . You can use in-game command "/tch printName 1" for start to print the names.
 
 ---
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
