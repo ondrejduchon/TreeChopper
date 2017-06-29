@@ -23,4 +23,4 @@ Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecra
 
 For Minecraft **1.12**.
 
-Recommended forge version: **1.12 - 14.21.0.2375**
+Recommended forge version: **1.12 - 14.21.1.2387**
