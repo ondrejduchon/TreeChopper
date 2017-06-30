@@ -20,8 +20,6 @@ import java.util.List;
 
 public class TCHCommand extends CommandBase {
 
-    private static final String m_ErrorMessage = I18n.format("command.errorMessage");
-
     @Override
     public String getName() {
         return "treechopper";
@@ -34,7 +32,7 @@ public class TCHCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return m_ErrorMessage;
+        return I18n.format("command.errorMessage");
     }
 
     @Override
@@ -60,7 +58,7 @@ public class TCHCommand extends CommandBase {
 
         if (sender.canUseCommand(this.getRequiredPermissionLevel(), this.getName())) {
             if (args.length < 1) {
-                throw new WrongUsageException(m_ErrorMessage);
+                throw new WrongUsageException(I18n.format("command.errorMessage"));
 
             } else if (args[0].equals("help")) {
                 GetUsage(sender);
@@ -106,7 +104,7 @@ public class TCHCommand extends CommandBase {
 
                 TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
             } else {
-                throw new WrongUsageException(m_ErrorMessage);
+                throw new WrongUsageException(I18n.format("command.errorMessage"));
             }
         } else {
             sender.sendMessage(new TextComponentTranslation(TextFormatting.RED + I18n.format("command.permissions")));
