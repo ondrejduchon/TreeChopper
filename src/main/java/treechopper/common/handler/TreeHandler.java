@@ -31,6 +31,7 @@ public class TreeHandler {
         tree = new Tree();
 
         queuedBlocks.add(blockPos);
+        tree.InsertWood(blockPos);
 
         while (!queuedBlocks.isEmpty()) {
 
