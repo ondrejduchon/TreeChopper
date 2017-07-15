@@ -8,19 +8,18 @@
 *   Config with settings and list of allowed axes and types of wood.
 *   Option to reverse function (chopping with SHIFT)
 
-<h4>Usage</h4>
+#### Usage
 Type in-game command "/tch help" for more info.
 
-<h4>Add new wood or axe</h4>
+#### Add new wood or axe
 Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecraft/config/treechopper/) between > and < . You can use in-game command "/tch printName 1" for start to print the names.
 
 ---
+![Minecraft 1.12](http://cf.way2muchnoise.eu/versions/250241.svg "Supported versions")
+![Tree Chopper](http://cf.way2muchnoise.eu/full_250241_downloads.svg "Tree Chopper")
+
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
-
 [Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
-
 [Minecraft forum](https://goo.gl/nyvWUE)
-
-For Minecraft **1.12**.
 
 Recommended forge version: **1.12 - 14.21.1.2387**
