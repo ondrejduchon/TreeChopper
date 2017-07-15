@@ -16,10 +16,13 @@ Add UnlocalizedName of new item into "treechopper.cfg" (appdata/roaming/.minecra
 
 ---
 ![Minecraft 1.12](http://cf.way2muchnoise.eu/versions/250241.svg "Supported versions")
+
 ![Tree Chopper](http://cf.way2muchnoise.eu/full_250241_downloads.svg "Tree Chopper")
 
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
+
 [Curse.com](https://mods.curse.com/mc-mods/minecraft/250241-tree-chopper)
+
 [Minecraft forum](https://goo.gl/nyvWUE)
 
 Recommended forge version: **1.12 - 14.21.1.2387**
