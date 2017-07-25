@@ -1,7 +1,7 @@
 run/*
 .idea/*
 build/*
-graphics/*
 libs/*
 .gradle/*
 out/*
+TreeChopper.iml

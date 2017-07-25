@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import scala.xml.Null;
 import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.network.ClientSettingsMessage;
 import treechopper.core.TreeChopper;
@@ -32,7 +33,7 @@ public class TCHCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return I18n.format("command.errorMessage");
+        return GetTranslatedText(sender, "command.errorMessage", "Type \"/tch help\" for help");
     }
 
     @Override
@@ -58,7 +59,7 @@ public class TCHCommand extends CommandBase {
 
         if (sender.canUseCommand(this.getRequiredPermissionLevel(), this.getName())) {
             if (args.length < 1) {
-                throw new WrongUsageException(I18n.format("command.errorMessage"));
+                throw new WrongUsageException(GetTranslatedText(sender, "command.errorMessage", "Type \"/tch help\" for help"));
 
             } else if (args[0].equals("help")) {
                 GetUsage(sender);
@@ -73,9 +74,9 @@ public class TCHCommand extends CommandBase {
 
                 ConfigurationHandler.setDecayLea(parseBoolean(args[1]));
                 if (ConfigurationHandler.decayLeaves) {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.decayLeavesSwitch") + " " + TextFormatting.GREEN + "ON"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.decayLeavesSwitch", "Decay leaves has been switched") + " " + TextFormatting.GREEN + "ON"));
                 } else {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.decayLeavesSwitch") + " " + TextFormatting.RED + "OFF"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.decayLeavesSwitch", "Decay leaves has been switched") + " " + TextFormatting.RED + "OFF"));
                 }
 
             } else if (args[0].equals("plantSap")) {
@@ -85,9 +86,9 @@ public class TCHCommand extends CommandBase {
 
                 ConfigurationHandler.setPlantSap(parseBoolean(args[1]));
                 if (ConfigurationHandler.plantSapling) {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.plantSaplingSwitch") + " " + TextFormatting.GREEN + "ON"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.plantSaplingSwitch", "Auto planting has been switched") + " " + TextFormatting.GREEN + "ON"));
                 } else {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.plantSaplingSwitch") + " " + TextFormatting.RED + "OFF"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.plantSaplingSwitch", "Auto planting has been switched") + " " + TextFormatting.RED + "OFF"));
                 }
 
             } else if (args[0].equals("revShift")) {
@@ -97,17 +98,17 @@ public class TCHCommand extends CommandBase {
 
                 ConfigurationHandler.setReverseShi(parseBoolean(args[1]));
                 if (ConfigurationHandler.reverseShift) {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.reverseShiftSwitch") + " " + TextFormatting.GREEN + "ON"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.reverseShiftSwitch", "Reverse function has been switched") + " " + TextFormatting.GREEN + "ON"));
                 } else {
-                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + I18n.format("command.reverseShiftSwitch") + " " + TextFormatting.RED + "OFF"));
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.reverseShiftSwitch", "Reverse function has been switched") + " " + TextFormatting.RED + "OFF"));
                 }
 
                 TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
             } else {
-                throw new WrongUsageException(I18n.format("command.errorMessage"));
+                throw new WrongUsageException(GetTranslatedText(sender, "command.errorMessage", "Type \"/tch help\" for help"));
             }
         } else {
-            sender.sendMessage(new TextComponentTranslation(TextFormatting.RED + I18n.format("command.permissions")));
+            sender.sendMessage(new TextComponentTranslation(TextFormatting.RED + GetTranslatedText(sender, "command.permissions", "You do not have permission to use this command")));
         }
     }
 
@@ -124,17 +125,26 @@ public class TCHCommand extends CommandBase {
     private void GetUsage(ICommandSender sender) {
         sender.sendMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper"));
 
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch info" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + I18n.format("command.infoInfo")));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch plantSap" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + I18n.format("command.plantSaplingInfo")));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch decLeaves" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + I18n.format("command.decayLeavesInfo")));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch revShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + I18n.format("command.reverseShiftInfo")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch info" + TextFormatting.RESET + " -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.infoInfo", " Print info about server settings")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch plantSap" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.plantSaplingInfo", " Auto plant sapling, around his trunk")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch decLeaves" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.decayLeavesInfo", " Decay leaves with tree fall")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch revShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.reverseShiftInfo", " Reverse shift function")));
     }
 
     private void GetInfo(ICommandSender sender) {
         sender.sendMessage(new TextComponentTranslation(TextFormatting.GOLD + "Tree Chopper"));
 
-        sender.sendMessage(new TextComponentTranslation(I18n.format("command.decayLeaves") + " " + TextFormatting.ITALIC + ConfigurationHandler.decayLeaves));
-        sender.sendMessage(new TextComponentTranslation(I18n.format("command.plantSapling") + " " + TextFormatting.ITALIC + ConfigurationHandler.plantSapling));
-        sender.sendMessage(new TextComponentTranslation(I18n.format("command.reverseShift") + " " + TextFormatting.ITALIC + ConfigurationHandler.reverseShift));
+        sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.decayLeaves", "Leaves decay:") + " " + TextFormatting.ITALIC + ConfigurationHandler.decayLeaves));
+        sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.plantSapling", "Automatic sapling plant:") + " " + TextFormatting.ITALIC + ConfigurationHandler.plantSapling));
+        sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.reverseShift", "Reverse func:") + " " + TextFormatting.ITALIC + ConfigurationHandler.reverseShift));
+    }
+
+    private String GetTranslatedText(ICommandSender sender, String translateKey, String text) {
+
+        if (sender.getServer() != null && sender.getServer().isSinglePlayer()) {
+            return I18n.format(translateKey);
+        }
+
+        return text;
     }
 }
