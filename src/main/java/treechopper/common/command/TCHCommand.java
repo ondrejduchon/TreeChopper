@@ -10,7 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import scala.xml.Null;
 import treechopper.common.config.ConfigurationHandler;
 import treechopper.common.network.ClientSettingsMessage;
 import treechopper.core.TreeChopper;
