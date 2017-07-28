@@ -108,7 +108,7 @@ public class CommonProxy {
             if (blockPos.equals(breakEvent.getPos())) {
                 treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
 
-                if (!breakEvent.getPlayer().isCreative()) {
+                if (!breakEvent.getPlayer().isCreative() && breakEvent.getPlayer().getHeldItemMainhand().isItemStackDamageable()) {
 
                     int axeDurability = breakEvent.getPlayer().getHeldItemMainhand().getItemDamage() + (int) (m_PlayerData.get(breakEvent.getPlayer().getPersistentID()).m_LogCount * 1.5);
 
