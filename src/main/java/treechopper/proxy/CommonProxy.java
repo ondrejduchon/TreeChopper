@@ -20,10 +20,12 @@ class PlayerInteract {
 
     public BlockPos m_BlockPos; // Interact block position
     public float m_LogCount;
+    public int m_AxeDurability;
 
-    public PlayerInteract(BlockPos blockPos, float logCount) {
+    public PlayerInteract(BlockPos blockPos, float logCount, int axeDurability) {
         m_BlockPos = blockPos;
         m_LogCount = logCount;
+        m_AxeDurability = axeDurability;
     }
 };
 
@@ -54,15 +56,19 @@ public class CommonProxy {
 
         if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer()) && shifting) {
 
+            int axeDurability = interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+
             if (m_PlayerData.containsKey(interactEvent.getEntityPlayer().getPersistentID()) &&
-                    m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_BlockPos.equals(interactEvent.getPos())) {
+                    m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_BlockPos.equals(interactEvent.getPos()) &&
+                    m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_AxeDurability == axeDurability) {
                 return;
             }
 
             treeHandler = new TreeHandler();
             logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
-            int axeDurability = interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+            System.out.println("Max damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage());
+            System.out.println("Item damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage());
 
             if (axeDurability < logCount) {
                 m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
@@ -70,7 +76,7 @@ public class CommonProxy {
             }
 
             if (logCount > 1) {
-                m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount));
+                m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount, axeDurability));
             }
         } else {
             m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
