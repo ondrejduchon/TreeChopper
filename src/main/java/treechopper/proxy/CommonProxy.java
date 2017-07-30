@@ -70,7 +70,7 @@ public class CommonProxy {
             /*System.out.println("Max damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage());
             System.out.println("Item damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage());*/
 
-            if (axeDurability < logCount) {
+            if (interactEvent.getEntityPlayer().getHeldItemMainhand().isItemStackDamageable() && axeDurability < logCount) {
                 m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
                 return;
             }

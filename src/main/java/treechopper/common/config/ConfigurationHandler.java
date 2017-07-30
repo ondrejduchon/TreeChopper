@@ -19,6 +19,7 @@ public class ConfigurationHandler {
 
     public static List<String> axeTypes = new ArrayList<>();
     public static List<String> blockWhiteList = new ArrayList<>();
+    public static List<String> leafWhiteList = new ArrayList<>();
 
     public static void init(File configFile) {
         if (config == null) {
@@ -171,6 +172,46 @@ public class ConfigurationHandler {
                     "tile.natura.overworld_logs",
                     "tile.natura.overworld_logs2",
             }, "Put here allowed blocks(wood) - whitelist"));
+
+            leafWhiteList = ImmutableList.copyOf(config.getStringList("Whitelisted leaves", "Data", new String[]{
+                    "tile.pamdate",
+                    "tile.pampistachio",
+                    "tile.pampapaya",
+                    "tile.pamwalnut",
+                    "tile.pamcherry",
+                    "tile.pamfig",
+                    "tile.pamdragonfruit",
+                    "tile.pamapple",
+                    "tile.pamlemon",
+                    "tile.pampear",
+                    "tile.pamolive",
+                    "tile.pamgrapefruit",
+                    "tile.pampomegranate",
+                    "tile.pamcashew",
+                    "tile.pamvanilla",
+                    "tile.pamstarfruit",
+                    "tile.pambanana",
+                    "tile.pamplum",
+                    "tile.pamavocadu",
+                    "tile.pampecan",
+                    "tile.pampistachio",
+                    "tile.pamlime",
+                    "tile.pampeppercorn",
+                    "tile.pamalmond",
+                    "tile.pamgooseberry",
+                    "tile.pampeach",
+                    "tile.pamchestnut",
+                    "tile.pamcoconut",
+                    "tile.pammango",
+                    "tile.pamapricot",
+                    "tile.pamorange",
+                    "tile.pampersimmon",
+                    "tile.pamnutmeg",
+                    "tile.pamdurian",
+                    "tile.pamcinnamon",
+                    "tile.pammaple",
+                    "tile.pampaperbark"
+            }, "Put here allowed special blocks - e.g. fruit"));
 
         } catch (Exception e) {
             System.out.printf("Cannot load Tree Chopper config.");

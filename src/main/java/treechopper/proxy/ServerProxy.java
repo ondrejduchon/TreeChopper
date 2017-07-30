@@ -39,7 +39,7 @@ public class ServerProxy extends CommonProxy {
             treeHandler = new TreeHandler();
             logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
 
-            if (axeDurability < logCount) {
+            if (interactEvent.getEntityPlayer().getHeldItemMainhand().isItemStackDamageable() && axeDurability < logCount) {
                 m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
                 return;
             }

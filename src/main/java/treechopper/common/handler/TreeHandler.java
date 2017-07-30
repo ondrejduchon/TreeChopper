@@ -125,6 +125,12 @@ public class TreeHandler {
                 tree.InsertLeaf(blockPos);
             }
 
+            if (ConfigurationHandler.decayLeaves && ConfigurationHandler.leafWhiteList.contains(world.getBlockState(blockPos).getBlock().getUnlocalizedName())) {
+                tree.InsertLeaf(blockPos);
+
+                return false;
+            }
+
             if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
                 tree.InsertLeaf(blockPos);
 
