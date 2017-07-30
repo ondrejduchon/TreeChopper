@@ -129,7 +129,7 @@ public class ConfigurationHandler {
                     "item.ethaxiumaxe",
                     "item.crystal_axe",
                     "item.crystal_axe_bone",
-            }, "Put here allowed items(axes) - whitelist"));
+            }, "Put here allowed items(axes), "));
 
             blockWhiteList = ImmutableList.copyOf(config.getStringList("Whitelisted blocks", "Data", new String[]{
                     "tile.log",
@@ -171,7 +171,7 @@ public class ConfigurationHandler {
                     "tile.natura.nether_logs2",
                     "tile.natura.overworld_logs",
                     "tile.natura.overworld_logs2",
-            }, "Put here allowed blocks(wood) - whitelist"));
+            }, "Put here allowed blocks(wood), "));
 
             leafWhiteList = ImmutableList.copyOf(config.getStringList("Whitelisted leaves", "Data", new String[]{
                     "tile.pamdate",
@@ -211,7 +211,7 @@ public class ConfigurationHandler {
                     "tile.pamcinnamon",
                     "tile.pammaple",
                     "tile.pampaperbark"
-            }, "Put here allowed special blocks - e.g. fruit"));
+            }, "Put here allowed special blocks - e.g. fruit, "));
 
         } catch (Exception e) {
             System.out.printf("Cannot load Tree Chopper config.");
