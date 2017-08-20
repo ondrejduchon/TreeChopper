@@ -21,6 +21,17 @@ public class TreeHandler {
     private static Map<UUID, Tree> m_Trees = new HashMap<>();
     private Tree tree;
 
+    public static <T> T getLastElement(final Iterable<T> elements) {
+        final Iterator<T> itr = elements.iterator();
+        T lastElement = itr.next();
+
+        while (itr.hasNext()) {
+            lastElement = itr.next();
+        }
+
+        return lastElement;
+    }
+
     public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
         Queue<BlockPos> queuedBlocks = new LinkedList<>();
@@ -158,7 +169,7 @@ public class TreeHandler {
                 if (soundReduced <= 1) {
                     world.destroyBlock(blockPos, true);
                 } else {
-                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 2);
                 }
 
                 world.setBlockToAir(blockPos);
@@ -167,7 +178,9 @@ public class TreeHandler {
             }
 
             if (ConfigurationHandler.plantSapling && !tmpTree.GetM_Leaves().isEmpty()) {
-                PlantSapling(world, tmpTree.GetM_Leaves().iterator().next(), tmpTree.getM_Position());
+
+                BlockPos tmpPosition = getLastElement(tmpTree.GetM_Leaves());
+                PlantSapling(world, tmpPosition, tmpTree.getM_Position());
             }
 
             soundReduced = 0;
@@ -179,7 +192,7 @@ public class TreeHandler {
                     if (soundReduced <= 1) {
                         world.destroyBlock(blockPos, true);
                     } else {
-                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 2);
                     }
 
                     world.setBlockToAir(blockPos);

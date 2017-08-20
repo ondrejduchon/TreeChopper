@@ -129,6 +129,14 @@ public class ConfigurationHandler {
                     "item.ethaxiumaxe",
                     "item.crystal_axe",
                     "item.crystal_axe_bone",
+                    "item.dungeontactics:gilded_axe",
+                    "item.dungeontactics:jewelled_axe",
+                    "item.flint_axe",
+                    "item.quartz_axe",
+                    "item.obsidian_axe",
+                    "item.opal_axe",
+                    "item.emerald_axe",
+                    "item.diamond_axe",
             }, "Put here allowed items(axes), "));
 
             blockWhiteList = ImmutableList.copyOf(config.getStringList("Whitelisted blocks", "Data", new String[]{
