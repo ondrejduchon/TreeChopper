@@ -169,7 +169,7 @@ public class TreeHandler {
                 if (soundReduced <= 1) {
                     world.destroyBlock(blockPos, true);
                 } else {
-                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 2);
+                    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
                 }
 
                 world.setBlockToAir(blockPos);
@@ -192,7 +192,7 @@ public class TreeHandler {
                     if (soundReduced <= 1) {
                         world.destroyBlock(blockPos, true);
                     } else {
-                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 2);
+                        world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
                     }
 
                     world.setBlockToAir(blockPos);
