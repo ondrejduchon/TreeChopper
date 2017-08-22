@@ -85,7 +85,6 @@ public class ConfigurationHandler {
                     "item.SteelPaxel",
                     "item.ma.inferium_axe",
                     "item.ma.prudentium_axe",
-                    "item.ma.prudentium_axe",
                     "item.ma.intermedium_axe",
                     "item.ma.superium_axe",
                     "item.ma.supremium_axe",
@@ -135,7 +134,6 @@ public class ConfigurationHandler {
                     "item.quartz_axe",
                     "item.obsidian_axe",
                     "item.opal_axe",
-                    "item.emerald_axe",
                     "item.diamond_axe",
             }, "Put here allowed items(axes), "));
 
