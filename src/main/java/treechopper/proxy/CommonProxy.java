@@ -31,8 +31,8 @@ class PlayerInteract {
 
 public class CommonProxy {
 
-    public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<>();
-    protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
+    public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<UUID, Boolean>();
+    protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<UUID, PlayerInteract>();
     protected TreeHandler treeHandler;
 
     @SubscribeEvent

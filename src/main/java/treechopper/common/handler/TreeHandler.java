@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -18,10 +17,10 @@ import java.util.*;
 
 public class TreeHandler {
 
-    private static Map<UUID, Tree> m_Trees = new HashMap<>();
+    private static Map<UUID, Tree> m_Trees = new HashMap<UUID, Tree>();
     private Tree tree;
 
-    public static <T> T getLastElement(final Iterable<T> elements) {
+    private static <T> T getLastElement(final Iterable<T> elements) {
         final Iterator<T> itr = elements.iterator();
         T lastElement = itr.next();
 
@@ -34,9 +33,9 @@ public class TreeHandler {
 
     public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
 
-        Queue<BlockPos> queuedBlocks = new LinkedList<>();
-        Set<BlockPos> tmpBlocks = new HashSet<>();
-        Set<BlockPos> checkedBlocks = new HashSet<>();
+        Queue<BlockPos> queuedBlocks = new LinkedList<BlockPos>();
+        Set<BlockPos> tmpBlocks = new HashSet<BlockPos>();
+        Set<BlockPos> checkedBlocks = new HashSet<BlockPos>();
         BlockPos currentPos;
         Block logBlock = world.getBlockState(blockPos).getBlock();
         tree = new Tree();
@@ -55,7 +54,7 @@ public class TreeHandler {
             tmpBlocks.clear();
         }
 
-        Set<BlockPos> tmpLeaves = new HashSet<>();
+        Set<BlockPos> tmpLeaves = new HashSet<BlockPos>();
         tmpLeaves.addAll(tree.GetM_Leaves());
 
         for (BlockPos blockPos1 : tmpLeaves) {
@@ -71,7 +70,7 @@ public class TreeHandler {
 
     private Queue<BlockPos> LookAroundBlock(Block logBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
 
-        Queue<BlockPos> queuedBlocks = new LinkedList<>();
+        Queue<BlockPos> queuedBlocks = new LinkedList<BlockPos>();
         BlockPos tmpPos;
 
         for (int i = -1; i <= 1; i++) {
@@ -205,14 +204,12 @@ public class TreeHandler {
 
     private void PlantSapling(World world, BlockPos blockPos, BlockPos originPos) {
 
-        Set<ItemStack> leafDrop = new HashSet<>();
+        Set<ItemStack> leafDrop = new HashSet<ItemStack>();
         BlockPos plantPos1 = new BlockPos(originPos.getX() - 1, originPos.getY(), originPos.getZ() - 1);
         int counter = 0;
 
         while (leafDrop.isEmpty() && counter <= 100) {
-            NonNullList<ItemStack> tmpList = NonNullList.create();
-            world.getBlockState(blockPos).getBlock().getDrops(tmpList, world, blockPos, world.getBlockState(blockPos), 3);
-            leafDrop.addAll(tmpList);
+            leafDrop.addAll(world.getBlockState(blockPos).getBlock().getDrops(world, blockPos, world.getBlockState(blockPos), 3));
 
             counter++;
         }

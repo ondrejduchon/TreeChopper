@@ -12,8 +12,8 @@ public class Tree {
     private BlockPos m_Position;
 
     public Tree() {
-        m_Wood = new HashSet<>();
-        m_Leaves = new HashSet<>();
+        m_Wood = new HashSet<BlockPos>();
+        m_Leaves = new HashSet<BlockPos>();
     }
 
     public void InsertWood(BlockPos blockPos) {

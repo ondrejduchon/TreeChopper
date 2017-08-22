@@ -31,8 +31,8 @@ public class ClientSettingsMessage implements IMessage {
     public static class MsgHandler implements IMessageHandler<ClientSettingsMessage, IMessage> {
 
         @Override
-        public IMessage onMessage(ClientSettingsMessage message, MessageContext ctx) {
-            IThreadListener mainThread = ctx.getServerHandler().player.getServerWorld();
+        public IMessage onMessage(final ClientSettingsMessage message, MessageContext ctx) {
+            IThreadListener mainThread = ctx.getServerHandler().playerEntity.getServerWorld();
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {

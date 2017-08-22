@@ -17,9 +17,9 @@ public class ConfigurationHandler {
     public static boolean reverseShift;
     public static boolean plantSapling;
 
-    public static List<String> axeTypes = new ArrayList<>();
-    public static List<String> blockWhiteList = new ArrayList<>();
-    public static List<String> leafWhiteList = new ArrayList<>();
+    public static List<String> axeTypes = new ArrayList<String>();
+    public static List<String> blockWhiteList = new ArrayList<String>();
+    public static List<String> leafWhiteList = new ArrayList<String>();
 
     public static void init(File configFile) {
         if (config == null) {

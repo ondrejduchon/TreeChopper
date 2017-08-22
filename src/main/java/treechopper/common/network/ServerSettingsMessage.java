@@ -32,7 +32,7 @@ public class ServerSettingsMessage implements IMessage {
     public static class MsgHandler implements IMessageHandler<ServerSettingsMessage, IMessage> {
 
         @Override
-        public IMessage onMessage(ServerSettingsMessage message, MessageContext ctx) {
+        public IMessage onMessage(final ServerSettingsMessage message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(new Runnable() {
                 @Override
