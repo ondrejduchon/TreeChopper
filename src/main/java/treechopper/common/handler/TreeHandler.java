@@ -21,7 +21,7 @@ public class TreeHandler {
     private static Map<UUID, Tree> m_Trees = new HashMap<>();
     private Tree tree;
 
-    public static <T> T getLastElement(final Iterable<T> elements) {
+    private static <T> T getLastElement(final Iterable<T> elements) {
         final Iterator<T> itr = elements.iterator();
         T lastElement = itr.next();
 
