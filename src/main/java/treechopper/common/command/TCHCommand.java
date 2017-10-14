@@ -102,7 +102,20 @@ public class TCHCommand extends CommandBase {
                     sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.reverseShiftSwitch", "Reverse function has been switched") + " " + TextFormatting.RED + "OFF"));
                 }
 
-                TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift));
+                TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift, ConfigurationHandler.disableShift));
+            } else if (args[0].equals("disShift")) {
+                if (args.length != 2) {
+                    throw new WrongUsageException("/tch disShift 0/1");
+                }
+
+                ConfigurationHandler.setDisableShi(parseBoolean(args[1]));
+                if (ConfigurationHandler.disableShift) {
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.disableShiftSwitch", "Disable shift function has been switched") + " " + TextFormatting.GREEN + "ON"));
+                } else {
+                    sender.sendMessage(new TextComponentTranslation("[" + TextFormatting.GOLD + "TCH" + TextFormatting.RESET + "] " + GetTranslatedText(sender, "command.disableShiftSwitch", "Disable shift function has been switched") + " " + TextFormatting.RED + "OFF"));
+                }
+
+                TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.disableShift, ConfigurationHandler.disableShift));
             } else {
                 throw new WrongUsageException(GetTranslatedText(sender, "command.errorMessage", "Type \"/tch help\" for help"));
             }
@@ -136,6 +149,7 @@ public class TCHCommand extends CommandBase {
         sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.decayLeaves", "Leaves decay:") + " " + TextFormatting.ITALIC + ConfigurationHandler.decayLeaves));
         sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.plantSapling", "Automatic sapling plant:") + " " + TextFormatting.ITALIC + ConfigurationHandler.plantSapling));
         sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.reverseShift", "Reverse func:") + " " + TextFormatting.ITALIC + ConfigurationHandler.reverseShift));
+        sender.sendMessage(new TextComponentTranslation(GetTranslatedText(sender, "command.disableShift", "Disable shift:") + " " + TextFormatting.ITALIC + ConfigurationHandler.disableShift));
     }
 
     private String GetTranslatedText(ICommandSender sender, String translateKey, String text) {

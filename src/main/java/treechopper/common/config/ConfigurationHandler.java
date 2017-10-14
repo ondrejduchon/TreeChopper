@@ -15,6 +15,7 @@ public class ConfigurationHandler {
 
     public static boolean decayLeaves;
     public static boolean reverseShift;
+    public static boolean disableShift;
     public static boolean plantSapling;
 
     public static List<String> axeTypes = new ArrayList<>();
@@ -32,6 +33,7 @@ public class ConfigurationHandler {
         try {
             decayLeaves = config.getBoolean("Decay leaves", "Settings", true, "Cut down whole tree - wooden blocks and leaves");
             reverseShift = config.getBoolean("Reverse shift", "Settings", false, "Reverse shift function - Mod works with shift pressing");
+            disableShift = config.getBoolean("Disable shift", "Settings", false, "Disable shift function - Always chop trees regardless of shift pressing");
             plantSapling = config.getBoolean("Plant sapling", "Settings", false, "Automatic sapling plant on tree chop");
 
             axeTypes = ImmutableList.copyOf(config.getStringList("Whitelisted items", "Data", new String[]{
@@ -238,6 +240,13 @@ public class ConfigurationHandler {
     public static void setReverseShi(boolean reverseShi) {
         ConfigurationHandler.reverseShift = reverseShi;
         config.get("Settings", "Reverse shift", false, "Reverse shift function - Mod works with shift pressing").set(reverseShi);
+
+        config.save();
+    }
+
+    public static void setDisableShi(boolean disableShi) {
+        ConfigurationHandler.disableShift = disableShi;
+        config.get("Setting", "Disable shift", false, "Disable shift function - Always chop trees regardless of shift pressing").set(disableShi);
 
         config.save();
     }

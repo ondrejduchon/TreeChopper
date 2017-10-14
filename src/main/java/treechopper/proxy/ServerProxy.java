@@ -18,12 +18,14 @@ public class ServerProxy extends CommonProxy {
         int logCount;
         boolean shifting = true;
 
-        if (interactEvent.getEntityPlayer().isSneaking() && !ConfigurationHandler.reverseShift) {
-            shifting = false;
-        }
+        if (!ConfigurationHandler.disableShift) {
+            if (interactEvent.getEntityPlayer().isSneaking() && !ConfigurationHandler.reverseShift) {
+                shifting = false;
+            }
 
-        if (!interactEvent.getEntityPlayer().isSneaking() && ConfigurationHandler.reverseShift) {
-            shifting = false;
+            if (!interactEvent.getEntityPlayer().isSneaking() && ConfigurationHandler.reverseShift) {
+                shifting = false;
+            }
         }
 
         if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer()) && shifting) {
