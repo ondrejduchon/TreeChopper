@@ -11,6 +11,6 @@ public class EventHandler {
 
     @SubscribeEvent
     public void OnServerConnect(PlayerEvent.PlayerLoggedInEvent loggedInEvent) {
-        TreeChopper.m_Network.sendTo(new ServerSettingsMessage(ConfigurationHandler.reverseShift), (EntityPlayerMP) loggedInEvent.player);
+        TreeChopper.m_Network.sendTo(new ServerSettingsMessage(ConfigurationHandler.reverseShift, ConfigurationHandler.disableShift), (EntityPlayerMP) loggedInEvent.player);
     }
 }
