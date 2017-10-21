@@ -5,6 +5,7 @@ command.errorMessage=Napište "/tch help" pro více informací
 command.decayLeavesSwitch=Změna padání listí na
 command.plantSaplingSwitch=Změna automatického sázení stromku na
 command.reverseShiftSwitch=Změna obrácené funkce SHIFTu na
+command.disableShiftSwitch=Zrušení funkce SHIFTU na
 
 command.permissions=Nemáte dostatečné oprávnění k použití tohoto příkazu
 
@@ -12,7 +13,9 @@ command.infoInfo= Vypsat informace o nastavení serveru
 command.plantSaplingInfo= Automatické sázení stromku po pokácení
 command.decayLeavesInfo= Opadnutí listí spolu se dřevem
 command.reverseShiftInfo= Obrácená funkce SHIFTu
+command.disableShiftInfo= Zrušení funkce SHIFTu
 
 command.decayLeaves=Padání listí:
 command.plantSapling=Automatické sázení stromku:
 command.reverseShift=Obrácená funkce SHIFTu:
+command.disableShift=Zrušení funkce SHIFTu:

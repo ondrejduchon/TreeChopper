@@ -103,6 +103,7 @@ public class TCHCommand extends CommandBase {
                 }
 
                 TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.reverseShift, ConfigurationHandler.disableShift));
+
             } else if (args[0].equals("disShift")) {
                 if (args.length != 2) {
                     throw new WrongUsageException("/tch disShift 0/1");
@@ -116,6 +117,7 @@ public class TCHCommand extends CommandBase {
                 }
 
                 TreeChopper.m_Network.sendToAll(new ClientSettingsMessage(ConfigurationHandler.disableShift, ConfigurationHandler.disableShift));
+
             } else {
                 throw new WrongUsageException(GetTranslatedText(sender, "command.errorMessage", "Type \"/tch help\" for help"));
             }
@@ -128,7 +130,7 @@ public class TCHCommand extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, "info", "plantSap", "decLeaves", "revShift", "help", "printName");
+            return getListOfStringsMatchingLastWord(args, "info", "plantSap", "decLeaves", "revShift", "help", "printName", "disShift");
         }
 
         return null;
@@ -141,6 +143,7 @@ public class TCHCommand extends CommandBase {
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch plantSap" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.plantSaplingInfo", " Auto plant sapling, around his trunk")));
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch decLeaves" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.decayLeavesInfo", " Decay leaves with tree fall")));
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch revShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.reverseShiftInfo", " Reverse shift function")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch disShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.reverseShiftInfo", " Disable shift function")));
     }
 
     private void GetInfo(ICommandSender sender) {
