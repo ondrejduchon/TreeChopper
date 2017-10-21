@@ -143,7 +143,7 @@ public class TCHCommand extends CommandBase {
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch plantSap" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.plantSaplingInfo", " Auto plant sapling, around his trunk")));
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch decLeaves" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.decayLeavesInfo", " Decay leaves with tree fall")));
         sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch revShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.reverseShiftInfo", " Reverse shift function")));
-        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch disShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.reverseShiftInfo", " Disable shift function")));
+        sender.sendMessage(new TextComponentTranslation(TextFormatting.AQUA + "/tch disShift" + TextFormatting.RESET + " 0/1 -" + TextFormatting.ITALIC + GetTranslatedText(sender, "command.disableShiftInfo", " Disable shift function")));
     }
 
     private void GetInfo(ICommandSender sender) {
