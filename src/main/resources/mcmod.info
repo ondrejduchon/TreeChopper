@@ -1,8 +1,8 @@
 [{
   "modid": "treechopper",
   "name": "Tree Chopper",
-  "description": "Simple mod for chop down whole tree and much more.. \n\nRecommended forge version: 1.12.1 - 14.22.1.2478",
-  "version": "1.2.3",
+  "description": "Simple mod for chop down whole tree and much more.. \n\nRecommended forge version: 1.12.2 - 14.23.0.2491",
+  "version": "1.2.4",
   "mcversion": "${version}",
   "logoFile": "assets/treechopper/textures/logo.jpg",
   "url": "https://minecraft.curseforge.com/projects/tree-chopper",
