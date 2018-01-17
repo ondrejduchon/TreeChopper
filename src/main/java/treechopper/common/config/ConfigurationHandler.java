@@ -137,6 +137,23 @@ public class ConfigurationHandler {
                     "item.obsidian_axe",
                     "item.opal_axe",
                     "item.diamond_axe",
+                    "item.thermalfoundation.tool.copperAxe",
+                    "item.thermalfoundation.tool.tinAxe",
+                    "item.thermalfoundation.tool.silverAxe",
+                    "item.thermalfoundation.tool.leadAxe",
+                    "item.thermalfoundation.tool.aluminumAxe",
+                    "item.thermalfoundation.tool.nickelAxe",
+                    "item.thermalfoundation.tool.platinumAxe",
+                    "item.thermalfoundation.tool.steelAxe",
+                    "item.thermalfoundation.tool.electrumAxe",
+                    "item.thermalfoundation.tool.invarAxe",
+                    "item.thermalfoundation.tool.bronzeAxe",
+                    "item.thermalfoundation.tool.constantanAxe",
+                    "item.next:toolAxeBone",
+                    "item.ironwoodAxe",
+                    "item.steeleafAxe",
+                    "item.minotaurAxe",
+                    "item.knightlyAxe",
             }, "Put here allowed items(axes), "));
 
             blockWhiteList = ImmutableList.copyOf(config.getStringList("Whitelisted blocks", "Data", new String[]{
