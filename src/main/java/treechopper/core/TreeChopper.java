@@ -25,38 +25,38 @@ import static treechopper.core.TreeChopper.*;
 
 public class TreeChopper {
 
-    public static final String MOD_ID = "treechopper";
-    public static final String MOD_NAME = "Tree Chopper";
-    public static final String MOD_VERSION = "1.2.5";
-    public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
-    public static final String MOD_DEPENDENCIES = "required-after:forge@[14.23.0.2486,)";
-    public static SimpleNetworkWrapper m_Network;
+  public static final String MOD_ID = "treechopper";
+  public static final String MOD_NAME = "Tree Chopper";
+  public static final String MOD_VERSION = "1.2.5";
+  public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
+  public static final String MOD_DEPENDENCIES = "required-after:forge@[14.23.0.2486,)";
+  public static SimpleNetworkWrapper m_Network;
 
-    @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
-    private static CommonProxy commonProxy;
+  @SidedProxy(serverSide = "treechopper.proxy.ServerProxy", clientSide = "treechopper.proxy.CommonProxy")
+  private static CommonProxy commonProxy;
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        ConfigurationHandler.init(new File(new File(event.getModConfigurationDirectory(), "treechopper"), "treechopper.cfg"));
+  @Mod.EventHandler
+  public void preInit(FMLPreInitializationEvent event) {
+    ConfigurationHandler.init(new File(new File(event.getModConfigurationDirectory(), "treechopper"), "treechopper.cfg"));
 
-        m_Network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-        m_Network.registerMessage(ServerSettingsMessage.MsgHandler.class, ServerSettingsMessage.class, 0, Side.CLIENT);
-        m_Network.registerMessage(ClientSettingsMessage.MsgHandler.class, ClientSettingsMessage.class, 1, Side.SERVER);
-    }
+    m_Network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+    m_Network.registerMessage(ServerSettingsMessage.MsgHandler.class, ServerSettingsMessage.class, 0, Side.CLIENT);
+    m_Network.registerMessage(ClientSettingsMessage.MsgHandler.class, ClientSettingsMessage.class, 1, Side.SERVER);
+  }
 
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(commonProxy);
-        MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
-    }
+  @Mod.EventHandler
+  public void init(FMLInitializationEvent event) {
+    MinecraftForge.EVENT_BUS.register(commonProxy);
+    MinecraftForge.EVENT_BUS.register(new ConfigurationHandler());
+    MinecraftForge.EVENT_BUS.register(new EventHandler());
+  }
 
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-    }
+  @Mod.EventHandler
+  public void postInit(FMLPostInitializationEvent event) {
+  }
 
-    @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new TCHCommand());
-    }
+  @Mod.EventHandler
+  public void serverStarting(FMLServerStartingEvent event) {
+    event.registerServerCommand(new TCHCommand());
+  }
 }

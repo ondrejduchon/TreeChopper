@@ -10,42 +10,42 @@ import treechopper.common.config.ConfigurationHandler;
 
 public class ServerSettingsMessage implements IMessage {
 
-    private boolean m_ReverseShift;
-    private boolean m_DisableShift;
+  private boolean m_ReverseShift;
+  private boolean m_DisableShift;
 
-    public ServerSettingsMessage() {
-    }
+  public ServerSettingsMessage() {
+  }
 
-    public ServerSettingsMessage(boolean reverseShift, boolean disableShift) {
-        m_ReverseShift = reverseShift;
-        m_DisableShift = disableShift;
-    }
+  public ServerSettingsMessage(boolean reverseShift, boolean disableShift) {
+    m_ReverseShift = reverseShift;
+    m_DisableShift = disableShift;
+  }
+
+  @Override
+  public void fromBytes(ByteBuf buf) {
+    m_ReverseShift = buf.readBoolean();
+    m_DisableShift = buf.readBoolean();
+  }
+
+  @Override
+  public void toBytes(ByteBuf buf) {
+    buf.writeBoolean(m_ReverseShift);
+    buf.writeBoolean(m_DisableShift);
+  }
+
+  public static class MsgHandler implements IMessageHandler<ServerSettingsMessage, IMessage> {
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        m_ReverseShift = buf.readBoolean();
-        m_DisableShift = buf.readBoolean();
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeBoolean(m_ReverseShift);
-        buf.writeBoolean(m_DisableShift);
-    }
-
-    public static class MsgHandler implements IMessageHandler<ServerSettingsMessage, IMessage> {
-
+    public IMessage onMessage(ServerSettingsMessage message, MessageContext ctx) {
+      IThreadListener mainThread = Minecraft.getMinecraft();
+      mainThread.addScheduledTask(new Runnable() {
         @Override
-        public IMessage onMessage(ServerSettingsMessage message, MessageContext ctx) {
-            IThreadListener mainThread = Minecraft.getMinecraft();
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    ConfigurationHandler.reverseShift = message.m_ReverseShift;
-                    ConfigurationHandler.disableShift = message.m_DisableShift;
-                }
-            });
-            return null;
+        public void run() {
+          ConfigurationHandler.reverseShift = message.m_ReverseShift;
+          ConfigurationHandler.disableShift = message.m_DisableShift;
         }
+      });
+      return null;
     }
+  }
 }
