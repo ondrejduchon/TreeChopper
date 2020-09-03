@@ -21,7 +21,6 @@ public class TreeChopper {
   public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
   public static final String MOD_DEPENDENCIES = "required-after:forge@[14.23.0.2486,)";
 
-
   public TreeChopper() {
     // Register the setup method for modloading
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -32,15 +31,12 @@ public class TreeChopper {
     MinecraftForge.EVENT_BUS.register(this);
 
     ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.commonSpec);
-
   }
 
   private void setup(final FMLCommonSetupEvent event)
   {
-
   }
 
   private void doClientStuff(final FMLClientSetupEvent event) {
-
   }
 }
