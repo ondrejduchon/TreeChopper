@@ -34,7 +34,7 @@ class PlayerInteract {
     m_LogCount = logCount;
     m_AxeDurability = axeDurability;
   }
-};
+}
 
 @Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class CommonProxy {
@@ -140,11 +140,7 @@ public class CommonProxy {
   }
 
   protected static boolean CheckWoodenBlock(World world, BlockPos blockPos) {
-    if (world.getBlockState(blockPos).getBlock().isIn(BlockTags.LOGS)) {
-      return true;
-    }
-
-    return false;
+    return world.getBlockState(blockPos).getBlock().isIn(BlockTags.LOGS);
   }
 
   protected static boolean CheckItemInHand(PlayerEntity entityPlayer) {
