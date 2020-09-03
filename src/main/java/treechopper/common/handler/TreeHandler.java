@@ -1,17 +1,22 @@
 package treechopper.common.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import treechopper.common.config.ConfigurationHandler;
+import treechopper.common.config.Configuration;
 import treechopper.common.tree.Tree;
 
 import java.util.*;
@@ -32,7 +37,7 @@ public class TreeHandler {
     return lastElement;
   }
 
-  public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
+  public int AnalyzeTree(World world, BlockPos blockPos, PlayerEntity entityPlayer) {
 
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
     Set<BlockPos> tmpBlocks = new HashSet<>();
@@ -64,7 +69,7 @@ public class TreeHandler {
     }
 
     tree.setM_Position(blockPos);
-    m_Trees.put(entityPlayer.getPersistentID(), tree);
+    m_Trees.put(entityPlayer.getUniqueID(), tree);
 
     return tree.GetLogCount();
   }
@@ -132,17 +137,17 @@ public class TreeHandler {
 
     if (world.getBlockState(blockPos).getBlock() != originBlock) {
 
-      if (ConfigurationHandler.plantSapling && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos) && tree.GetM_Leaves().isEmpty()) {
+      if (Configuration.COMMON.plantSapling.get() && world.getBlockState(blockPos).getBlock().getMaterialColor() == MaterialColor.FOLIAGE && tree.GetM_Leaves().isEmpty()) {
         tree.InsertLeaf(blockPos);
       }
 
-      if (ConfigurationHandler.decayLeaves && ConfigurationHandler.leafWhiteList.contains(world.getBlockState(blockPos).getBlock().getUnlocalizedName())) {
+      if (Configuration.COMMON.decayLeaves.get() && world.getBlockState(blockPos).getBlock().getMaterialColor() == MaterialColor.FOLIAGE) {
         tree.InsertLeaf(blockPos);
 
         return false;
       }
 
-      if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
+      if (Configuration.COMMON.decayLeaves.get() && world.getBlockState(blockPos).getBlock().getMaterialColor() == MaterialColor.FOLIAGE) {
         tree.InsertLeaf(blockPos);
 
         return false;
@@ -156,28 +161,29 @@ public class TreeHandler {
     return true;
   }
 
-  public void DestroyTree(World world, EntityPlayer entityPlayer) {
+  public void DestroyTree(World world, PlayerEntity entityPlayer) {
 
     int soundReduced = 0;
 
-    if (m_Trees.containsKey(entityPlayer.getPersistentID())) {
+    if (m_Trees.containsKey(entityPlayer.getUniqueID())) {
 
-      Tree tmpTree = m_Trees.get(entityPlayer.getPersistentID());
+      Tree tmpTree = m_Trees.get(entityPlayer.getUniqueID());
 
       for (BlockPos blockPos : tmpTree.GetM_Wood()) {
 
         if (soundReduced <= 1) {
           world.destroyBlock(blockPos, true);
         } else {
-          world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
+          // TODO: Get the tree type wood
+          world.getBlockState(blockPos).getBlock().harvestBlock(world, entityPlayer, blockPos, world.getBlockState(blockPos), null, new ItemStack(Blocks.OAK_WOOD));
         }
 
-        world.setBlockToAir(blockPos);
+        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
 
         soundReduced++;
       }
 
-      if (ConfigurationHandler.plantSapling && !tmpTree.GetM_Leaves().isEmpty()) {
+      if (Configuration.COMMON.plantSapling.get() && !tmpTree.GetM_Leaves().isEmpty()) {
 
         BlockPos tmpPosition = getLastElement(tmpTree.GetM_Leaves());
         PlantSapling(world, tmpPosition, tmpTree.getM_Position());
@@ -185,17 +191,18 @@ public class TreeHandler {
 
       soundReduced = 0;
 
-      if (ConfigurationHandler.decayLeaves) {
+      if (Configuration.COMMON.decayLeaves.get()) {
 
         for (BlockPos blockPos : tmpTree.GetM_Leaves()) {
 
           if (soundReduced <= 1) {
             world.destroyBlock(blockPos, true);
           } else {
-            world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
+            // TODO: Get the tree type wood
+            world.getBlockState(blockPos).getBlock().harvestBlock(world, entityPlayer, blockPos, world.getBlockState(blockPos), null, new ItemStack(Blocks.OAK_WOOD));
           }
 
-          world.setBlockToAir(blockPos);
+          world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
 
           soundReduced++;
         }
@@ -204,6 +211,7 @@ public class TreeHandler {
   }
 
   private void PlantSapling(World world, BlockPos blockPos, BlockPos originPos) {
+    FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerWorld) world);
 
     Set<ItemStack> leafDrop = new HashSet<>();
     BlockPos plantPos1 = new BlockPos(originPos.getX() - 1, originPos.getY(), originPos.getZ() - 1);
@@ -211,7 +219,7 @@ public class TreeHandler {
 
     while (leafDrop.isEmpty() && counter <= 100) {
       NonNullList<ItemStack> tmpList = NonNullList.create();
-      world.getBlockState(blockPos).getBlock().getDrops(tmpList, world, blockPos, world.getBlockState(blockPos), 3);
+      world.getBlockState(blockPos).getBlock().harvestBlock(world, fakePlayer, blockPos, world.getBlockState(blockPos), null, new ItemStack(Blocks.OAK_WOOD));
       leafDrop.addAll(tmpList);
 
       counter++;
@@ -221,11 +229,10 @@ public class TreeHandler {
       return;
     }
 
-    FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((WorldServer) world);
-    fakePlayer.setHeldItem(EnumHand.MAIN_HAND, leafDrop.iterator().next());
+    fakePlayer.setHeldItem(Hand.MAIN_HAND, leafDrop.iterator().next());
 
     for (ItemStack itemStack : leafDrop) {
-      itemStack.onItemUse(fakePlayer, world, plantPos1, EnumHand.MAIN_HAND, EnumFacing.NORTH, 0, 0, 0);
+      itemStack.onItemUse(new ItemUseContext(fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, blockPos, false)));
     }
   }
 }

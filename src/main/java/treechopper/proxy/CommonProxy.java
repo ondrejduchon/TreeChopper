@@ -1,16 +1,23 @@
 package treechopper.proxy;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemAxe;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import treechopper.common.config.ConfigurationHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import treechopper.common.config.Configuration;
 import treechopper.common.handler.TreeHandler;
+import treechopper.core.TreeChopper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,75 +36,83 @@ class PlayerInteract {
   }
 };
 
+@Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class CommonProxy {
 
   public static Map<UUID, Boolean> m_PlayerPrintNames = new HashMap<>();
   protected static Map<UUID, PlayerInteract> m_PlayerData = new HashMap<>();
-  protected TreeHandler treeHandler;
+  protected static TreeHandler treeHandler = new TreeHandler();
 
   @SubscribeEvent
-  public void InteractWithTree(PlayerInteractEvent interactEvent) {
-
-    if (!ConfigurationHandler.modActivation) {
-      return;
+  public static void onJumpWithStick(LivingEvent.LivingJumpEvent event) {
+    LivingEntity player = event.getEntityLiving();
+    if(player.getHeldItemMainhand().getItem() == Items.STICK) {
+      if(player.getEntityWorld().isRemote) {
+        // Only log if we're on the client
+        TreeChopper.LOGGER.info("Player tried to jump with a stick");
+      }
+      World world = player.getEntityWorld();
+      // Get the player's current position.
+      // playeer.getPosition()
+      // Get the block below the player's location
+      TreeChopper.LOGGER.info("Jumped with stick!");
     }
+  }
 
-    if (interactEvent.getSide().isClient() && m_PlayerPrintNames.containsKey(interactEvent.getEntityPlayer().getPersistentID()) && m_PlayerPrintNames.get(interactEvent.getEntityPlayer().getPersistentID())) {
-      interactEvent.getEntityPlayer().sendMessage(new TextComponentTranslation(I18n.format("proxy.printBlock") + " " + interactEvent.getWorld().getBlockState(interactEvent.getPos()).getBlock().getUnlocalizedName()));
-      interactEvent.getEntityPlayer().sendMessage(new TextComponentTranslation(I18n.format("proxy.printMainHand") + " " + interactEvent.getEntityPlayer().getHeldItemMainhand().getUnlocalizedName()));
+  @SubscribeEvent
+  public static void InteractWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {
+    TreeChopper.LOGGER.info("Got interact");
+    if (interactEvent.getSide().isClient() && m_PlayerPrintNames.containsKey(interactEvent.getPlayer().getUniqueID()) && m_PlayerPrintNames.get(interactEvent.getPlayer().getUniqueID())) {
+      interactEvent.getPlayer().sendMessage(new TranslationTextComponent(I18n.format("proxy.printBlock") + " " + interactEvent.getWorld().getBlockState(interactEvent.getPos()).getBlock().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
+      interactEvent.getPlayer().sendMessage(new TranslationTextComponent(I18n.format("proxy.printMainHand") + " " + interactEvent.getPlayer().getHeldItemMainhand().getItem().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
     }
 
     int logCount;
     boolean shifting = true;
 
-    if (!ConfigurationHandler.disableShift) {
-      if (interactEvent.getEntityPlayer().isSneaking() && !ConfigurationHandler.reverseShift) {
+    if (!Configuration.COMMON.disableShift.get()) {
+      if (interactEvent.getPlayer().isSneaking() && !Configuration.COMMON.reverseShift.get()) {
         shifting = false;
       }
 
-      if (!interactEvent.getEntityPlayer().isSneaking() && ConfigurationHandler.reverseShift) {
+      if (!interactEvent.getPlayer().isSneaking() && Configuration.COMMON.reverseShift.get()) {
         shifting = false;
       }
     }
 
-    if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getEntityPlayer()) && shifting) {
+    if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getPlayer()) && shifting) {
 
-      int axeDurability = interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage();
+      int axeDurability = interactEvent.getPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getPlayer().getHeldItemMainhand().getDamage();
 
-      if (m_PlayerData.containsKey(interactEvent.getEntityPlayer().getPersistentID()) &&
-              m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_BlockPos.equals(interactEvent.getPos()) &&
-              m_PlayerData.get(interactEvent.getEntityPlayer().getPersistentID()).m_AxeDurability == axeDurability) {
+      if (m_PlayerData.containsKey(interactEvent.getPlayer().getUniqueID()) &&
+              m_PlayerData.get(interactEvent.getPlayer().getUniqueID()).m_BlockPos.equals(interactEvent.getPos()) &&
+              m_PlayerData.get(interactEvent.getPlayer().getUniqueID()).m_AxeDurability == axeDurability) {
         return;
       }
 
-      treeHandler = new TreeHandler();
-      logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getEntityPlayer());
+      logCount = CommonProxy.treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getPlayer());
 
-            /*System.out.println("Max damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getMaxDamage());
-            System.out.println("Item damage: " + interactEvent.getEntityPlayer().getHeldItemMainhand().getItemDamage());*/
-
-      if (interactEvent.getEntityPlayer().getHeldItemMainhand().isItemStackDamageable() && axeDurability < logCount) {
-        m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
+      if (interactEvent.getPlayer().getHeldItemMainhand().isDamageable() && axeDurability < logCount) {
+        m_PlayerData.remove(interactEvent.getPlayer().getUniqueID());
         return;
       }
 
       if (logCount > 1) {
-        m_PlayerData.put(interactEvent.getEntityPlayer().getPersistentID(), new PlayerInteract(interactEvent.getPos(), logCount, axeDurability));
+        m_PlayerData.put(interactEvent.getPlayer().getUniqueID(), new PlayerInteract(interactEvent.getPos(), logCount, axeDurability));
       }
     } else {
-      m_PlayerData.remove(interactEvent.getEntityPlayer().getPersistentID());
+      m_PlayerData.remove(interactEvent.getPlayer().getUniqueID());
     }
   }
 
   @SubscribeEvent
-  public void BreakingBlock(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed breakSpeed) {
+  public static void BreakingBlock(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed breakSpeed) {
+    if (m_PlayerData.containsKey(breakSpeed.getPlayer().getUniqueID())) {
 
-    if (m_PlayerData.containsKey(breakSpeed.getEntityPlayer().getPersistentID())) {
-
-      BlockPos blockPos = m_PlayerData.get(breakSpeed.getEntityPlayer().getPersistentID()).m_BlockPos;
+      BlockPos blockPos = m_PlayerData.get(breakSpeed.getPlayer().getUniqueID()).m_BlockPos;
 
       if (blockPos.equals(breakSpeed.getPos())) {
-        breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed() / (m_PlayerData.get(breakSpeed.getEntityPlayer().getPersistentID()).m_LogCount / 2.0f));
+        breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed() / (m_PlayerData.get(breakSpeed.getPlayer().getUniqueID()).m_LogCount / 2.0f));
       } else {
         breakSpeed.setNewSpeed(breakSpeed.getOriginalSpeed());
       }
@@ -105,52 +120,47 @@ public class CommonProxy {
   }
 
   @SubscribeEvent
-  public void DestroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
+  public static void DestroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
+    TreeChopper.LOGGER.info("Got Destroy");
+    if (m_PlayerData.containsKey(breakEvent.getPlayer().getUniqueID())) {
 
-    if (m_PlayerData.containsKey(breakEvent.getPlayer().getPersistentID())) {
-
-      BlockPos blockPos = m_PlayerData.get(breakEvent.getPlayer().getPersistentID()).m_BlockPos;
+      BlockPos blockPos = m_PlayerData.get(breakEvent.getPlayer().getUniqueID()).m_BlockPos;
 
       if (blockPos.equals(breakEvent.getPos())) {
-        treeHandler.DestroyTree(breakEvent.getWorld(), breakEvent.getPlayer());
+        treeHandler.DestroyTree((World) breakEvent.getWorld(), breakEvent.getPlayer());
 
-        if (!breakEvent.getPlayer().isCreative() && breakEvent.getPlayer().getHeldItemMainhand().isItemStackDamageable()) {
+        if (!breakEvent.getPlayer().isCreative() && breakEvent.getPlayer().getHeldItemMainhand().isDamageable()) {
 
-          int axeDurability = breakEvent.getPlayer().getHeldItemMainhand().getItemDamage() + (int) (m_PlayerData.get(breakEvent.getPlayer().getPersistentID()).m_LogCount * 1.5);
+          int axeDurability = breakEvent.getPlayer().getHeldItemMainhand().getDamage() + (int) (m_PlayerData.get(breakEvent.getPlayer().getUniqueID()).m_LogCount * 1.5);
 
-          breakEvent.getPlayer().getHeldItemMainhand().setItemDamage(axeDurability);
+          breakEvent.getPlayer().getHeldItemMainhand().setDamage(axeDurability);
         }
       }
     }
   }
 
-  protected boolean CheckWoodenBlock(World world, BlockPos blockPos) {
-
-    if (ConfigurationHandler.blockWhiteList.contains(world.getBlockState(blockPos).getBlock().getUnlocalizedName())) {
+  protected static boolean CheckWoodenBlock(World world, BlockPos blockPos) {
+    if (world.getBlockState(blockPos).getBlock().isIn(BlockTags.LOGS)) {
       return true;
     }
 
-    if (!world.getBlockState(blockPos).getBlock().isWood(world, blockPos)) {
-      return false;
-    }
-
-    return true;
+    return false;
   }
 
-  protected boolean CheckItemInHand(EntityPlayer entityPlayer) {
+  protected static boolean CheckItemInHand(PlayerEntity entityPlayer) {
 
     if (entityPlayer.getHeldItemMainhand().isEmpty()) {
       return false;
     }
 
-    if (ConfigurationHandler.axeTypes.contains(entityPlayer.getHeldItemMainhand().getItem().getUnlocalizedName())) {
+    if (entityPlayer.getHeldItemMainhand().getItem() instanceof AxeItem) {
       return true;
     }
 
     boolean test;
 
     try {
-      ItemAxe tmp = (ItemAxe) entityPlayer.getHeldItemMainhand().getItem();
+      AxeItem tmp = (AxeItem) entityPlayer.getHeldItemMainhand().getItem();
       test = true;
     } catch (Exception e) {
       test = false;
