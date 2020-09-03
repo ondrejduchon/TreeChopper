@@ -109,6 +109,9 @@ public class TreeHandler {
         tree.InsertLeaf(blockPos);
         return false;
       }
+      else{
+        return false;
+      }
     }
 
     tree.InsertWood(blockPos);
