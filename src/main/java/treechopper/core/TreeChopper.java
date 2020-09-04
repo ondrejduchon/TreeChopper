@@ -16,10 +16,6 @@ public class TreeChopper {
 
   public static final Logger LOGGER = LogManager.getLogger();
   public static final String MOD_ID = "treechopper";
-  public static final String MOD_NAME = "Tree Chopper";
-  public static final String MOD_VERSION = "1.2.6";
-  public static final String GUI_FACTORY = "treechopper.client.gui.GuiTCHFactory";
-  public static final String MOD_DEPENDENCIES = "required-after:forge@[14.23.0.2486,)";
 
   public TreeChopper() {
     // Register the setup method for modloading

@@ -7,44 +7,44 @@ import java.util.Set;
 
 public class Tree {
 
-  private Set<BlockPos> m_Wood;
-  private Set<BlockPos> m_Leaves;
-  private BlockPos m_Position;
+  private Set<BlockPos> logs;
+  private Set<BlockPos> leaves;
+  private BlockPos initialBlockPosition;
 
   public Tree() {
-    m_Wood = new HashSet<>();
-    m_Leaves = new HashSet<>();
+    logs = new HashSet<>();
+    leaves = new HashSet<>();
   }
 
-  public void InsertWood(BlockPos blockPos) {
-    m_Wood.add(blockPos);
+  public void insertLog(BlockPos blockPos) {
+    logs.add(blockPos);
   }
 
-  public void InsertLeaf(BlockPos blockPos) {
-    m_Leaves.add(blockPos);
+  public void insertLeaf(BlockPos blockPos) {
+    leaves.add(blockPos);
   }
 
-  public int GetLogCount() {
-    return m_Wood.size();
+  public int getLogCount() {
+    return logs.size();
   }
 
-  public int GetLeavesCount() {
-    return m_Leaves.size();
+  public int getLeavesCount() {
+    return leaves.size();
   }
 
-  public Set<BlockPos> GetM_Wood() {
-    return m_Wood;
+  public Set<BlockPos> getLogs() {
+    return logs;
   }
 
-  public Set<BlockPos> GetM_Leaves() {
-    return m_Leaves;
+  public Set<BlockPos> getLeaves() {
+    return leaves;
   }
 
-  public BlockPos getM_Position() {
-    return m_Position;
+  public BlockPos getInitialBlockPosition() {
+    return initialBlockPosition;
   }
 
-  public void setM_Position(BlockPos m_Position) {
-    this.m_Position = m_Position;
+  public void setInitialBlockPosition(BlockPos newPosition) {
+    this.initialBlockPosition = newPosition;
   }
 }

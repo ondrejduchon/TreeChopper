@@ -7,10 +7,9 @@ import treechopper.common.handler.TreeHandler;
 
 public class ServerProxy extends CommonProxy {
 
-//  @Override
-//  public void InteractWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {
+//  public void interactWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {
 //
-//    if (m_PlayerPrintNames.containsKey(interactEvent.getPlayer().getUniqueID()) && m_PlayerPrintNames.get(interactEvent.getPlayer().getUniqueID())) {
+//    if (playerNames.containsKey(interactEvent.getPlayer().getUniqueID()) && playerNames.get(interactEvent.getPlayer().getUniqueID())) {
 //      interactEvent.getPlayer().sendMessage(new TranslationTextComponent("Block: " + interactEvent.getWorld().getBlockState(interactEvent.getPos()).getBlock().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
 //      interactEvent.getPlayer().sendMessage(new TranslationTextComponent("Main hand item: " + interactEvent.getPlayer().getHeldItemMainhand().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
 //    }
@@ -18,39 +17,39 @@ public class ServerProxy extends CommonProxy {
 //    int logCount;
 //    boolean shifting = true;
 //
-//    if (!Configuration.COMMON.disableShift.get()) {
-//      if (interactEvent.getPlayer().isSneaking() && !Configuration.COMMON.reverseShift.get()) {
+//    if (!Configuration.common.disableShift.get()) {
+//      if (interactEvent.getPlayer().isSneaking() && !Configuration.common.reverseShift.get()) {
 //        shifting = false;
 //      }
 //
-//      if (!interactEvent.getPlayer().isSneaking() && Configuration.COMMON.reverseShift.get()) {
+//      if (!interactEvent.getPlayer().isSneaking() && Configuration.common.reverseShift.get()) {
 //        shifting = false;
 //      }
 //    }
 //
-//    if (CheckWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && CheckItemInHand(interactEvent.getPlayer()) && shifting) {
+//    if (checkWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && checkItemInHand(interactEvent.getPlayer()) && shifting) {
 //
 //      int axeDurability = interactEvent.getPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getPlayer().getHeldItemMainhand().getDamage();
 //
-//      if (m_PlayerData.containsKey(interactEvent.getPlayer().getUniqueID()) &&
-//              m_PlayerData.get(interactEvent.getPlayer().getUniqueID()).m_BlockPos.equals(interactEvent.getPos()) &&
-//              m_PlayerData.get(interactEvent.getPlayer().getUniqueID()).m_AxeDurability == axeDurability) {
+//      if (playerData.containsKey(interactEvent.getPlayer().getUniqueID()) &&
+//              playerData.get(interactEvent.getPlayer().getUniqueID()).blockPos.equals(interactEvent.getPos()) &&
+//              playerData.get(interactEvent.getPlayer().getUniqueID()).axeDurability == axeDurability) {
 //        return;
 //      }
 //
 //      treeHandler = new TreeHandler();
-//      logCount = treeHandler.AnalyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getPlayer());
+//      logCount = treeHandler.analyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getPlayer());
 //
 //      if (interactEvent.getPlayer().getHeldItemMainhand().isDamageable() && axeDurability < logCount) {
-//        m_PlayerData.remove(interactEvent.getPlayer().getUniqueID());
+//        playerData.remove(interactEvent.getPlayer().getUniqueID());
 //        return;
 //      }
 //
 //      if (logCount > 1) {
-//        m_PlayerData.put(interactEvent.getPlayer().getUniqueID(), new PlayerInteract(interactEvent.getPos(), logCount, axeDurability));
+//        playerData.put(interactEvent.getPlayer().getUniqueID(), new PlayerInteract(interactEvent.getPos(), logCount, axeDurability));
 //      }
 //    } else {
-//      m_PlayerData.remove(interactEvent.getPlayer().getUniqueID());
+//      playerData.remove(interactEvent.getPlayer().getUniqueID());
 //    }
 //  }
 }
