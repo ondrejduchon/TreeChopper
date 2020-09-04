@@ -44,7 +44,7 @@ public class TreeHandler {
     return lastElement;
   }
 
-  public int analyzeTree(World world, BlockPos treePos, PlayerEntity entityPlayer) {
+  public Tree analyzeTree(World world, BlockPos treePos, PlayerEntity entityPlayer) {
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
     Set<BlockPos> tempAdjacentBlocks = new HashSet<>();
     Set<BlockPos> checkedBlocks = new HashSet<>();
@@ -78,7 +78,7 @@ public class TreeHandler {
     tree.setInitialBlockPosition(treePos);
     treeMap.put(entityPlayer.getUniqueID(), tree);
 
-    return tree.getLogCount();
+    return tree;
   }
 
   private Queue<BlockPos> lookAroundBlock(Block originBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {

@@ -71,7 +71,7 @@ public class CommonProxy {
         return;
       }
 
-      logCount = CommonProxy.treeHandler.analyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getPlayer());
+      logCount = CommonProxy.treeHandler.analyzeTree(interactEvent.getWorld(), interactEvent.getPos(), interactEvent.getPlayer()).getLogCount();
 
       if (interactEvent.getPlayer().getHeldItemMainhand().isDamageable() && axeDurability < logCount) {
         playerData.remove(interactEvent.getPlayer().getUniqueID());
