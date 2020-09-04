@@ -68,8 +68,7 @@ public class TreeHandler {
       tempAdjacentBlocks.clear();
     }
 
-    Set<BlockPos> tmpLeaves = new HashSet<>();
-    tmpLeaves.addAll(tree.getLeaves());
+    Set<BlockPos> tmpLeaves = new HashSet<>(tree.getLeaves());
 
     for (BlockPos currentLeaf : tmpLeaves) {
       checkedBlocks.add(currentLeaf);

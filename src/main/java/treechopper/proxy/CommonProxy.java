@@ -33,6 +33,7 @@ class PlayerInteract {
   }
 }
 
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class CommonProxy {
 
