@@ -18,9 +18,9 @@ public class TreeChopper {
   public static final String MOD_ID = "treechopper";
 
   public TreeChopper() {
-    // Register the setup method for modloading
+    // Register the setup method for mod loading
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-    // Register the doClientStuff method for modloading
+    // Register the doClientStuff method for mod loading
     FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 
     // Register ourselves for server and other game events we are interested in
@@ -29,10 +29,7 @@ public class TreeChopper {
     ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.commonSpec);
   }
 
-  private void setup(final FMLCommonSetupEvent event)
-  {
-  }
+  private void setup(final FMLCommonSetupEvent event){}
 
-  private void doClientStuff(final FMLClientSetupEvent event) {
-  }
+  private void doClientStuff(final FMLClientSetupEvent event) {}
 }
