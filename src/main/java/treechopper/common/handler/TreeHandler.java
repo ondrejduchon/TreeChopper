@@ -1,7 +1,9 @@
 package treechopper.common.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,15 +20,9 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import treechopper.common.config.Configuration;
 import treechopper.common.tree.Tree;
+import treechopper.core.TreeChopper;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TreeHandler {
 
@@ -150,29 +146,27 @@ public class TreeHandler {
     }
   }
 
-  private void plantSapling(World world, BlockPos blockPos, BlockPos originPos) {
-    FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerWorld) world);
-
-    Set<ItemStack> leafDrop = new HashSet<>();
+  private boolean plantSapling(World world, BlockPos blockPos, BlockPos originPos) {
+    ItemStack sapling = null;
 
     // TODO: Examine what this does
     int counter = 0;
-    while (leafDrop.isEmpty() && counter <= 100) {
-      NonNullList<ItemStack> tmpList = NonNullList.create();
-      world.getBlockState(blockPos).getBlock().harvestBlock(world, fakePlayer, blockPos, world.getBlockState(blockPos), null, new ItemStack(Blocks.OAK_WOOD));
-      leafDrop.addAll(tmpList);
-
+    while (sapling == null && counter <= 100) {
+      List<ItemStack> drops = Block.getDrops(world.getBlockState(blockPos), ((ServerWorld) world).getWorldServer(), blockPos, null);
+      for (ItemStack item: drops) {
+        if (item.getItem().getTranslationKey().contains("sapling")) {
+          sapling = item;
+        }
+      }
       counter++;
     }
 
-    if (leafDrop.isEmpty()) {
-      return;
+    if (sapling == null) {
+      return false;
     }
 
-    fakePlayer.setHeldItem(Hand.MAIN_HAND, leafDrop.iterator().next());
-
-    for (ItemStack itemStack : leafDrop) {
-      itemStack.onItemUse(new ItemUseContext(fakePlayer, Hand.MAIN_HAND, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, blockPos, false)));
-    }
+    boolean result = world.setBlockState(originPos.add(1, 0, 1), SaplingBlock.getBlockFromItem(sapling.getItem()).getDefaultState());
+    TreeChopper.LOGGER.info("Placed sapling block: " + result);
+    return result;
   }
 }
