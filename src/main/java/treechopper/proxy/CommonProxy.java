@@ -36,17 +36,11 @@ class PlayerInteract {
 @Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class CommonProxy {
 
-  public static Map<UUID, Boolean> playerNames = new HashMap<>();
-  protected static Map<UUID, PlayerInteract> playerData = new HashMap<>();
-  protected static TreeHandler treeHandler = new TreeHandler();
+  private static Map<UUID, PlayerInteract> playerData = new HashMap<>();
+  private static TreeHandler treeHandler = new TreeHandler();
 
   @SubscribeEvent
   public static void interactWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {
-    if (interactEvent.getSide().isClient() && playerNames.containsKey(interactEvent.getPlayer().getUniqueID()) && playerNames.get(interactEvent.getPlayer().getUniqueID())) {
-      interactEvent.getPlayer().sendMessage(new TranslationTextComponent(I18n.format("proxy.printBlock") + " " + interactEvent.getWorld().getBlockState(interactEvent.getPos()).getBlock().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
-      interactEvent.getPlayer().sendMessage(new TranslationTextComponent(I18n.format("proxy.printMainHand") + " " + interactEvent.getPlayer().getHeldItemMainhand().getItem().getTranslationKey()), interactEvent.getPlayer().getUniqueID());
-    }
-
     int logCount;
     boolean shifting = true;
 
@@ -61,7 +55,6 @@ public class CommonProxy {
     }
 
     if (checkWoodenBlock(interactEvent.getWorld(), interactEvent.getPos()) && checkItemInHand(interactEvent.getPlayer()) && shifting) {
-
       int axeDurability = interactEvent.getPlayer().getHeldItemMainhand().getMaxDamage() - interactEvent.getPlayer().getHeldItemMainhand().getDamage();
 
       if (playerData.containsKey(interactEvent.getPlayer().getUniqueID()) &&
@@ -113,11 +106,15 @@ public class CommonProxy {
     }
   }
 
-  protected static boolean checkWoodenBlock(World world, BlockPos blockPos) {
+  // Check if the block at @blockPos is an instance of LOGS
+  // This allows any mod that is registering their block with BlockTags.LOGS
+  private static boolean checkWoodenBlock(World world, BlockPos blockPos) {
     return world.getBlockState(blockPos).getBlock().isIn(BlockTags.LOGS);
   }
 
-  protected static boolean checkItemInHand(PlayerEntity entityPlayer) {
+  // Checks if the item being held is an AxeItem
+  // This allows any mod that registers their tool as an AxeItem
+  private static boolean checkItemInHand(PlayerEntity entityPlayer) {
     if (entityPlayer.getHeldItemMainhand().isEmpty()) {
       return false;
     }

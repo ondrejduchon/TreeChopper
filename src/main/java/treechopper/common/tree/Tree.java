@@ -2,18 +2,17 @@ package treechopper.common.tree;
 
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public class Tree {
 
-  private Set<BlockPos> logs;
-  private Set<BlockPos> leaves;
+  private ArrayList<BlockPos> logs;
+  private ArrayList<BlockPos> leaves;
   private BlockPos initialBlockPosition;
 
   public Tree() {
-    logs = new HashSet<>();
-    leaves = new HashSet<>();
+    logs = new ArrayList<>();
+    leaves = new ArrayList<>();
   }
 
   public void insertLog(BlockPos blockPos) {
@@ -32,11 +31,11 @@ public class Tree {
     return leaves.size();
   }
 
-  public Set<BlockPos> getLogs() {
+  public ArrayList<BlockPos> getLogs() {
     return logs;
   }
 
-  public Set<BlockPos> getLeaves() {
+  public ArrayList<BlockPos> getLeaves() {
     return leaves;
   }
 

@@ -11,25 +11,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import treechopper.common.config.Configuration;
 import treechopper.common.tree.Tree;
-import treechopper.core.TreeChopper;
 
 import java.util.*;
 
 public class TreeHandler {
-
   private static Map<UUID, Tree> treeMap = new HashMap<>();
   private Tree tree;
-
-  //TODO: remove
-  private static <T> T getLastElement(final Iterable<T> elements) {
-    final Iterator<T> itr = elements.iterator();
-    T lastElement = itr.next();
-    while (itr.hasNext()) {
-      lastElement = itr.next();
-    }
-
-    return lastElement;
-  }
 
   public Tree analyzeTree(World world, BlockPos treePos, PlayerEntity entityPlayer) {
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
@@ -123,8 +110,7 @@ public class TreeHandler {
       }
 
       if (Configuration.common.plantSapling.get() && !tmpTree.getLeaves().isEmpty()) {
-        //TODO: rewrite to use getLeavesCount
-        BlockPos tmpPosition = getLastElement(tmpTree.getLeaves());
+        BlockPos tmpPosition = tmpTree.getLeaves().get(tmpTree.getLeavesCount() - 1);
         plantSapling(world, tmpPosition, tmpTree.getInitialBlockPosition());
       }
 
@@ -140,11 +126,14 @@ public class TreeHandler {
   private boolean plantSapling(World world, BlockPos blockPos, BlockPos originPos) {
     ItemStack sapling = null;
 
-    // TODO: Examine what this does
+    // Count should be the blocks in the tree, which could be something in the core Minecraft code
+    // But if it is in there, it has not been mapped yet. 100 is a safe ceiling for the time being.
     int counter = 0;
     while (sapling == null && counter <= 100) {
       List<ItemStack> drops = Block.getDrops(world.getBlockState(blockPos), ((ServerWorld) world).getWorldServer(), blockPos, null);
       for (ItemStack item: drops) {
+        // Only get sapling drops. There is no sapling tag so any mods using special saplings will
+        // have to include sapling in their item/block name
         if (item.getItem().getTranslationKey().contains("sapling")) {
           sapling = item;
         }
@@ -156,8 +145,6 @@ public class TreeHandler {
       return false;
     }
 
-    boolean result = world.setBlockState(originPos.add(1, 0, 1), SaplingBlock.getBlockFromItem(sapling.getItem()).getDefaultState());
-    TreeChopper.LOGGER.info("Placed sapling block: " + result);
-    return result;
+    return world.setBlockState(originPos.add(1, 0, 1), SaplingBlock.getBlockFromItem(sapling.getItem()).getDefaultState());
   }
 }
