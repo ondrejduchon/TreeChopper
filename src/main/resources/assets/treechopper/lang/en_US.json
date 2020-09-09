@@ -1,0 +1,20 @@
+{
+    "proxy.print_block": "Block: %s",
+    "proxy.print_main_hand": "Main hand item: %s",
+    "command.error_message": "Type \"/tch info\" for usage information",
+    "command.decay_leaves_switch": "Decay leaves has been switched to %s",
+    "command.plant_sapling_switch": "Auto planting has been switched to %s",
+    "command.reverse_shift_switch": "Reverse function has been switched to %s",
+    "command.disable_shift_switch": "Disable shift function has been switched to %s",
+    "command.permissions": "You do not have permission to use this command",
+    "command.choice": "TCH Command: %s, toggle: %s",
+    "command.info": " Print info about server settings",
+    "command.plant_sapling_info": " Auto plant sapling, around his trunk",
+    "command.decay_leaves_info": " Decay leaves with tree fall",
+    "command.reverse_shift_info": " Reverse shift function",
+    "command.disable_shift_info": " Disable shift function",
+    "command.decay_leaves": "Leaves decay: %s",
+    "command.plant_sapling": "Automatic sapling plant: %s",
+    "command.reverse_shift": "Reverse func: %s",
+    "command.disable_shift": "Disabled shift: %s"
+}

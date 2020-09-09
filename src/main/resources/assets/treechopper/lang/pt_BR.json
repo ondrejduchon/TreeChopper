@@ -1,0 +1,19 @@
+{
+  "proxy.print_block": "Bloco:",
+  "proxy.print_main_hand": "Item da mão principal:",
+  "command.error_message": "Digite \"/tch info\" para ajuda",
+  "command.decay_leaves_switch": "Decaimento de folhas foi trocado",
+  "command.plant_sapling_switch": "Plantio automático foi trocado",
+  "command.reverse_shift_switch": "Reverter função foi trocada",
+  "command.disable_shift_switch": "Desativar função de shift foi trocada",
+  "command.permissions": "Você não tem permissão para usar esse comando",
+  "command.choice": " Imprimir informações sobre configurações do servidor",
+  "command.info": " Plantio de muda automático, em torno de seu tronco",
+  "command.plant_sapling_info": " Decaimento de folhas com queda de árvore",
+  "command.decay_leaves_info": " Reverter função de shift",
+  "command.reverse_shift_info": " Desativar função de shift",
+  "command.disable_shift_info": "Decaimento de folhas:",
+  "command.decay_leaves": "Plantio de muda automático:",
+  "command.plant_sapling": "Funç Reversa:",
+  "command.reverse_shift": "Shift desativado:"
+}

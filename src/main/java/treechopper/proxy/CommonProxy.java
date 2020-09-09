@@ -1,17 +1,17 @@
 package treechopper.proxy;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import treechopper.command.*;
 import treechopper.common.config.Configuration;
 import treechopper.common.handler.TreeHandler;
 import treechopper.core.TreeChopper;
@@ -38,6 +38,11 @@ public class CommonProxy {
 
   private static Map<UUID, PlayerInteract> playerData = new HashMap<>();
   private static TreeHandler treeHandler = new TreeHandler();
+
+  @SubscribeEvent
+  public static void onServerStarting(final RegisterCommandsEvent event) {
+    TreeChopperCommand.register(event.getDispatcher());
+  }
 
   @SubscribeEvent
   public static void interactWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {

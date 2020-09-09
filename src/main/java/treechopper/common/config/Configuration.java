@@ -20,22 +20,22 @@ public class Configuration {
 
             decayLeaves = builder
                     .comment("Cut down whole tree - wooden blocks and leaves.")
-                    .translation("command.decayLeavesInfo")
+                    .translation("command.decay_leaves_info")
                     .define("decayLeaves", true);
 
             reverseShift = builder
                     .comment("Reverse shift function - Mod works with shift pressing.")
-                    .translation("command.reverseShiftInfo")
+                    .translation("command.reverse_shift_info")
                     .define("reverseShift", false);
 
             disableShift = builder
                     .comment("Disable shift function - Always chop trees regardless of shift pressing.")
-                    .translation("command.disableShiftInfo")
+                    .translation("command.disable_shift_info")
                     .define("disableShift", false);
 
             plantSapling = builder
                     .comment("Automatic sapling plant on tree chop.")
-                    .translation("command.plantSaplingInfo")
+                    .translation("command.plant_sapling_info")
                     .define("plantSapling", false);
         }
     }

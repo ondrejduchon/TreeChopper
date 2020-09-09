@@ -1,0 +1,25 @@
+{
+  "proxy.print_block": "Юлок:",
+  "proxy.print_main_hand": "Главный предмет в руке:",
+
+  "command.error_message": "Используйте \"/tch info\" для справки",
+
+  "command.decay_leaves_switch": "Опадение листвы переключено",
+  "command.plant_sapling_switch": "Автопосадка деревьев переключена",
+  "command.reverse_shift_switch": "Реверс функции переключения",
+  "command.disable_shift_switch": "Отключение функции Shift переключено",
+
+  "command.permissions": "У вас нет разрешения на использование этой команды.",
+
+  "command.choice": " Вывод информации о настройках сервера",
+  "command.info": " Автоматическая посадка саженцев, вокруг его ствола",
+
+  "command.plant_sapling_info": " Опадение листвы при разрушении дерева",
+  "command.decay_leaves_info": " Реверс функции Shift ",
+  "command.reverse_shift_info": " Отключение функции Shift ",
+  "command.disable_shift_info": "Опадение листвы:",
+
+  "command.decay_leaves": "Автоматическая посадка саженцев:",
+  "command.plant_sapling": "Реверс функции:",
+  "command.reverse_shift": "Отключение Shift:"
+}
