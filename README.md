@@ -16,7 +16,9 @@ The same goes for wood. As long as the tree uses `BlockTags.LOGS` then it is sup
 Finally, leaves will work if they use `MaterialColor.FOLIAGE`.
 
 ---
-Works with Minecraft 1.16.2
+![Minecraft 1.12](http://cf.way2muchnoise.eu/versions/250241.svg "Supported versions")
+
+![Tree Chopper](http://cf.way2muchnoise.eu/full_250241_downloads.svg "Tree Chopper")
 
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
 
