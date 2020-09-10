@@ -1,0 +1,20 @@
+{
+"command.error_message=": "输入 \"/tch help\" 显示帮助信息",
+"command.decay_leaves_switch": "砍伐树叶 开关已切换",
+"command.plant_sapling_switch": "自动种树 开关已切换",
+"command.reverse_shift_switch": "shift功能反向 开关已切换",
+"command.disable_shift_switch": "禁用shift功能 开关已切换",
+
+"command.permissions": "你没有使用该命令的权限",
+
+"command.help": "输出砍树mod的服务器设置",
+"command.plant_sapling_info": "在树桩周围自动种树",
+"command.decay_leaves_info": "自动砍伐树叶",
+"command.reverse_shift_info=": "shift功能反向",
+"command.disable_shift_info": "禁用shift功能",
+
+"command.decay_leaves": "砍伐树叶: %s",
+"command.plant_sapling": "自动种树: %s",
+"command.reverse_shift": "shift功能反向: %s",
+"command.disable_shift": "关闭shift功能: %s"
+}

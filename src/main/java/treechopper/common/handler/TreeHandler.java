@@ -1,231 +1,197 @@
 package treechopper.common.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SaplingBlock;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import treechopper.common.config.ConfigurationHandler;
+import net.minecraft.world.server.ServerWorld;
+import treechopper.common.config.Configuration;
 import treechopper.common.tree.Tree;
 
 import java.util.*;
 
+/**
+ * Handles most things related to the brains of the mod. Most of the business logic
+ * is handled within this class.
+ */
 public class TreeHandler {
-
-  private static Map<UUID, Tree> m_Trees = new HashMap<>();
+  private static Map<UUID, Tree> treeMap = new HashMap<>();
   private Tree tree;
 
-  private static <T> T getLastElement(final Iterable<T> elements) {
-    final Iterator<T> itr = elements.iterator();
-    T lastElement = itr.next();
-
-    while (itr.hasNext()) {
-      lastElement = itr.next();
-    }
-
-    return lastElement;
-  }
-
-  public int AnalyzeTree(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
-
+  /**
+   * Get all related metadata about the tree and build a Tree object.
+   *
+   * @param world Minecraft world
+   * @param treePos BlockPos: x,y,z coordinates of the block being destroyed
+   * @param entityPlayer PlayerEntity: the player who is destroying the block
+   * @return Tree
+   */
+  public Tree analyzeTree(World world, BlockPos treePos, PlayerEntity entityPlayer) {
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
-    Set<BlockPos> tmpBlocks = new HashSet<>();
+    Set<BlockPos> tempAdjacentBlocks = new HashSet<>();
     Set<BlockPos> checkedBlocks = new HashSet<>();
+
     BlockPos currentPos;
-    Block logBlock = world.getBlockState(blockPos).getBlock();
+    Block logBlock = world.getBlockState(treePos).getBlock();
     tree = new Tree();
 
-    queuedBlocks.add(blockPos);
-    tree.InsertWood(blockPos);
+    queuedBlocks.add(treePos);
+    tree.insertLog(treePos);
 
     while (!queuedBlocks.isEmpty()) {
 
       currentPos = queuedBlocks.remove();
       checkedBlocks.add(currentPos);
 
-      tmpBlocks.addAll(LookAroundBlock(logBlock, currentPos, world, checkedBlocks));
-      queuedBlocks.addAll(tmpBlocks);
-      checkedBlocks.addAll(tmpBlocks);
-      tmpBlocks.clear();
+      tempAdjacentBlocks.addAll(lookAroundBlock(logBlock, currentPos, world, checkedBlocks));
+      queuedBlocks.addAll(tempAdjacentBlocks);
+      checkedBlocks.addAll(tempAdjacentBlocks);
+      tempAdjacentBlocks.clear();
     }
 
-    Set<BlockPos> tmpLeaves = new HashSet<>();
-    tmpLeaves.addAll(tree.GetM_Leaves());
+    Set<BlockPos> tmpLeaves = new HashSet<>(tree.getLeaves());
 
-    for (BlockPos blockPos1 : tmpLeaves) {
-      checkedBlocks.add(blockPos1);
-      LookAroundBlock(null, blockPos1, world, checkedBlocks);
+    for (BlockPos currentLeaf : tmpLeaves) {
+      checkedBlocks.add(currentLeaf);
+      lookAroundBlock(null, currentLeaf, world, checkedBlocks);
     }
 
-    tree.setM_Position(blockPos);
-    m_Trees.put(entityPlayer.getPersistentID(), tree);
+    tree.setInitialBlockPosition(treePos);
+    treeMap.put(entityPlayer.getUniqueID(), tree);
 
-    return tree.GetLogCount();
+    return tree;
   }
 
-  private Queue<BlockPos> LookAroundBlock(Block logBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
+  /**
+   * Check out the area directly surrounding the block in question
+   *
+   * x x x
+   * x O x
+   * x x x
+   *
+   * @param originBlock Block to look around at all adjacent blocks
+   * @param currentPos Where the block currently is x,y,z
+   * @param world Minecraft world object
+   * @param checkedBlocks Other blocks that have been checked
+   * @return Queue<BlockPos>
+   */
+  private Queue<BlockPos> lookAroundBlock(Block originBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
 
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
     BlockPos tmpPos;
 
+    // Looks at all blocks surrounding the current position block
+    // 3 x 3 x 3
     for (int i = -1; i <= 1; i++) {
-      tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ());
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() + 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ());
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ() - 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() + 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() - 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX() - 1, currentPos.getY() + i, currentPos.getZ() + 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX() + 1, currentPos.getY() + i, currentPos.getZ() - 1);
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
-      }
-
-      tmpPos = new BlockPos(currentPos.getX(), currentPos.getY() + i, currentPos.getZ());
-      if (CheckBlock(world, tmpPos, checkedBlocks, logBlock)) {
-        queuedBlocks.add(tmpPos);
+      for (int j = -1; j <= 1; j++) {
+        for (int k = -1; k <= 1; k++) {
+          tmpPos = new BlockPos(currentPos.getX() + i, currentPos.getY() + j, currentPos.getZ() + k);
+          if (checkBlockType(world, tmpPos, checkedBlocks, originBlock)) {
+            queuedBlocks.add(tmpPos);
+          }
+        }
       }
     }
 
     return queuedBlocks;
   }
 
-  private boolean CheckBlock(World world, BlockPos blockPos, Set<BlockPos> checkedBlocks, Block originBlock) {
-
+  private boolean checkBlockType(World world, BlockPos blockPos, Set<BlockPos> checkedBlocks, Block originBlock) {
     if (checkedBlocks.contains(blockPos)) {
       return false;
     }
 
     if (world.getBlockState(blockPos).getBlock() != originBlock) {
-
-      if (ConfigurationHandler.plantSapling && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos) && tree.GetM_Leaves().isEmpty()) {
-        tree.InsertLeaf(blockPos);
+      if (Configuration.common.plantSapling.get() && world.getBlockState(blockPos).getBlock().getMaterialColor() == MaterialColor.FOLIAGE && tree.getLeaves().isEmpty()) {
+        tree.insertLeaf(blockPos);
       }
 
-      if (ConfigurationHandler.decayLeaves && ConfigurationHandler.leafWhiteList.contains(world.getBlockState(blockPos).getBlock().getUnlocalizedName())) {
-        tree.InsertLeaf(blockPos);
-
+      if (Configuration.common.decayLeaves.get() && world.getBlockState(blockPos).getBlock().getMaterialColor() == MaterialColor.FOLIAGE) {
+        tree.insertLeaf(blockPos);
         return false;
       }
-
-      if (ConfigurationHandler.decayLeaves && world.getBlockState(blockPos).getBlock().isLeaves(world.getBlockState(blockPos), world, blockPos)) {
-        tree.InsertLeaf(blockPos);
-
-        return false;
-      } else {
+      else{
         return false;
       }
     }
 
-    tree.InsertWood(blockPos);
+    tree.insertLog(blockPos);
 
     return true;
   }
 
-  public void DestroyTree(World world, EntityPlayer entityPlayer) {
+  /**
+   * This will:
+   *   Destroy log and leaf blocks, getting drops
+   *   Plant a sapling if enabled
+   *   Decay leaves if enabled, sets all leaf blocks to air
+   *
+   * @param world Minecraft world
+   * @param entityPlayer Player who broke the tree
+   */
+  public void destroyTree(World world, PlayerEntity entityPlayer) {
+    if (treeMap.containsKey(entityPlayer.getUniqueID())) {
+      Tree tmpTree = treeMap.get(entityPlayer.getUniqueID());
 
-    int soundReduced = 0;
-
-    if (m_Trees.containsKey(entityPlayer.getPersistentID())) {
-
-      Tree tmpTree = m_Trees.get(entityPlayer.getPersistentID());
-
-      for (BlockPos blockPos : tmpTree.GetM_Wood()) {
-
-        if (soundReduced <= 1) {
-          world.destroyBlock(blockPos, true);
-        } else {
-          world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
-        }
-
-        world.setBlockToAir(blockPos);
-
-        soundReduced++;
+      for (BlockPos logPos : tmpTree.getLogs()) {
+        world.destroyBlock(logPos, true);
+        world.setBlockState(logPos, Blocks.AIR.getDefaultState());
       }
 
-      if (ConfigurationHandler.plantSapling && !tmpTree.GetM_Leaves().isEmpty()) {
-
-        BlockPos tmpPosition = getLastElement(tmpTree.GetM_Leaves());
-        PlantSapling(world, tmpPosition, tmpTree.getM_Position());
+      if (Configuration.common.plantSapling.get() && !tmpTree.getLeaves().isEmpty()) {
+        BlockPos tmpPosition = tmpTree.getLeaves().get(tmpTree.getLeavesCount() - 1);
+        plantSapling(world, tmpPosition, tmpTree.getInitialBlockPosition());
       }
 
-      soundReduced = 0;
-
-      if (ConfigurationHandler.decayLeaves) {
-
-        for (BlockPos blockPos : tmpTree.GetM_Leaves()) {
-
-          if (soundReduced <= 1) {
-            world.destroyBlock(blockPos, true);
-          } else {
-            world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 1);
-          }
-
-          world.setBlockToAir(blockPos);
-
-          soundReduced++;
+      if (Configuration.common.decayLeaves.get()) {
+        for (BlockPos leafPos : tmpTree.getLeaves()) {
+          world.destroyBlock(leafPos, true);
+          world.setBlockState(leafPos, Blocks.AIR.getDefaultState());
         }
       }
     }
   }
 
-  private void PlantSapling(World world, BlockPos blockPos, BlockPos originPos) {
+  /**
+   * Plant a sapling after the tree is broken.
+   *
+   * TODO:
+   *  Check if block has dirt underneath it (valid block)
+   *  Search for a valid block around the tree.
+   *
+   * For some reason, you can't place the sapling where the original tree was.
+   *
+   * @param world Minecraft world
+   * @param blockPos Block position x,y,z
+   * @param originPos First block that was broken on the tree
+   * @return boolean Was the block placed successfully or not
+   */
+  private boolean plantSapling(World world, BlockPos blockPos, BlockPos originPos) {
+    ItemStack sapling = null;
 
-    Set<ItemStack> leafDrop = new HashSet<>();
-    BlockPos plantPos1 = new BlockPos(originPos.getX() - 1, originPos.getY(), originPos.getZ() - 1);
+    // Count should be the blocks in the tree, which could be something in the core Minecraft code
+    // But if it is in there, it has not been mapped yet. 100 is a safe ceiling for the time being.
     int counter = 0;
-
-    while (leafDrop.isEmpty() && counter <= 100) {
-      NonNullList<ItemStack> tmpList = NonNullList.create();
-      world.getBlockState(blockPos).getBlock().getDrops(tmpList, world, blockPos, world.getBlockState(blockPos), 3);
-      leafDrop.addAll(tmpList);
-
+    while (sapling == null && counter <= 100) {
+      List<ItemStack> drops = Block.getDrops(world.getBlockState(blockPos), ((ServerWorld) world).getWorldServer(), blockPos, null);
+      for (ItemStack item: drops) {
+        // Only get sapling drops. There is no sapling tag so any mods using special saplings will
+        // have to include sapling in their item/block name
+        if (item.getItem().getTranslationKey().contains("sapling")) {
+          sapling = item;
+        }
+      }
       counter++;
     }
 
-    if (leafDrop.isEmpty()) {
-      return;
+    if (sapling == null) {
+      return false;
     }
 
-    FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((WorldServer) world);
-    fakePlayer.setHeldItem(EnumHand.MAIN_HAND, leafDrop.iterator().next());
-
-    for (ItemStack itemStack : leafDrop) {
-      itemStack.onItemUse(fakePlayer, world, plantPos1, EnumHand.MAIN_HAND, EnumFacing.NORTH, 0, 0, 0);
-    }
+    return world.setBlockState(originPos.add(1, 0, 1), SaplingBlock.getBlockFromItem(sapling.getItem()).getDefaultState());
   }
 }

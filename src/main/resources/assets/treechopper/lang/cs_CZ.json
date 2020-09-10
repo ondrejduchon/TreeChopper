@@ -1,0 +1,25 @@
+{
+  "proxy.print_block": "Blok:",
+  "proxy.print_main_hand": "V ruce:",
+
+  "command.error_message": "Napište \"/tch info\" pro více informací",
+
+  "command.decay_leaves_switch": "Změna padání listí na",
+  "command.plant_sapling_switch": "Změna automatického sázení stromku na",
+  "command.reverse_shift_switch": "Změna obrácené funkce SHIFTu na",
+  "command.disable_shift_switch": "Zrušení funkce SHIFTU na",
+
+  "command.permissions": "Nemáte dostatečné oprávnění k použití tohoto příkazu",
+
+  "command.choice": " Vypsat informace o nastavení serveru",
+  "command.info": " Automatické sázení stromku po pokácení",
+
+  "command.plant_sapling_info": " Opadnutí listí spolu se dřevem",
+  "command.decay_leaves_info": " Obrácená funkce SHIFTu",
+  "command.reverse_shift_info": " Zrušení funkce SHIFTu",
+  "command.disable_shift_info": "Padání listí:",
+
+  "command.decay_leaves": "Automatické sázení stromku:",
+  "command.plant_sapling": "Obrácená funkce SHIFTu:",
+  "command.reverse_shift": "Zrušení funkce SHIFTu:"
+}
