@@ -1,21 +1,20 @@
-proxy.printBlock=·½¿é:
-proxy.printMainHand=ÓÒÊÖÎïÆ·:
+{
+"command.error_message=": "è¾“å…¥ \"/tch help\" æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯",
+"command.decay_leaves_switch": "ç ä¼æ ‘å¶ å¼€å…³å·²åˆ‡æ¢",
+"command.plant_sapling_switch": "è‡ªåŠ¨ç§æ ‘ å¼€å…³å·²åˆ‡æ¢",
+"command.reverse_shift_switch": "shiftåŠŸèƒ½åå‘ å¼€å…³å·²åˆ‡æ¢",
+"command.disable_shift_switch": "ç¦ç”¨shiftåŠŸèƒ½ å¼€å…³å·²åˆ‡æ¢",
 
-command.errorMessage=ÊäÈë "/tch help" ÏÔÊ¾°ïÖúĞÅÏ¢
-command.decayLeavesSwitch=¿³·¥Ê÷Ò¶ ¿ª¹ØÒÑÇĞ»»
-command.plantSaplingSwitch=×Ô¶¯ÖÖÊ÷ ¿ª¹ØÒÑÇĞ»»
-command.reverseShiftSwitch=shift¹¦ÄÜ·´Ïò ¿ª¹ØÒÑÇĞ»»
-command.disableShiftSwitch=½ûÓÃshift¹¦ÄÜ ¿ª¹ØÒÑÇĞ»»
+"command.permissions": "ä½ æ²¡æœ‰ä½¿ç”¨è¯¥å‘½ä»¤çš„æƒé™",
 
-command.permissions=ÄãÃ»ÓĞÊ¹ÓÃ¸ÃÃüÁîµÄÈ¨ÏŞ
+"command.help": "è¾“å‡ºç æ ‘modçš„æœåŠ¡å™¨è®¾ç½®",
+"command.plant_sapling_info": "åœ¨æ ‘æ¡©å‘¨å›´è‡ªåŠ¨ç§æ ‘",
+"command.decay_leaves_info": "è‡ªåŠ¨ç ä¼æ ‘å¶",
+"command.reverse_shift_info=": "shiftåŠŸèƒ½åå‘",
+"command.disable_shift_info": "ç¦ç”¨shiftåŠŸèƒ½",
 
-command.infoInfo= Êä³ö¿³Ê÷modµÄ·şÎñÆ÷ÉèÖÃ
-command.plantSaplingInfo= ÔÚÊ÷×®ÖÜÎ§×Ô¶¯ÖÖÊ÷
-command.decayLeavesInfo= ×Ô¶¯¿³·¥Ê÷Ò¶
-command.reverseShiftInfo= shift¹¦ÄÜ·´Ïò
-command.disableShiftInfo= ½ûÓÃshift¹¦ÄÜ
-
-command.decayLeaves=¿³·¥Ê÷Ò¶:
-command.plantSapling=×Ô¶¯ÖÖÊ÷:
-command.reverseShift=shift¹¦ÄÜ·´Ïò:
-command.disableShift=¹Ø±Õshift¹¦ÄÜ:
+"command.decay_leaves": "ç ä¼æ ‘å¶: %s",
+"command.plant_sapling": "è‡ªåŠ¨ç§æ ‘: %s",
+"command.reverse_shift": "shiftåŠŸèƒ½åå‘: %s",
+"command.disable_shift": "å…³é—­shiftåŠŸèƒ½: %s"
+}
