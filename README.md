@@ -12,8 +12,8 @@ Type in-game command "/tch help" for more info.
 
 #### Add new wood or axe
 There should be no need to add a supported wood or axe type. If another mod has an axe, as long as it implements `AxeItem` it is supported.
-
 The same goes for wood. As long as the tree uses `BlockTags.LOGS` then it is supported.
+Finally, leaves will work if they use `MaterialColor.FOLIAGE`.
 
 ---
 Works with Minecraft 1.16.2
