@@ -1,11 +1,9 @@
 package treechopper.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 /**
  * Print information on how the "/tch" family of commands is used
