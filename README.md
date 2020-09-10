@@ -16,9 +16,7 @@ There should be no need to add a supported wood or axe type. If another mod has 
 The same goes for wood. As long as the tree uses `BlockTags.LOGS` then it is supported.
 
 ---
-![Minecraft 1.12](http://cf.way2muchnoise.eu/versions/250241.svg "Supported versions")
-
-![Tree Chopper](http://cf.way2muchnoise.eu/full_250241_downloads.svg "Tree Chopper")
+Works with Minecraft 1.16.2
 
 [Curseforge.com](https://minecraft.curseforge.com/projects/tree-chopper)
 
