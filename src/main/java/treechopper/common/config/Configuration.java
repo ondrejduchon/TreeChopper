@@ -7,6 +7,12 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import treechopper.core.TreeChopper;
 
+/**
+ * Handles the mod's configuration file.
+ *
+ * TODO: Currently (1.16.2) the forge project does not have a config gui screen. There are PRs that are under review for adding
+ *  it. Therefore, the only reasonable way to handle configurations is through the server command interface.
+ */
 @Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Configuration {
     public static class Common {

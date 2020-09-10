@@ -4,6 +4,12 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 
+/**
+ * POJO Tree.
+ *
+ * TODO:
+ *  Add sapling plant location function
+ */
 public class Tree {
 
   private ArrayList<BlockPos> logs;

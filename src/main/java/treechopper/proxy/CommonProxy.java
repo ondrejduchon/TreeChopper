@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,17 +34,31 @@ class PlayerInteract {
   }
 }
 
+/**
+ * Handles all event bus listeners.  Client side only.
+ */
 @Mod.EventBusSubscriber(modid = TreeChopper.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class CommonProxy {
 
   private static Map<UUID, PlayerInteract> playerData = new HashMap<>();
   private static TreeHandler treeHandler = new TreeHandler();
 
+  /**
+   * Commands are registered when the server starts. This used to be on the FMLServerStartEvent
+   * but the RegistercommandsEvent was created for all mods to use to register commands.
+   *
+   * @param event Event being listened for.
+   */
   @SubscribeEvent
   public static void onServerStarting(final RegisterCommandsEvent event) {
     TreeChopperCommand.register(event.getDispatcher());
   }
 
+  /**
+   * Begin breaking the tree. We slow down the breaking depending on the number of blocks in the tree.
+   *
+   * @param interactEvent Event being listened for.
+   */
   @SubscribeEvent
   public static void interactWithTree(PlayerInteractEvent.LeftClickBlock interactEvent) {
     int logCount;
@@ -83,8 +98,13 @@ public class CommonProxy {
     }
   }
 
+  /**
+   * Slow down the block breaking depending on the number of blocks in the tree.
+   *
+   * @param breakSpeed Event being listened for.
+   */
   @SubscribeEvent
-  public static void breakingBlock(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed breakSpeed) {
+  public static void breakingBlock(PlayerEvent.BreakSpeed breakSpeed) {
     if (playerData.containsKey(breakSpeed.getPlayer().getUniqueID())) {
       BlockPos blockPos = playerData.get(breakSpeed.getPlayer().getUniqueID()).blockPos;
       if (blockPos.equals(breakSpeed.getPos())) {
@@ -95,6 +115,11 @@ public class CommonProxy {
     }
   }
 
+  /**
+   * Breaks the wood block, the tree, and damages the axe.
+   *
+   * @param breakEvent
+   */
   @SubscribeEvent
   public static void destroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
     if (playerData.containsKey(breakEvent.getPlayer().getUniqueID())) {

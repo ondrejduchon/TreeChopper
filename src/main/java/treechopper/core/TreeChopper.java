@@ -11,6 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import treechopper.common.config.Configuration;
 
+/**
+ * Root of the TreeChopper mod.
+ *    Registers the mod with forge
+ *    Sets up and initializes the mod configuration
+ *    Registers on the event bus
+ */
 @Mod("treechopper")
 public class TreeChopper {
 

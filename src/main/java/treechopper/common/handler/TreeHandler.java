@@ -14,10 +14,22 @@ import treechopper.common.tree.Tree;
 
 import java.util.*;
 
+/**
+ * Handles most things related to the brains of the mod. Most of the business logic
+ * is handled within this class.
+ */
 public class TreeHandler {
   private static Map<UUID, Tree> treeMap = new HashMap<>();
   private Tree tree;
 
+  /**
+   * Get all related metadata about the tree and build a Tree object.
+   *
+   * @param world Minecraft world
+   * @param treePos BlockPos: x,y,z coordinates of the block being destroyed
+   * @param entityPlayer PlayerEntity: the player who is destroying the block
+   * @return Tree
+   */
   public Tree analyzeTree(World world, BlockPos treePos, PlayerEntity entityPlayer) {
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
     Set<BlockPos> tempAdjacentBlocks = new HashSet<>();
@@ -55,6 +67,19 @@ public class TreeHandler {
     return tree;
   }
 
+  /**
+   * Check out the area directly surrounding the block in question
+   *
+   * x x x
+   * x O x
+   * x x x
+   *
+   * @param originBlock Block to look around at all adjacent blocks
+   * @param currentPos Where the block currently is x,y,z
+   * @param world Minecraft world object
+   * @param checkedBlocks Other blocks that have been checked
+   * @return Queue<BlockPos>
+   */
   private Queue<BlockPos> lookAroundBlock(Block originBlock, BlockPos currentPos, World world, Set<BlockPos> checkedBlocks) {
 
     Queue<BlockPos> queuedBlocks = new LinkedList<>();
@@ -100,6 +125,15 @@ public class TreeHandler {
     return true;
   }
 
+  /**
+   * This will:
+   *   Destroy log and leaf blocks, getting drops
+   *   Plant a sapling if enabled
+   *   Decay leaves if enabled, sets all leaf blocks to air
+   *
+   * @param world Minecraft world
+   * @param entityPlayer Player who broke the tree
+   */
   public void destroyTree(World world, PlayerEntity entityPlayer) {
     if (treeMap.containsKey(entityPlayer.getUniqueID())) {
       Tree tmpTree = treeMap.get(entityPlayer.getUniqueID());
@@ -123,6 +157,20 @@ public class TreeHandler {
     }
   }
 
+  /**
+   * Plant a sapling after the tree is broken.
+   *
+   * TODO:
+   *  Check if block has dirt underneath it (valid block)
+   *  Search for a valid block around the tree.
+   *
+   * For some reason, you can't place the sapling where the original tree was.
+   *
+   * @param world Minecraft world
+   * @param blockPos Block position x,y,z
+   * @param originPos First block that was broken on the tree
+   * @return boolean Was the block placed successfully or not
+   */
   private boolean plantSapling(World world, BlockPos blockPos, BlockPos originPos) {
     ItemStack sapling = null;
 
