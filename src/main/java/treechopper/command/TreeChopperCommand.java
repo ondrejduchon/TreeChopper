@@ -17,7 +17,7 @@ public class TreeChopperCommand {
                         // List of all registered sub commands.
                     .then(DecayLeavesCommand.register())
                     .then(DisableShiftCommand.register())
-                    .then(InfoCommand.register())
+                    .then(HelpCommand.register())
                     .then(PlantSaplingCommand.register())
                     .then(ReverseShiftCommand.register())
         );

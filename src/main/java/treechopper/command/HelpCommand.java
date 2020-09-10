@@ -8,8 +8,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 /**
  * Print information on how the "/tch" family of commands is used
  */
-public class InfoCommand {
-    private static final String COMMAND_NAME = "info";
+public class HelpCommand {
+    private static final String COMMAND_NAME = "help";
 
     /**
      * Registers the command to the dispatcher tree's command configuration
@@ -23,14 +23,14 @@ public class InfoCommand {
     }
 
     /**
-     * What the Info command actually does.
+     * What the Help command actually does.
      *
      * @param source CommandSource: Event's command source
      * @return int: Anything >= 0 is considered a successful run of the command
      */
     private static int execute(CommandSource source){
         if (source.hasPermissionLevel(1)) {
-            source.sendFeedback(new TranslationTextComponent("command.info", COMMAND_NAME), true);
+            source.sendFeedback(new TranslationTextComponent("command.help", COMMAND_NAME), true);
         }
         else{ // Permission denied
             source.sendFeedback(new TranslationTextComponent("command.permissions", COMMAND_NAME), true);

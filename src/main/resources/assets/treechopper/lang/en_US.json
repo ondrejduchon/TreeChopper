@@ -9,7 +9,7 @@
     "command.permissions": "You do not have permission to use this command: %s",
 
     "command.choice": "TCH Command: %s, toggle: %s",
-    "command.info": " Print info about server settings",
+    "command.help": "Type \"/tch\" and use the auto complete functions to find your desired command.",
 
     "command.plant_sapling_info": " Auto plant sapling, around his trunk",
     "command.decay_leaves_info": " Decay leaves with tree fall",
