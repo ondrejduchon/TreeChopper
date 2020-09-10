@@ -49,7 +49,6 @@ public class TreeHandler {
 
       tempAdjacentBlocks.addAll(lookAroundBlock(logBlock, currentPos, world, checkedBlocks));
       queuedBlocks.addAll(tempAdjacentBlocks);
-      // TODO: smells bad but inf loops
       checkedBlocks.addAll(tempAdjacentBlocks);
       tempAdjacentBlocks.clear();
     }
