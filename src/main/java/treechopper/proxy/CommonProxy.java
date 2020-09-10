@@ -118,7 +118,7 @@ public class CommonProxy {
   /**
    * Breaks the wood block, the tree, and damages the axe.
    *
-   * @param breakEvent
+   * @param breakEvent Event being listened for
    */
   @SubscribeEvent
   public static void destroyWoodBlock(BlockEvent.BreakEvent breakEvent) {
